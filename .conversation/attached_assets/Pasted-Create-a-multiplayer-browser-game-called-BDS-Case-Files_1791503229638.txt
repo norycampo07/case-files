@@ -1,0 +1,199 @@
+Create a multiplayer browser game called "BDS Case Files".
+
+OVERVIEW
+
+Case Files is a collaborative detective game for virtual teams.
+
+Players work together to solve randomly generated mysteries.
+
+The game should require NO AI APIs, NO OpenAI integration, and NO paid services.
+
+All content should be generated using templates, randomization, and predefined data.
+
+The goal is a fun, replayable game that runs entirely within a Replit Core plan.
+
+GAMEPLAY
+
+1. Home Screen
+- Start New Case
+- Join Case
+- Rules
+- Credits
+
+2. Lobby System
+- Create Room
+- Join Room using code
+- 2–10 players
+- Show connected players
+- Host starts game
+
+3. Case Generation
+
+Generate a unique mystery by combining:
+
+LOCATIONS
+- Museum
+- Corporate Office
+- University
+- Hotel
+- Art Gallery
+- Library
+- Research Lab
+
+CRIMES
+- Missing Item
+- Theft
+- Sabotage
+- Data Leak
+- Disappearance
+- Locked Room Mystery
+
+SUSPECTS
+- Manager
+- Intern
+- Security Guard
+- Curator
+- Accountant
+- Researcher
+- Executive Assistant
+
+MOTIVES
+- Money
+- Promotion
+- Revenge
+- Jealousy
+- Cover-Up
+- Personal Gain
+
+METHODS
+- Duplicate Key
+- Stolen Access Card
+- Hidden Passage
+- Log Manipulation
+- Security Blind Spot
+- Fake Alibi
+
+Randomly combine these elements to create hundreds of possible cases.
+
+4. Investigation Phase
+
+Players vote on investigation actions.
+
+Possible actions:
+
+- Interview Suspect
+- Review Emails
+- Examine Crime Scene
+- Review Security Logs
+- Check Timeline
+- Verify Alibi
+- Search Office
+- Analyze Evidence
+
+Each action reveals clues.
+
+Generate clues from predefined clue pools.
+
+Some clues support the solution.
+
+Some clues are red herrings.
+
+5. Team Discussion
+
+Display all evidence gathered.
+
+Show:
+- Suspects
+- Clues
+- Timeline
+- Notes
+
+Allow team discussion through built-in chat.
+
+6. Accusation Phase
+
+Team submits:
+
+- Who did it?
+- Why?
+- How?
+
+7. Resolution Phase
+
+Display:
+
+- Correct Suspect
+- Motive
+- Method
+- Investigation Summary
+
+Scoring
+
++50 Correct Suspect
++25 Correct Motive
++25 Correct Method
+
+Bonus:
++10 Remaining Investigation Actions
+
+ROLES
+
+Each player receives a role.
+
+Forensics Expert
+- Sees one extra evidence clue
+
+Interviewer
+- Gets one additional suspect question
+
+Archivist
+- Gets historical background clues
+
+Analyst
+- Gets timeline hints
+
+Profiler
+- Gets motive hints
+
+DESIGN
+
+Theme:
+Modern Detective Agency
+
+Colors:
+- Dark Navy
+- Gold
+- White
+
+UI:
+- Clean evidence board
+- Detective notebooks
+- Evidence cards
+- Suspect profiles
+
+TECHNICAL REQUIREMENTS
+
+Use:
+- React
+- TypeScript
+- Express backend
+- Room-based multiplayer
+- WebSockets for real-time updates
+
+Store game state in memory.
+
+No database required for Version 1.
+
+VERSION 1 SUCCESS CRITERIA
+
+Players can:
+
+- Create a room
+- Join a room
+- Start a mystery
+- Investigate clues
+- Discuss findings
+- Submit accusation
+- Receive final solution
+
+Prioritize gameplay and replayability over visual effects.

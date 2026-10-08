@@ -3,13 +3,15 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: BDS Case Files room and cooperative mystery game API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: case-files
+    description: Multiplayer case rooms and investigation actions
 paths:
   /healthz:
     get:
@@ -24,6 +26,183 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /rooms:
+    post:
+      operationId: createRoom
+      tags: [case-files]
+      summary: Create a case room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomCreateInput"
+      responses:
+        "201":
+          description: The new lobby
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomView"
+        "400":
+          description: Invalid player name
+  /rooms/{code}:
+    get:
+      operationId: getRoom
+      tags: [case-files]
+      summary: Get the current room state for a player
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: playerId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Current room state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomView"
+        "404":
+          description: Room or player not found
+  /rooms/{code}/players:
+    post:
+      operationId: joinRoom
+      tags: [case-files]
+      summary: Join an existing lobby
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomJoinInput"
+      responses:
+        "200":
+          description: The updated lobby
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomView"
+        "404":
+          description: Room not found
+        "409":
+          description: Room is full or already in progress
+  /rooms/{code}/start:
+    post:
+      operationId: startGame
+      tags: [case-files]
+      summary: Start a case as the room host
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlayerActionInput"
+      responses:
+        "200":
+          description: The started case
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomView"
+        "403":
+          description: Only the host can start the game
+        "409":
+          description: The lobby needs at least two players
+  /rooms/{code}/votes:
+    post:
+      operationId: castInvestigationVote
+      tags: [case-files]
+      summary: Vote for the team's next investigation action
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvestigationVoteInput"
+      responses:
+        "200":
+          description: The updated investigation state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomView"
+        "409":
+          description: Investigation is not accepting votes
+  /rooms/{code}/messages:
+    post:
+      operationId: sendRoomMessage
+      tags: [case-files]
+      summary: Send a message to the case room
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMessageInput"
+      responses:
+        "201":
+          description: The updated room state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomView"
+  /rooms/{code}/accusation:
+    post:
+      operationId: submitAccusation
+      tags: [case-files]
+      summary: Submit the team's final accusation
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccusationInput"
+      responses:
+        "200":
+          description: The resolved case and team score
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomView"
+        "409":
+          description: Case is not accepting an accusation
 components:
   schemas:
     HealthStatus:
@@ -33,4 +212,257 @@ components:
           type: string
       required:
         - status
+    RoomCreateInput:
+      type: object
+      properties:
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 24
+      required: [displayName]
+    RoomJoinInput:
+      type: object
+      properties:
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 24
+      required: [displayName]
+    PlayerActionInput:
+      type: object
+      properties:
+        playerId:
+          type: string
+      required: [playerId]
+    InvestigationVoteInput:
+      type: object
+      properties:
+        playerId:
+          type: string
+        action:
+          $ref: "#/components/schemas/InvestigationAction"
+      required: [playerId, action]
+    ChatMessageInput:
+      type: object
+      properties:
+        playerId:
+          type: string
+        text:
+          type: string
+          minLength: 1
+          maxLength: 500
+      required: [playerId, text]
+    AccusationInput:
+      type: object
+      properties:
+        playerId:
+          type: string
+        suspect:
+          type: string
+        motive:
+          type: string
+        method:
+          type: string
+      required: [playerId, suspect, motive, method]
+    InvestigationAction:
+      type: string
+      enum:
+        - interview-suspect
+        - review-emails
+        - examine-crime-scene
+        - review-security-logs
+        - check-timeline
+        - verify-alibi
+        - search-office
+        - analyze-evidence
+    PlayerRole:
+      type: string
+      enum: [Forensics Expert, Interviewer, Archivist, Analyst, Profiler]
+    RoomStatus:
+      type: string
+      enum: [lobby, investigation, resolved]
+    Suspect:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        profile:
+          type: string
+        alibi:
+          type: string
+      required: [name, title, profile, alibi]
+    PlayerSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        role:
+          $ref: "#/components/schemas/PlayerRole"
+        isHost:
+          type: boolean
+      required: [id, displayName, role, isHost]
+    CurrentPlayer:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          $ref: "#/components/schemas/PlayerRole"
+        roleDescription:
+          type: string
+        privateBrief:
+          type: string
+        extraClue:
+          oneOf:
+            - $ref: "#/components/schemas/Evidence"
+            - type: "null"
+        extraInterviewAvailable:
+          type: boolean
+      required: [id, role, roleDescription, privateBrief, extraClue, extraInterviewAvailable]
+    CaseDetails:
+      type: object
+      properties:
+        title:
+          type: string
+        location:
+          type: string
+        crime:
+          type: string
+        openingBrief:
+          type: string
+        suspects:
+          type: array
+          items:
+            $ref: "#/components/schemas/Suspect"
+      required: [title, location, crime, openingBrief, suspects]
+    Evidence:
+      type: object
+      properties:
+        id:
+          type: string
+        action:
+          $ref: "#/components/schemas/InvestigationAction"
+        heading:
+          type: string
+        text:
+          type: string
+        foundAt:
+          type: string
+        privateTo:
+          type: ["string", "null"]
+      required: [id, action, heading, text, foundAt, privateTo]
+    TimelineEntry:
+      type: object
+      properties:
+        time:
+          type: string
+        event:
+          type: string
+      required: [time, event]
+    RoomMessage:
+      type: object
+      properties:
+        id:
+          type: string
+        playerId:
+          type: string
+        displayName:
+          type: string
+        text:
+          type: string
+        createdAt:
+          type: string
+      required: [id, playerId, displayName, text, createdAt]
+    VoteTally:
+      type: object
+      properties:
+        action:
+          $ref: "#/components/schemas/InvestigationAction"
+        count:
+          type: integer
+        playerIds:
+          type: array
+          items:
+            type: string
+      required: [action, count, playerIds]
+    CaseResolution:
+      type: object
+      properties:
+        suspect:
+          type: string
+        motive:
+          type: string
+        method:
+          type: string
+        summary:
+          type: string
+        score:
+          type: integer
+        remainingActionBonus:
+          type: integer
+      required: [suspect, motive, method, summary, score, remainingActionBonus]
+    RoomView:
+      type: object
+      properties:
+        code:
+          type: string
+        status:
+          $ref: "#/components/schemas/RoomStatus"
+        hostId:
+          type: string
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlayerSummary"
+        me:
+          $ref: "#/components/schemas/CurrentPlayer"
+        case:
+          oneOf:
+            - $ref: "#/components/schemas/CaseDetails"
+            - type: "null"
+        evidence:
+          type: array
+          items:
+            $ref: "#/components/schemas/Evidence"
+        timeline:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimelineEntry"
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoomMessage"
+        votes:
+          type: array
+          items:
+            $ref: "#/components/schemas/VoteTally"
+        actionsRemaining:
+          type: integer
+        investigationLimit:
+          type: integer
+        teamScore:
+          type: integer
+        resolution:
+          oneOf:
+            - $ref: "#/components/schemas/CaseResolution"
+            - type: "null"
+      required:
+        - code
+        - status
+        - hostId
+        - players
+        - me
+        - case
+        - evidence
+        - timeline
+        - messages
+        - votes
+        - actionsRemaining
+        - investigationLimit
+        - teamScore
+        - resolution
 

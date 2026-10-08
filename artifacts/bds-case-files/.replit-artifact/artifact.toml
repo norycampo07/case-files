@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "BDS Case Files"
+description = "A cooperative multiplayer detective game for virtual teams. Players join private case rooms, investigate template-generated mysteries, share evidence in real time, and solve each case together."
+version = "1.0.0"
+id = "artifacts/bds-case-files"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20240
+
+[services.development]
+run = "pnpm --filter @workspace/bds-case-files run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bds-case-files", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/bds-case-files/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20240"
+BASE_PATH = "/"
