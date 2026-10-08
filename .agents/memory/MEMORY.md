@@ -1,0 +1,1 @@
+- [Orval generated barrels](orval-barrels.md) — split generation can append wildcard exports; handwritten export lists alone do not prevent type/schema collisions.

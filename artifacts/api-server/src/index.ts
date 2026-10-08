@@ -1,5 +1,8 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+import { attachRealtime, connectPlayer } from "./game/rooms";
 
 const rawPort = process.env["PORT"];
 
@@ -15,7 +18,22 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-app.listen(port, (err) => {
+const server = createServer(app);
+const io = new Server(server, { path: "/api/ws", maxHttpBufferSize: 16_384 });
+attachRealtime(io);
+io.use((socket, next) => {
+  try {
+    const { code, playerId } = socket.handshake.auth;
+    const sessionId = socket.request.headers.cookie?.split(";").map(c => c.trim()).find(c => c.startsWith("bds_session="))?.slice("bds_session=".length);
+    if (typeof code !== "string" || typeof playerId !== "string") throw new Error("Invalid room session");
+    socket.data.disconnectPlayer = connectPlayer(code, playerId, sessionId, socket.id);
+    next();
+  } catch { next(new Error("This room session is not available. Rejoin the case.")); }
+});
+io.on("connection", socket => {
+  socket.on("disconnect", () => socket.data.disconnectPlayer?.());
+});
+server.listen(port, (err?: Error) => {
   if (err) {
     logger.error({ err }, "Error listening on port");
     process.exit(1);

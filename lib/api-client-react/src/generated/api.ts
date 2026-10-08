@@ -669,6 +669,95 @@ export const useSendRoomMessage = <TError = ErrorType<unknown>,
       return useMutation(getSendRoomMessageMutationOptions(options));
     }
 
+export const getUseExtraInterviewUrl = (code: string,) => {
+
+
+
+
+  return `/api/rooms/${code}/interview`
+}
+
+/**
+ * @summary Use the interviewer's free follow-up question
+ */
+export const useExtraInterview = async (code: string,
+    playerActionInput: PlayerActionInput, options?: Parameters<typeof customFetch>[1]): Promise<RoomView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RoomView>(getUseExtraInterviewUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(playerActionInput)
+  }
+);}
+
+
+
+
+
+export const getUseExtraInterviewMutationKey = () => ['useExtraInterview'] as const;
+
+export const getUseExtraInterviewMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof useExtraInterview>>, TError,UseExtraInterviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof useExtraInterview>>, TError,UseExtraInterviewMutationVariables, TContext> => {
+
+const mutationKey = getUseExtraInterviewMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof useExtraInterview>>, UseExtraInterviewMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  useExtraInterview(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UseExtraInterviewMutationResult = NonNullable<Awaited<ReturnType<typeof useExtraInterview>>>
+    export type UseExtraInterviewMutationBody = BodyType<PlayerActionInput>
+    export type UseExtraInterviewMutationError = ErrorType<unknown>
+    export type UseExtraInterviewMutationVariables = {code: string;data: BodyType<PlayerActionInput>}
+
+    /**
+ * @summary Use the interviewer's free follow-up question
+ */
+export const useUseExtraInterview = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof useExtraInterview>>, TError,UseExtraInterviewMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof useExtraInterview>>,
+        TError,
+        UseExtraInterviewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUseExtraInterviewMutationOptions(options));
+    }
+
 export const getSubmitAccusationUrl = (code: string,) => {
 
 

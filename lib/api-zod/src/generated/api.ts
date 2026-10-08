@@ -36,7 +36,8 @@ export const CreateRoomResponse = zod.object({
   "id": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
-  "isHost": zod.boolean()
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
 })),
   "me": zod.object({
   "id": zod.string(),
@@ -122,7 +123,8 @@ export const GetRoomResponse = zod.object({
   "id": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
-  "isHost": zod.boolean()
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
 })),
   "me": zod.object({
   "id": zod.string(),
@@ -212,7 +214,8 @@ export const JoinRoomResponse = zod.object({
   "id": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
-  "isHost": zod.boolean()
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
 })),
   "me": zod.object({
   "id": zod.string(),
@@ -298,7 +301,8 @@ export const StartGameResponse = zod.object({
   "id": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
-  "isHost": zod.boolean()
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
 })),
   "me": zod.object({
   "id": zod.string(),
@@ -385,7 +389,8 @@ export const CastInvestigationVoteResponse = zod.object({
   "id": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
-  "isHost": zod.boolean()
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
 })),
   "me": zod.object({
   "id": zod.string(),
@@ -476,7 +481,95 @@ export const SendRoomMessageResponse = zod.object({
   "id": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
-  "isHost": zod.boolean()
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "me": zod.object({
+  "id": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "roleDescription": zod.string(),
+  "privateBrief": zod.string(),
+  "extraClue": zod.union([zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+}),zod.null()]),
+  "extraInterviewAvailable": zod.boolean()
+}),
+  "case": zod.union([zod.object({
+  "title": zod.string(),
+  "location": zod.string(),
+  "crime": zod.string(),
+  "openingBrief": zod.string(),
+  "suspects": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "profile": zod.string(),
+  "alibi": zod.string()
+}))
+}),zod.null()]),
+  "evidence": zod.array(zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+})),
+  "timeline": zod.array(zod.object({
+  "time": zod.string(),
+  "event": zod.string()
+})),
+  "messages": zod.array(zod.object({
+  "id": zod.string(),
+  "playerId": zod.string(),
+  "displayName": zod.string(),
+  "text": zod.string(),
+  "createdAt": zod.string()
+})),
+  "votes": zod.array(zod.object({
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "count": zod.number().int(),
+  "playerIds": zod.array(zod.string())
+})),
+  "actionsRemaining": zod.number().int(),
+  "investigationLimit": zod.number().int(),
+  "teamScore": zod.number().int(),
+  "resolution": zod.union([zod.object({
+  "suspect": zod.string(),
+  "motive": zod.string(),
+  "method": zod.string(),
+  "summary": zod.string(),
+  "score": zod.number().int(),
+  "remainingActionBonus": zod.number().int()
+}),zod.null()])
+})
+
+
+/**
+ * @summary Use the interviewer's free follow-up question
+ */
+export const UseExtraInterviewParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const UseExtraInterviewBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const UseExtraInterviewResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'investigation', 'resolved']),
+  "hostId": zod.string(),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
 })),
   "me": zod.object({
   "id": zod.string(),
@@ -565,7 +658,8 @@ export const SubmitAccusationResponse = zod.object({
   "id": zod.string(),
   "displayName": zod.string(),
   "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
-  "isHost": zod.boolean()
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
 })),
   "me": zod.object({
   "id": zod.string(),

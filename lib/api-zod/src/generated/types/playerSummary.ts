@@ -12,4 +12,5 @@ export interface PlayerSummary {
   displayName: string;
   role: PlayerRole;
   isHost: boolean;
+  connected: boolean;
 }
