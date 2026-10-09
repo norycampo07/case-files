@@ -1,0 +1,29 @@
+kind = "video"
+videoAspectRatio = "16:9"
+previewPath = "/bds-case-files-promo/"
+title = "BDS Case Files — Team Detective Promo"
+description = "A 25-second animated landscape promo for the cooperative detective game, featuring case folders, team assembly, evidence, specialist roles, and a case-closed finale."
+version = "1.0.0"
+id = "artifacts/bds-case-files-promo"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/bds-case-files-promo/" ]
+localPort = 22715
+
+[services.development]
+run = "pnpm --filter @workspace/bds-case-files-promo run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/bds-case-files-promo", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/bds-case-files-promo/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22715"
+BASE_PATH = "/bds-case-files-promo/"

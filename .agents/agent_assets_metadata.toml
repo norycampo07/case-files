@@ -1,0 +1,9 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "oyw1a-3ow6EaNlpy8-20u"
+uri = "file://artifacts/bds-case-files-promo/public/audio/bg_music.mp3"
+type = "audio"
+title = "detective promo instrumental"
+description = "Generated music: Cinematic detective mystery instrumental background music for a cooperative browser-game promo. Minimal piano ostinato, pizzicato strings, warm muted bass and a restrained electronic…"
