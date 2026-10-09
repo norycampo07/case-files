@@ -8,3 +8,17 @@ type = "audio"
 title = "detective promo instrumental"
 description = "Generated music: Cinematic detective mystery instrumental background music for a cooperative browser-game promo. Minimal piano ostinato, pizzicato strings, warm muted bass and a restrained electronic…"
 logical_id = "1114e3d5-70de-4ee4-9121-51ce00ea6d5b"
+
+[[outputs]]
+id = "lfFlSTd9IwsJ59Y0y-6-K"
+uri = "file://.local/outputs/BDS-Case-Files---Game-Mechanics.pptx"
+type = "slides"
+title = "BDS Case Files — Game Mechanics (PowerPoint)"
+description = "The complete 12-slide game mechanics presentation in PowerPoint format."
+logical_id = "f53055b5-8359-42bb-a38b-b85550c2f203"
+content_hash = "sha256:447abff1a1748d6b40f5f5dca082ff8efc8c8bf07f54a99f32e15a1ee4d6c6e7"
+size = 4168631
+mtime_ms = 1791531876279
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:80e42893-064c-46bf-bc94-7c92d2862eca/f53055b5-8359-42bb-a38b-b85550c2f203/10d7cbda-b0b1-4404-afe2-5ec7196ffe61"
+storage_version_token = "1791531878007476"
+content_type = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
