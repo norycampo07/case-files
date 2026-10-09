@@ -13,6 +13,7 @@ export interface TournamentTeamState {
   screen: TournamentTeamStateScreen;
   clues: string[];
   value: number;
+  ready?: boolean;
   hasVoted: boolean;
   /** @nullable */
   deadline: number | null;

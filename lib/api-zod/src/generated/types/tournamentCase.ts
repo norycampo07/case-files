@@ -15,4 +15,6 @@ export interface TournamentCase {
   characters: TournamentCharacter[];
   clueCount: number;
   difficulty: TournamentCaseDifficulty;
+  family?: string;
+  basePoints?: number;
 }

@@ -7,6 +7,8 @@
  */
 
 export interface TournamentTeam {
+  ready?: boolean;
+  ballotComplete?: boolean;
   id: number;
   name: string;
   playerCount: number;

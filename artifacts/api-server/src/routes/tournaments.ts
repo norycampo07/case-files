@@ -5,12 +5,14 @@ import {
   SetTournamentSettingsBody, StartTournamentBody, AdvanceTournamentScreenBody,
   RequestTournamentClueBody, BeginTournamentVoteBody, CastTournamentBallotBody,
   NextTournamentRoundBody, ResetTournamentBody, GetTournamentResponse,
+  ManageTournamentTeamBody,
 } from "@workspace/api-zod";
 import {
   TournamentError, createTournament, joinTournament, getTournament,
   getTournamentLobby, setTournamentSettings, startTournament, advanceTournamentScreen,
   requestTournamentClue, beginTournamentVote, castTournamentBallot,
   nextTournamentRound, resetTournament,
+  manageTournamentTeam,
 } from "../game/tournament-rooms";
 
 const router: IRouter = Router();
@@ -64,6 +66,10 @@ router.patch("/tournaments/:code/settings", handler((req, res) => {
 router.post("/tournaments/:code/start", handler((req, res) => {
   const input = StartTournamentBody.parse(req.body);
   send(res, startTournament(code(req), input.playerId, session(req)));
+}));
+router.post("/tournaments/:code/teams", handler((req, res) => {
+  const input = ManageTournamentTeamBody.parse(req.body);
+  send(res, manageTournamentTeam(code(req), input.playerId, session(req), input));
 }));
 router.post("/tournaments/:code/advance", handler((req, res) => {
   const input = AdvanceTournamentScreenBody.parse(req.body);

@@ -37,6 +37,7 @@ import type {
   TournamentLobby,
   TournamentPlayerInput,
   TournamentSettingsInput,
+  TournamentTeamInput,
   TournamentView
 } from './api.schemas';
 
@@ -1555,6 +1556,95 @@ export const useSetTournamentSettings = <TError = ErrorType<unknown>,
       return useMutation(getSetTournamentSettingsMutationOptions(options));
     }
 
+export const getManageTournamentTeamUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/teams`
+}
+
+/**
+ * @summary Host adds, removes or renames a team in the lobby
+ */
+export const manageTournamentTeam = async (code: string,
+    tournamentTeamInput: TournamentTeamInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getManageTournamentTeamUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentTeamInput)
+  }
+);}
+
+
+
+
+
+export const getManageTournamentTeamMutationKey = () => ['manageTournamentTeam'] as const;
+
+export const getManageTournamentTeamMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof manageTournamentTeam>>, TError,ManageTournamentTeamMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof manageTournamentTeam>>, TError,ManageTournamentTeamMutationVariables, TContext> => {
+
+const mutationKey = getManageTournamentTeamMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof manageTournamentTeam>>, ManageTournamentTeamMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  manageTournamentTeam(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ManageTournamentTeamMutationResult = NonNullable<Awaited<ReturnType<typeof manageTournamentTeam>>>
+    export type ManageTournamentTeamMutationBody = BodyType<TournamentTeamInput>
+    export type ManageTournamentTeamMutationError = ErrorType<unknown>
+    export type ManageTournamentTeamMutationVariables = {code: string;data: BodyType<TournamentTeamInput>}
+
+    /**
+ * @summary Host adds, removes or renames a team in the lobby
+ */
+export const useManageTournamentTeam = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof manageTournamentTeam>>, TError,ManageTournamentTeamMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof manageTournamentTeam>>,
+        TError,
+        ManageTournamentTeamMutationVariables,
+        TContext
+      > => {
+      return useMutation(getManageTournamentTeamMutationOptions(options));
+    }
+
 export const getStartTournamentUrl = (code: string,) => {
 
 
@@ -1653,7 +1743,7 @@ export const getAdvanceTournamentScreenUrl = (code: string,) => {
 }
 
 /**
- * @summary Advance this team through its brief, roster and three clues
+ * @summary Host advances shared stages and results; members may close a private extra clue
  */
 export const advanceTournamentScreen = async (code: string,
     tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
@@ -1720,7 +1810,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type AdvanceTournamentScreenMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
 
     /**
- * @summary Advance this team through its brief, roster and three clues
+ * @summary Host advances shared stages and results; members may close a private extra clue
  */
 export const useAdvanceTournamentScreen = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof advanceTournamentScreen>>, TError,AdvanceTournamentScreenMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -1831,7 +1921,7 @@ export const getBeginTournamentVoteUrl = (code: string,) => {
 }
 
 /**
- * @summary Start this team's timed accusation ballot
+ * @summary Members mark their team ready; host opens synchronized ballots for all teams
  */
 export const beginTournamentVote = async (code: string,
     tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
@@ -1898,7 +1988,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type BeginTournamentVoteMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
 
     /**
- * @summary Start this team's timed accusation ballot
+ * @summary Members mark their team ready; host opens synchronized ballots for all teams
  */
 export const useBeginTournamentVote = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof beginTournamentVote>>, TError,BeginTournamentVoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}

@@ -1,19 +1,21 @@
 import { randomInt, randomUUID } from "node:crypto";
 import type { Server as SocketServer } from "socket.io";
 import type { TournamentView, TournamentSettings } from "@workspace/api-zod";
-import { characters, difficultySequence, generateTournamentCase, type TournamentCaseContent } from "./tournament-content";
+import { characters, difficultySequence, generateTournamentCase, basePoints, type TournamentCaseContent } from "./tournament-content";
 
 type Screen = "brief" | "roster" | "clue1" | "clue2" | "clue3" | "choice" | "extra" | "vote" | "runoff" | "waiting";
 type Status = "lobby" | "round" | "reveal" | "finished";
 interface Member { id: string; displayName: string; sessionId: string; teamId: number; connections: Set<string> }
 interface TeamStats { score: number; correctCount: number; extraCluesUsed: number; princeBlames: number; coffeeSolves: number; boldMin: number }
 interface TeamRound {
+  ready: boolean;
   screen: Screen; extras: number; deadline: number | null;
   ballots: Map<string, string>; princeVoters: Set<string>;
   runoffOptions: string[]; choice: string | null; points: number;
   baseline: TeamStats;
 }
 interface TournamentRoom {
+  teamNames: string[]; revealStage: "culprit" | "results" | "champions";
   code: string; hostId: string; status: Status; members: Member[];
   settings: TournamentSettings; roundIndex: number; usedTitles: Set<string>;
   case: TournamentCaseContent | null; teamRounds: Map<number, TeamRound>;
@@ -50,7 +52,9 @@ function availableTeams(room: TournamentRoom) {
     const baseline = room.teamRounds.get(id)?.baseline;
     const safeStats = room.status === "round" && baseline ? baseline : stats;
     return {
-      id, name: names[id]!, playerCount: room.members.filter(p => p.teamId === id).length,
+      ready: room.teamRounds.get(id)?.ready ?? false,
+      ballotComplete: room.teamRounds.get(id)?.screen === "waiting",
+      id, name: room.teamNames[id]!, playerCount: room.members.filter(p => p.teamId === id).length,
       score: safeStats.score, correctCount: safeStats.correctCount, extraCluesUsed: safeStats.extraCluesUsed,
       princeBlames: safeStats.princeBlames, coffeeSolves: safeStats.coffeeSolves,
     };
@@ -92,7 +96,7 @@ function view(room: TournamentRoom, member: Member): TournamentView {
     state?.screen === "clue1" ? 1 : state?.screen === "clue2" ? 2 : state?.screen === "clue3" ? 3 : 3 + (state?.extras ?? 0);
   const reveal = room.status === "reveal" || room.status === "finished";
   return {
-    code: room.code, status: room.status, hostId: room.hostId,
+    code: room.code, status: room.status, hostId: room.hostId, revealStage: room.revealStage,
     me: { id: member.id, displayName: member.displayName, teamId: member.teamId, isHost: member.id === room.hostId, connected: member.connections.size > 0 },
     settings: { ...room.settings }, roundIndex: room.roundIndex,
     difficulty: content?.difficulty ?? null,
@@ -104,11 +108,11 @@ function view(room: TournamentRoom, member: Member): TournamentView {
     case: content ? {
       id: content.id, title: content.title, brief: content.brief,
       characters: characters.map(c => ({ ...c })), clueCount: content.clues.length,
-      difficulty: content.difficulty,
+      difficulty: content.difficulty, family: content.family, basePoints: basePoints(content.difficulty),
     } : null,
     teamState: state ? {
       teamId: member.teamId, screen: state.screen, clues: content?.clues.slice(0, unlocked) ?? [],
-      value: 100 - state.extras * 10,
+      value: basePoints(content!.difficulty) - state.extras * 10, ready: state.ready,
       hasVoted: state.ballots.has(member.id), deadline: state.deadline,
       runoffOptions: [...state.runoffOptions], submittedVotes: submitted,
       tallies: candidates.map(suspect => {
@@ -122,7 +126,7 @@ function view(room: TournamentRoom, member: Member): TournamentView {
       results: Array.from({ length: room.settings.teamCount }, (_, id) => {
         const round = room.teamRounds.get(id)!;
         return {
-          teamId: id, teamName: names[id]!, suspect: round.choice,
+          teamId: id, teamName: room.teamNames[id]!, suspect: round.choice,
           correct: round.choice === content.culprit, points: round.points,
           extraClues: round.extras,
         };
@@ -151,7 +155,7 @@ export function createTournament(displayName: string, sessionId: string) {
   let code: string;
   do { code = Array.from({ length: 6 }, () => alphabet[randomInt(alphabet.length)]).join(""); } while (rooms.has(code));
   const room: TournamentRoom = {
-    code, hostId: "", status: "lobby", members: [],
+    code, hostId: "", status: "lobby", members: [], teamNames: names.slice(0, 2), revealStage: "culprit",
     settings: { teamCount: 2, casesPerTournament: 3, votingSeconds: 60 },
     roundIndex: 0, usedTitles: new Set(), case: null, teamRounds: new Map(), scores: new Map(),
     updatedAt: Date.now(),
@@ -186,9 +190,37 @@ export function setTournamentSettings(code: string, playerId: string, sessionId:
       settings.votingSeconds < 15 || settings.votingSeconds > 180 || !Number.isInteger(settings.votingSeconds))
     throw new TournamentError(400, "Choose 1–5 teams, 1/3/5/7/10 cases, and a 15–180 second timer.");
   if (room.members.some(p => p.teamId >= settings.teamCount)) throw new TournamentError(409, "A team with joined players cannot be removed.");
+  while (room.teamNames.length < settings.teamCount) room.teamNames.push(unusedName(room));
+  room.teamNames.length = settings.teamCount;
   room.settings = { teamCount: settings.teamCount, casesPerTournament: settings.casesPerTournament, votingSeconds: settings.votingSeconds };
   broadcast(room);
   return view(room, member);
+}
+function unusedName(room: TournamentRoom) {
+  return names.find(name => !room.teamNames.includes(name)) ?? `Team ${room.teamNames.length + 1}`;
+}
+export function manageTournamentTeam(code: string, playerId: string, sessionId: string | undefined, input: { action: "add" | "remove" | "rename"; teamId?: number; name?: string }) {
+  const { room, member } = hostFor(code, playerId, sessionId);
+  if (room.status !== "lobby") throw new TournamentError(409, "Manage teams before starting.");
+  if (input.action === "add") {
+    if (room.settings.teamCount >= 5) throw new TournamentError(409, "Maximum five teams.");
+    room.teamNames.push(unusedName(room)); room.settings.teamCount++;
+  } else {
+    const id = input.teamId;
+    if (id === undefined || !Number.isInteger(id) || id < 0 || id >= room.settings.teamCount) throw new TournamentError(400, "Choose an available team.");
+    if (input.action === "remove") {
+      if (room.settings.teamCount === 1) throw new TournamentError(409, "Keep at least one team.");
+      if (room.members.some(p => p.teamId === id)) throw new TournamentError(409, "A team with joined players cannot be removed.");
+      room.teamNames.splice(id, 1); room.settings.teamCount--;
+      for (const p of room.members) if (p.teamId > id) p.teamId--;
+    } else {
+      const name = input.name?.trim();
+      if (!name || name.length > 30) throw new TournamentError(400, "Enter a team name of 1–30 characters.");
+      if (room.teamNames.some((n, i) => i !== id && n.toLowerCase() === name.toLowerCase())) throw new TournamentError(409, "Team names must be unique.");
+      room.teamNames[id] = name;
+    }
+  }
+  broadcast(room); return view(room, member);
 }
 function beginRound(room: TournamentRoom) {
   room.case = generateTournamentCase(difficultySequence(room.settings.casesPerTournament)[room.roundIndex]!, room.usedTitles);
@@ -196,12 +228,12 @@ function beginRound(room: TournamentRoom) {
   for (let id = 0; id < room.settings.teamCount; id++) {
     const stats = room.scores.get(id)!;
     room.teamRounds.set(id, {
-      screen: "brief", extras: 0, deadline: null,
+      screen: "brief", extras: 0, deadline: null, ready: false,
       ballots: new Map(), princeVoters: new Set(), runoffOptions: [], choice: null, points: 0,
       baseline: { ...stats },
     });
   }
-  room.status = "round";
+  room.status = "round"; room.revealStage = "culprit";
 }
 export function startTournament(code: string, playerId: string, sessionId: string | undefined) {
   const { room, member } = hostFor(code, playerId, sessionId);
@@ -219,20 +251,33 @@ function teamFor(code: string, playerId: string, sessionId: string | undefined) 
   return { room, member, round: room.teamRounds.get(member.teamId)! };
 }
 export function advanceTournamentScreen(code: string, playerId: string, sessionId: string | undefined) {
+  const context = memberFor(code, playerId, sessionId);
+  if (context.room.status === "reveal") {
+    const { room, member } = hostFor(code, playerId, sessionId);
+    if (room.revealStage === "culprit") room.revealStage = "results";
+    else if (room.roundIndex === room.settings.casesPerTournament - 1) { room.status = "finished"; room.revealStage = "champions"; }
+    else throw new TournamentError(409, "Start the next case from the results.");
+    broadcast(room); return view(room, member);
+  }
   const { room, member, round } = teamFor(code, playerId, sessionId);
   const order: Screen[] = ["brief", "roster", "clue1", "clue2", "clue3", "choice"];
   if (round.screen === "extra") round.screen = "choice";
+  else if ([...room.teamRounds.values()].every(r => r.screen === "waiting")) {
+    hostFor(code, playerId, sessionId);
+    room.status = "reveal"; room.revealStage = "culprit";
+  }
   else {
+    hostFor(code, playerId, sessionId);
     const index = order.indexOf(round.screen);
     if (index < 0 || index >= order.length - 1) throw new TournamentError(409, "Choose an accusation or request another clue.");
-    round.screen = order[index + 1]!;
+    for (const state of room.teamRounds.values()) state.screen = order[index + 1]!;
   }
   broadcast(room);
   return view(room, member);
 }
 export function requestTournamentClue(code: string, playerId: string, sessionId: string | undefined) {
   const { room, member, round } = teamFor(code, playerId, sessionId);
-  if (round.screen !== "choice" || round.extras >= 7) throw new TournamentError(409, "No more extra clues are available.");
+  if (round.screen !== "choice" || round.ready || round.extras >= 7) throw new TournamentError(409, "No more extra clues are available.");
   round.extras++;
   round.screen = "extra";
   broadcast(room);
@@ -240,10 +285,15 @@ export function requestTournamentClue(code: string, playerId: string, sessionId:
 }
 export function beginTournamentVote(code: string, playerId: string, sessionId: string | undefined) {
   const { room, member, round } = teamFor(code, playerId, sessionId);
-  if (round.screen !== "choice") throw new TournamentError(409, "Review the three initial clues first.");
-  round.screen = "vote";
-  round.deadline = Date.now() + room.settings.votingSeconds * 1000;
-  round.ballots.clear();
+  if (round.screen !== "choice" && round.screen !== "extra") throw new TournamentError(409, "Review the three initial clues first.");
+  if (member.id !== room.hostId) {
+    round.ready = true; round.screen = "choice";
+  } else {
+    const deadline = Date.now() + room.settings.votingSeconds * 1000;
+    for (const state of room.teamRounds.values()) {
+      state.screen = "vote"; state.deadline = deadline; state.ready = true; state.ballots.clear();
+    }
+  }
   broadcast(room);
   return view(room, member);
 }
@@ -251,7 +301,7 @@ function finishTeam(room: TournamentRoom, id: number, suspect: string | null) {
   const round = room.teamRounds.get(id)!;
   if (round.screen === "waiting") return;
   round.choice = suspect;
-  round.points = suspect === room.case!.culprit ? 100 - round.extras * 10 : 0;
+  round.points = suspect === room.case!.culprit ? basePoints(room.case!.difficulty) - round.extras * 10 : 0;
   round.screen = "waiting"; round.deadline = null;
   const stats = room.scores.get(id)!;
   stats.score += round.points;
@@ -262,8 +312,6 @@ function finishTeam(room: TournamentRoom, id: number, suspect: string | null) {
     stats.boldMin = Math.min(stats.boldMin, round.extras);
     if (room.case!.isCoffee && round.extras === 0) stats.coffeeSolves++;
   }
-  if ([...room.teamRounds.values()].every(t => t.screen === "waiting"))
-    room.status = room.roundIndex === room.settings.casesPerTournament - 1 ? "finished" : "reveal";
 }
 function settleBallot(room: TournamentRoom, id: number) {
   const round = room.teamRounds.get(id)!;
@@ -309,7 +357,7 @@ export function castTournamentBallot(code: string, playerId: string, sessionId: 
 }
 export function nextTournamentRound(code: string, playerId: string, sessionId: string | undefined) {
   const { room, member } = hostFor(code, playerId, sessionId);
-  if (room.status !== "reveal") throw new TournamentError(409, "Wait for every team to finish this case.");
+  if (room.status !== "reveal" || room.revealStage !== "results") throw new TournamentError(409, "Wait for every team and reveal the results first.");
   room.roundIndex++;
   beginRound(room); broadcast(room);
   return view(room, member);
@@ -317,7 +365,7 @@ export function nextTournamentRound(code: string, playerId: string, sessionId: s
 export function resetTournament(code: string, playerId: string, sessionId: string | undefined) {
   const { room, member } = hostFor(code, playerId, sessionId);
   if (room.status !== "finished") throw new TournamentError(409, "Finish the tournament before starting a new one.");
-  room.status = "lobby"; room.roundIndex = 0; room.case = null; room.teamRounds.clear();
+  room.status = "lobby"; room.revealStage = "culprit"; room.roundIndex = 0; room.case = null; room.teamRounds.clear();
   room.scores.clear(); room.usedTitles.clear();
   broadcast(room);
   return view(room, member);

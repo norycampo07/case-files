@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-export const TEAM_COLORS = ["hsl(43 90% 58%)", "hsl(350 85% 64%)", "hsl(180 60% 52%)", "hsl(270 70% 72%)", "hsl(100 55% 58%)"];
+export const TEAM_COLORS = ["hsl(7 82% 50%)", "hsl(178 70% 30%)", "hsl(262 55% 50%)", "hsl(32 90% 42%)", "hsl(100 45% 32%)"];
 export const teamColor = (id: number) => TEAM_COLORS[id % TEAM_COLORS.length];
 
 export function Portrait({ src, name, className = "" }: { src: string; name: string; className?: string }) {
   const isImg = /^(https?:|\/|data:|blob:)/.test(src || "");
   const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
   return isImg ? <img src={src} alt={name} className={"object-cover " + className} /> :
-    <div className={"grid place-items-center font-display font-bold text-primary bg-secondary " + className}>{initials}</div>;
+    <div className={"grid place-items-center font-display font-bold text-foreground bg-secondary " + className}>{initials}</div>;
 }
 
 export function useCountdown(deadline: number | null | undefined) {

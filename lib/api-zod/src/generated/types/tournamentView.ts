@@ -12,11 +12,13 @@ import type { TournamentReveal } from './tournamentReveal';
 import type { TournamentSettings } from './tournamentSettings';
 import type { TournamentTeam } from './tournamentTeam';
 import type { TournamentTeamState } from './tournamentTeamState';
+import type { TournamentViewRevealStage } from './tournamentViewRevealStage';
 import type { TournamentViewStatus } from './tournamentViewStatus';
 
 export interface TournamentView {
   code: string;
   status: TournamentViewStatus;
+  revealStage?: TournamentViewRevealStage;
   hostId: string;
   me: TournamentPlayer;
   settings: TournamentSettings;

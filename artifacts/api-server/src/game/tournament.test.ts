@@ -1,12 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { characters, difficultySequence } from "./tournament-content";
+import { characters, difficultySequence, generateTournamentCase, basePoints } from "./tournament-content";
+import { caseFamilies } from "./case-library";
 import {
   createTournament, joinTournament, getTournament, getTournamentLobby,
   setTournamentSettings, startTournament, advanceTournamentScreen,
   requestTournamentClue, beginTournamentVote, castTournamentBallot,
   nextTournamentRound, resetTournament, connectTournamentPlayer,
+  manageTournamentTeam,
 } from "./tournament-rooms";
 
 function setup(cases = 3, teams = 2, sizes: number | number[] = 6) {
@@ -27,9 +29,11 @@ function setup(cases = 3, teams = 2, sizes: number | number[] = 6) {
   return { code, players, host, read, leaders: Array.from({ length: teams }, (_, id) => players.find(p => p.team === id)!) };
 }
 function toChoice(context: ReturnType<typeof setup>) {
-  for (const leader of context.leaders) {
-    for (let n = 0; n < 5; n++) advanceTournamentScreen(context.code, leader.id, leader.session);
-  }
+  for (let n = 0; n < 5; n++) advanceTournamentScreen(context.code, context.host.id, context.host.session);
+}
+function revealResults(c: ReturnType<typeof setup>) {
+  advanceTournamentScreen(c.code, c.host.id, c.host.session);
+  advanceTournamentScreen(c.code, c.host.id, c.host.session);
 }
 function castTeam(context: ReturnType<typeof setup>, team: number, suspect: string) {
   for (const p of context.players.filter(p => p.team === team)) castTournamentBallot(context.code, p.id, p.session, suspect);
@@ -72,8 +76,12 @@ test("every size from one to ten can start, including uneven teams and a solo to
   toChoice(solo);
   beginTournamentVote(solo.code, solo.host.id, solo.host.session);
   const result = castTournamentBallot(solo.code, solo.host.id, solo.host.session, characters[0].name);
-  assert.equal(result.status, "finished");
-  assert.equal(result.reveal!.results.length, 1);
+  assert.equal(result.status, "round");
+  assert.equal(result.reveal, null);
+  revealResults(solo);
+  assert.equal(solo.read().reveal!.results.length, 1);
+  advanceTournamentScreen(solo.code, solo.host.id, solo.host.session);
+  assert.equal(solo.read().status, "finished");
 });
 test("same shared case; staged clues and extra clue deductions; no early solution or score leak; full reset", () => {
   const c = setup(1);
@@ -82,7 +90,7 @@ test("same shared case; staged clues and extra clue deductions; no early solutio
   assert.equal(c.read().teamState!.clues.length, 0);
   assert.equal(c.read().case!.characters.length, 7);
   assert.equal(c.read().reveal, null);
-  assert.equal(JSON.stringify(c.read()).includes('"culprit"'), false);
+  assert.equal(JSON.stringify(c.read()).includes('"culprit":'), false);
   assert.throws(() => joinTournament(c.code, "Latecomer", 1, randomUUID()), /already begun/);
   toChoice(c);
   const host = c.host;
@@ -103,8 +111,10 @@ test("same shared case; staged clues and extra clue deductions; no early solutio
   assert.equal(c.read().teams[0]!.score, 0);
   assert.equal(c.read().reveal, null);
   const second = c.leaders[1]!;
-  beginTournamentVote(c.code, second.id, second.session);
   castTeam(c, 1, characters.find(ch => ch.name !== correct)!.name);
+  assert.equal(c.read().reveal, null);
+  revealResults(c);
+  advanceTournamentScreen(c.code, host.id, host.session);
   const finished = c.read();
   assert.equal(finished.status, "finished");
   assert.equal(finished.reveal!.culprit, correct);
@@ -146,17 +156,19 @@ test("timer resolves only submitted votes; no votes does not block; reconnect pr
   const c = setup(3, 5);
   startTournament(c.code, c.host.id, c.host.session);
   toChoice(c);
-  for (const leader of c.leaders) beginTournamentVote(c.code, leader.id, leader.session);
+  beginTournamentVote(c.code, c.host.id, c.host.session);
   castTournamentBallot(c.code, c.host.id, c.host.session, characters[0].name);
   const deadline = c.read().teamState!.deadline!;
   const originalNow = Date.now;
   try {
     Date.now = () => deadline + 1;
     const after = c.read();
-    assert.equal(after.status, "reveal");
-    assert.equal(after.reveal!.results[0]!.suspect, characters[0].name);
-    assert.equal(after.reveal!.results[1]!.suspect, null);
-    assert.equal(after.reveal!.results[1]!.points, 0);
+    assert.equal(after.status, "round");
+    assert.equal(after.reveal, null);
+    revealResults(c);
+    assert.equal(c.read().reveal!.results[0]!.suspect, characters[0].name);
+    assert.equal(c.read().reveal!.results[1]!.suspect, null);
+    assert.equal(c.read().reveal!.results[1]!.points, 0);
   } finally { Date.now = originalNow; }
   nextTournamentRound(c.code, c.host.id, c.host.session);
   const current = c.read();
@@ -167,4 +179,92 @@ test("timer resolves only submitted votes; no votes does not block; reconnect pr
   assert.equal(c.read().case!.id, current.case!.id);
   disconnect();
   assert.equal(c.read().me.connected, false);
+});
+test("host synchronizes stages and ballots; teams buy private extras without advancing anyone else", () => {
+  const c = setup(1, 2, 1), guest = c.leaders[1]!;
+  startTournament(c.code, c.host.id, c.host.session);
+  assert.throws(() => advanceTournamentScreen(c.code, guest.id, guest.session), /Only the host/);
+  toChoice(c);
+  assert.equal(c.read(guest).teamState!.screen, "choice");
+  requestTournamentClue(c.code, guest.id, guest.session);
+  assert.equal(c.read(guest).teamState!.clues.length, 4);
+  assert.equal(c.read().teamState!.clues.length, 3);
+  advanceTournamentScreen(c.code, guest.id, guest.session);
+  beginTournamentVote(c.code, guest.id, guest.session);
+  assert.equal(c.read(guest).teamState!.ready, true);
+  assert.equal(c.read().teamState!.screen, "choice");
+  assert.throws(() => requestTournamentClue(c.code, guest.id, guest.session), /No more/);
+  beginTournamentVote(c.code, c.host.id, c.host.session);
+  assert.equal(c.read().teamState!.deadline, c.read(guest).teamState!.deadline);
+  castTeam(c, 0, characters[0].name); castTeam(c, 1, characters[1].name);
+  assert.equal(c.read().reveal, null);
+  assert.throws(() => advanceTournamentScreen(c.code, guest.id, guest.session), /Only the host/);
+  advanceTournamentScreen(c.code, c.host.id, c.host.session);
+  assert.equal(c.read(guest).revealStage, "culprit");
+  assert.throws(() => advanceTournamentScreen(c.code, guest.id, guest.session), /Only the host/);
+  advanceTournamentScreen(c.code, c.host.id, c.host.session);
+  assert.equal(c.read(guest).revealStage, "results");
+});
+test("team names persist everywhere, empty team removal remaps members, management is host/lobby-only", () => {
+  const c = setup(1, 1, 1);
+  manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "rename", teamId: 0, name: " Coffee First " });
+  assert.equal(getTournamentLobby(c.code).teams[0]!.name, "Coffee First");
+  manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "add" });
+  manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "add" });
+  const session = randomUUID(), guest = joinTournament(c.code, "Guest", 2, session);
+  assert.throws(() => manageTournamentTeam(c.code, guest.me.id, session, { action: "rename", teamId: 2, name: "No" }), /Only the host/);
+  manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "remove", teamId: 1 });
+  assert.equal(getTournament(c.code, guest.me.id, session).me.teamId, 1);
+  assert.throws(() => manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "remove", teamId: 1 }), /joined players/);
+  assert.throws(() => manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "rename", teamId: 1, name: "coffee first" }), /unique/);
+  assert.throws(() => manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "rename", teamId: 0, name: " " }), /1–30/);
+  startTournament(c.code, c.host.id, c.host.session);
+  assert.throws(() => manageTournamentTeam(c.code, c.host.id, c.host.session, { action: "add" }), /before starting/);
+  for (let n = 0; n < 5; n++) advanceTournamentScreen(c.code, c.host.id, c.host.session);
+  beginTournamentVote(c.code, c.host.id, c.host.session);
+  castTournamentBallot(c.code, c.host.id, c.host.session, characters[0].name);
+  castTournamentBallot(c.code, guest.me.id, session, characters[0].name);
+  revealResults(c);
+  assert.equal(c.read().reveal!.results[0]!.teamName, "Coffee First");
+  advanceTournamentScreen(c.code, c.host.id, c.host.session);
+  assert.ok(c.read().awards.some(a => a.teamNames.includes("Coffee First")));
+  resetTournament(c.code, c.host.id, c.host.session);
+  assert.equal(c.read().teams[0]!.name, "Coffee First");
+});
+test("difficulty score values and extra deductions are correct across a three-round tournament", () => {
+  const c = setup(3, 1, 1);
+  startTournament(c.code, c.host.id, c.host.session);
+  let total = 0;
+  for (const difficulty of ["Easy", "Medium", "Hard"] as const) {
+    toChoice(c);
+    for (let n = 0; n < 7; n++) {
+      requestTournamentClue(c.code, c.host.id, c.host.session);
+      advanceTournamentScreen(c.code, c.host.id, c.host.session);
+    }
+    assert.equal(c.read().teamState!.value, basePoints(difficulty) - 70);
+    const last = c.read().teamState!.clues[9]!;
+    const culprit = characters.find(ch => last.includes(`belongs to the ${ch.title},`))!.name;
+    beginTournamentVote(c.code, c.host.id, c.host.session);
+    castTeam(c, 0, culprit);
+    revealResults(c);
+    total += basePoints(difficulty) - 70;
+    assert.equal(c.read().teams[0]!.score, total);
+    if (difficulty !== "Hard") nextTournamentRound(c.code, c.host.id, c.host.session);
+  }
+  assert.equal(total, 240);
+});
+test("case families rotate without repetition and use distinct thematic pools and fixed portraits", () => {
+  const used = new Set<string>(), families = new Set<string>();
+  for (let n = 0; n < 8; n++) {
+    const story = generateTournamentCase("Easy", used);
+    assert.equal(story.clues.length, 10);
+    assert.equal(families.has(story.family), false);
+    families.add(story.family);
+    if (story.isCoffee) assert.doesNotMatch(story.clues.join(" "), /audit log|permissions|file access/i);
+    if (story.family === "Meetings & Calendars") assert.doesNotMatch(story.clues.join(" "), /permissions|audit log/i);
+    assert.deepEqual(story.characters.map(c => c.portrait), characters.map(c => c.portrait));
+  }
+  assert.equal(families.size, caseFamilies.length);
+  const allTitles = caseFamilies.flatMap(f => f.stories.map(s => s[0]));
+  assert.equal(new Set(allTitles).size, allTitles.length);
 });

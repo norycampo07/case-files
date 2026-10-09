@@ -5,6 +5,30 @@
  * BDS Case Files room and cooperative mystery game API
  * OpenAPI spec version: 0.1.0
  */
+export type TournamentTeamInputAction = typeof TournamentTeamInputAction[keyof typeof TournamentTeamInputAction];
+
+
+export const TournamentTeamInputAction = {
+  add: 'add',
+  remove: 'remove',
+  rename: 'rename',
+} as const;
+
+export interface TournamentTeamInput {
+  playerId: string;
+  action: TournamentTeamInputAction;
+  /**
+     * @minimum 0
+     * @maximum 4
+     */
+  teamId?: number;
+  /**
+     * @minLength 1
+     * @maxLength 30
+     */
+  name?: string;
+}
+
 export interface TournamentCreateInput {
   /**
      * @minLength 1
@@ -78,6 +102,8 @@ export interface TournamentSettings {
 }
 
 export interface TournamentTeam {
+  ready?: boolean;
+  ballotComplete?: boolean;
   id: number;
   name: string;
   playerCount: number;
@@ -118,6 +144,8 @@ export interface TournamentCase {
   characters: TournamentCharacter[];
   clueCount: number;
   difficulty: TournamentCaseDifficulty;
+  family?: string;
+  basePoints?: number;
 }
 
 export interface TournamentTally {
@@ -147,6 +175,7 @@ export interface TournamentTeamState {
   screen: TournamentTeamStateScreen;
   clues: string[];
   value: number;
+  ready?: boolean;
   hasVoted: boolean;
   /** @nullable */
   deadline: number | null;
@@ -190,9 +219,19 @@ export const TournamentViewStatus = {
   finished: 'finished',
 } as const;
 
+export type TournamentViewRevealStage = typeof TournamentViewRevealStage[keyof typeof TournamentViewRevealStage];
+
+
+export const TournamentViewRevealStage = {
+  culprit: 'culprit',
+  results: 'results',
+  champions: 'champions',
+} as const;
+
 export interface TournamentView {
   code: string;
   status: TournamentViewStatus;
+  revealStage?: TournamentViewRevealStage;
   hostId: string;
   me: TournamentPlayer;
   settings: TournamentSettings;

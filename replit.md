@@ -1,4 +1,4 @@
-# BDS Case Files
+# Case Files: Office Edition
 
 A fictional workplace mystery tournament for 1–50 players in 1–5 teams, with 1-10 players per team.
 
@@ -31,13 +31,13 @@ A fictional workplace mystery tournament for 1–50 players in 1–5 teams, with
 
 - No AI APIs, OpenAI integration, or paid services. Content uses templates, randomization, and predefined data, as requested.
 - Anonymous room membership uses an HTTP-only browser session cookie, not user accounts. It allows separate players in separate tabs while preventing other browsers from impersonating a player ID.
-- Teams play the same case each round, but advance through their own brief, roster and clues. Extra clues and ballots are scoped to that team. Solutions and current-round scores stay hidden until every team has finished.
+- The host advances the whole room through shared stages and opens all initial ballots together. Teams may buy private extra clues during the decision stage. Every member votes individually; solutions and current-round scores stay hidden until all ballots finish and the host reveals the culprit. The host then reveals results and starts the next case or champions screen.
 - Each player casts one suspect ballot. Timers count submitted ballots only. A tied ballot opens a 30-second runoff among tied leaders; if the runoff still ties, a draw among those leaders resolves it.
 - The host chooses 1, 3, 5, 7 or 10 cases (default 3), 1–5 teams and a 15–180-second vote timer (default 60). Starting requires 1–10 members on every configured team; empty teams block starting. A single team with one player can start.
 
 ## Product
 
-Create and join by room code with a fictional alias and chosen team. Read a short brief, meet seven fictional characters, then reveal three clues one at a time. Request up to seven additional clues before starting the team ballot. Correct suspect earns the case value: 100 points less 10 per extra clue, minimum 30; incorrect or absent accusation earns zero. After each round, show the culprit, explanation and team leaderboard; at tournament end, show winners, final rankings, five playful awards and New Tournament. Reuse the same room and teams, but clear all previous cases, ballots and results when restarting.
+Create and join by room code with a fictional alias and chosen team. Hosts may add, remove empty teams, and rename teams in the lobby. Read a short brief, meet seven recurring fictional characters with permanent portraits, then reveal three clues one at a time. Teams can request up to seven private extras before the host opens voting. Correct suspect earns 100/150/200 for Easy/Medium/Hard less 10 per extra; incorrect or absent accusations earn zero. Host-controlled reveal, results, leaderboard and champions keep the room synchronized. Eight case families use distinct thematic clue pools; humor is restricted to the user's approved lines. Reuse the same room, names and members on Play Again; discard all prior cases, ballots and results. No database, AI service or case history.
 
 ## Workplace safety and privacy
 
