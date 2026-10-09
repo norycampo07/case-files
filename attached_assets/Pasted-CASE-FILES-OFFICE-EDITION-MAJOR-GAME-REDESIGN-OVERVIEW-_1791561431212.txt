@@ -1,0 +1,899 @@
+CASE FILES: OFFICE EDITION
+MAJOR GAME REDESIGN
+
+OVERVIEW
+
+Transform Case Files from a detective simulator into a team engagement game.
+
+The game should feel like:
+
+- Kahoot
+- Jackbox
+- Office Gossip
+- Friendly Team Competition
+
+NOT:
+
+- Detective Simulator
+- Evidence Management System
+- Audit Investigation Tool
+
+The goal is quick understanding, workplace humor, discussion, accusations, and laughter.
+
+A new player should understand the game within 15 seconds.
+
+====================================================
+CORE GAME FORMAT
+====================================================
+
+Tournament-based.
+
+2–5 Teams.
+
+1–10 Players per Team.
+
+Host chooses:
+
+- 1 Case
+- 3 Cases (Default)
+- 5 Cases
+- 7 Cases
+- 10 Cases
+
+All teams receive the SAME case each round.
+
+After each round:
+
+- Reveal the culprit
+- Explain what happened
+- Update leaderboard
+
+After the final round:
+
+- Display winner
+- Display awards
+- Display tournament champion
+
+====================================================
+HOST CONTROLS
+====================================================
+
+Host controls game progression.
+
+Host reveals:
+
+- Case Brief
+- Team Members
+- Clues
+- Voting
+- Results
+
+Players cannot accidentally get ahead or behind.
+
+Everyone stays synchronized.
+
+====================================================
+TEAM MANAGEMENT
+====================================================
+
+Hosts can:
+
+- Add Team
+- Remove Team
+- Rename Team
+
+Default Team Names:
+
+Team Alpha
+Team Bravo
+Team Charlie
+Team Delta
+Team Echo
+
+Custom names should be allowed.
+
+Examples:
+
+The Data Wizards
+
+Coffee First
+
+Ctrl+Alt+Defeat
+
+Prince Did It
+
+Tracker Hunters
+
+Dashboard Detectives
+
+Questionnaire Ninjas
+
+Custom team names should appear everywhere:
+
+- Lobby
+- Team Selection
+- Voting
+- Leaderboard
+- Results
+- Winner Screen
+
+====================================================
+CHARACTER SYSTEM
+====================================================
+
+Each character is recurring.
+
+Each character should have:
+
+- Portrait
+- Name
+- Role
+- Trait
+
+Portraits should remain consistent.
+
+Generate once.
+
+Reuse forever.
+
+Do not regenerate between rounds.
+
+Do not regenerate between cases.
+
+Do not regenerate between tournaments.
+
+====================================================
+
+Bekz Sarap
+
+Role:
+Project Manager
+
+Trait:
+Knows every tracker, deadline,
+and status update.
+
+Portrait Reference:
+Female
+
+====================================================
+
+Artsu MoYan
+
+Role:
+Quality & Insights Specialist
+
+Trait:
+Usually notices issues
+before everyone else.
+
+Portrait Reference:
+Male
+
+====================================================
+
+Andy Iglesias
+
+Role:
+Client Coordinator
+
+Trait:
+Connected to meetings,
+clients, and conversations.
+
+Portrait Reference:
+Female
+
+====================================================
+
+Prince Boni
+
+Role:
+AI Engineer
+
+Trait:
+Automates things nobody asked
+to automate.
+
+Portrait Reference:
+Male
+
+====================================================
+
+Derick O'noso
+
+Role:
+Systems Specialist
+
+Trait:
+Can explain almost any
+technical problem.
+
+Portrait Reference:
+Male
+
+====================================================
+
+Peri Vasquez
+
+Role:
+Project Coordinator
+
+Trait:
+Knows where documents,
+approvals, and trackers move.
+
+Portrait Reference:
+Male
+
+====================================================
+
+Nori Ocampus
+
+Role:
+Workflow Specialist
+
+Trait:
+Knows how processes really work.
+
+Portrait Reference:
+Male
+
+====================================================
+IMPORTANT
+====================================================
+
+DO NOT show gender.
+
+DO NOT show portrait metadata.
+
+The Portrait Reference exists only to ensure portraits are generated consistently.
+
+Players should only see:
+
+Portrait
+Name
+Role
+Trait
+
+====================================================
+UI DESIGN
+====================================================
+
+One Screen At A Time.
+
+Never show:
+
+- Brief
+- Suspects
+- Clues
+- Voting
+
+all at once.
+
+Avoid tabs.
+
+Avoid dashboard clutter.
+
+Avoid information overload.
+
+====================================================
+SCREEN FLOW
+====================================================
+
+1. CASE BRIEF
+
+Example:
+
+THE MISSING TRACKER
+
+A project tracker disappeared
+30 minutes before executive review.
+
+Button:
+
+Next
+
+Then collapse into:
+
+💼 Brief
+
+====================================================
+
+2. TEAM MEMBERS
+
+Large profile cards.
+
+Button:
+
+Next
+
+Then collapse into:
+
+🪪 Team Members
+
+====================================================
+
+3. CLUES
+
+Show one clue per screen.
+
+Example:
+
+CLUE #1
+
+Next
+
+CLUE #2
+
+Next
+
+CLUE #3
+
+Next
+
+Collapse into:
+
+📌 1
+📌 2
+📌 3
+
+All previous clues remain accessible.
+
+====================================================
+VOTING
+====================================================
+
+Every player votes individually.
+
+No captain voting.
+
+Display live percentages.
+
+Example:
+
+Bekz 15%
+
+Prince 35%
+
+Derick 25%
+
+Peri 25%
+
+Team answer is determined by majority vote.
+
+====================================================
+TIE HANDLING
+====================================================
+
+If tie occurs:
+
+Run a 30-second runoff vote.
+
+Only tied options appear.
+
+====================================================
+RECONNECT SUPPORT
+====================================================
+
+Players may:
+
+- Refresh browser
+- Disconnect
+- Rejoin
+
+Restore:
+
+- Team
+- Case
+- Revealed clues
+- Vote status
+
+If player already voted:
+
+Display:
+
+"You already voted."
+
+====================================================
+DIFFICULTY SYSTEM
+====================================================
+
+1 Case
+
+Easy
+
+----------------------------------------------------
+
+3 Cases
+
+Easy
+Medium
+Hard
+
+----------------------------------------------------
+
+5 Cases
+
+Easy
+Easy
+Medium
+Medium
+Hard
+
+----------------------------------------------------
+
+7 Cases
+
+Easy
+Easy
+Easy
+Medium
+Medium
+Medium
+Hard
+
+----------------------------------------------------
+
+10 Cases
+
+Easy
+Easy
+Easy
+Easy
+Medium
+Medium
+Medium
+Medium
+Hard
+Hard
+
+====================================================
+SCORING
+====================================================
+
+Easy
+
+100 Points
+
+Medium
+
+150 Points
+
+Hard
+
+200 Points
+
+Optional Extra Clues
+
+Each extra clue reduces score by 10.
+
+Maximum:
+
+7 Additional Clues
+
+Maximum total clues:
+
+10
+
+====================================================
+OPTIONAL CLUES
+====================================================
+
+After Clue 3:
+
+Show:
+
+🗳 Make Accusation
+
+or
+
+🔎 Request Another Clue
+
+Teams decide.
+
+Additional clues may help.
+
+Additional clues may mislead.
+
+Additional clues may be humorous.
+
+====================================================
+BIGGEST PROBLEM TO FIX
+====================================================
+
+Current cases feel repetitive.
+
+Current stories often become:
+
+Someone edited a file.
+Someone had access.
+Someone moved something.
+
+Repeat.
+
+Create CASE FAMILIES.
+
+====================================================
+CASE FAMILY
+TRACKERS & REPORTS
+====================================================
+
+Examples:
+
+The Missing Tracker
+
+The Vanishing Dashboard
+
+The Deleted Pivot Table
+
+The Mystery of Column F
+
+====================================================
+CASE FAMILY
+QUESTIONNAIRES & SURVEYS
+====================================================
+
+Examples:
+
+The Duplicate Submission
+
+The Missing Benefit Table
+
+The Corrupted Response File
+
+The Missing Worksheet
+
+====================================================
+CASE FAMILY
+PRESENTATIONS
+====================================================
+
+Examples:
+
+The Wrong Slide Deck
+
+The Missing Speaker Notes
+
+The Last-Minute Revision
+
+====================================================
+CASE FAMILY
+MEETINGS & CALENDARS
+====================================================
+
+Examples:
+
+The Meeting With No Attendees
+
+The Missing Invite
+
+The Double-Booked Meeting Room
+
+====================================================
+CASE FAMILY
+COFFEE & PANTRY
+====================================================
+
+Examples:
+
+The Missing Coffee Mug
+
+The Empty Pantry
+
+The Missing Creamer
+
+The Coffee Voucher Incident
+
+====================================================
+CASE FAMILY
+OFFICE LIFE
+====================================================
+
+Examples:
+
+The Missing Birthday Cake
+
+The Phantom Air Conditioner
+
+The Mysterious Sticky Notes
+
+The Missing Whiteboard Marker
+
+====================================================
+CASE FAMILY
+WORKFLOWS
+====================================================
+
+Examples:
+
+Approval Limbo
+
+The Escalation Loop
+
+The Missing Sign-Off
+
+The Workflow Detour
+
+====================================================
+CASE FAMILY
+SYSTEMS & TECHNOLOGY
+====================================================
+
+Examples:
+
+The Locked Folder
+
+The Phantom Notification
+
+The Password Reset Incident
+
+The Audit Log Gap
+
+====================================================
+CASE DESIGN RULES
+====================================================
+
+Different case families must use different clue pools.
+
+Do not reuse the same file-access mystery pattern.
+
+Coffee cases should not use audit logs.
+
+Meeting cases should not use system permissions.
+
+Presentation cases should use slide decks and versions.
+
+Survey cases should use surveys and questionnaire logic.
+
+Workflow cases should use workflow logic.
+
+Each family should feel completely different.
+
+====================================================
+WORKPLACE HUMOR LIBRARY
+====================================================
+
+Occasionally inject these approved lines.
+
+Do NOT generate entirely new jokes.
+
+Rotate and reuse these observations.
+
+WORKFLOW HUMOR
+
+A workflow was bypassed.
+
+To be fair, nobody understood the workflow.
+
+----------------------------------------------------
+
+The approval chain contains seven steps.
+
+Nobody can explain Step 5.
+
+----------------------------------------------------
+
+Nori Ocampus noticed something unusual.
+
+Unfortunately, Nori was busy untangling
+a workflow so complex that it developed
+its own workflow.
+
+----------------------------------------------------
+
+The workflow did not fail.
+
+The workflow completed successfully.
+
+Unfortunately, it completed the wrong workflow.
+
+----------------------------------------------------
+
+A workflow diagram was located.
+
+The workflow diagram references
+another workflow diagram.
+
+----------------------------------------------------
+
+The documentation exists.
+
+Several investigators are still trying
+to find where.
+
+----------------------------------------------------
+
+The request followed the documented procedure.
+
+This is notable because nobody remembers
+what the documented procedure is.
+
+====================================================
+NORI HUMOR
+====================================================
+
+Nori Ocampus noticed something unusual.
+
+Three hours later, Nori returned
+with a workflow map,
+a root-cause analysis,
+two recommendations,
+and three additional concerns.
+
+----------------------------------------------------
+
+Nori Ocampus spotted a discrepancy.
+
+The discrepancy then invited
+several other discrepancies.
+
+====================================================
+ARTSU HUMOR
+====================================================
+
+Artsu MoYan noticed a discrepancy.
+
+The discrepancy then became
+a six-tab investigation.
+
+----------------------------------------------------
+
+Artsu MoYan reviewed the report.
+
+The report now contains
+more comments than data.
+
+====================================================
+PRINCE HUMOR
+====================================================
+
+Prince Boni suggested automating the task.
+
+Investigators are still determining
+whether this helps the case.
+
+----------------------------------------------------
+
+Prince Boni mentioned the process
+could be automated.
+
+This statement is no longer considered evidence,
+as it applies to almost every process.
+
+====================================================
+DERICK HUMOR
+====================================================
+
+Derick O'noso explained what happened.
+
+The incident was resolved.
+
+The explanation remains unresolved.
+
+----------------------------------------------------
+
+Systems are operating normally.
+
+Opinions differ on what "normally" means.
+
+====================================================
+BEKZ HUMOR
+====================================================
+
+Bekz Sarap already knew about the issue.
+
+The investigation is focused on
+how Bekz always knows.
+
+----------------------------------------------------
+
+Bekz Sarap noticed the problem early.
+
+Nobody is sure whether this is preparation,
+experience, or wizardry.
+
+====================================================
+ANDY HUMOR
+====================================================
+
+Andy Iglesias scheduled a meeting
+to discuss the meeting.
+
+Progress was reported.
+
+====================================================
+PERI HUMOR
+====================================================
+
+Peri Vasquez located the missing file.
+
+Nobody knows how it arrived there.
+
+Including Peri.
+
+====================================================
+SPREADSHEET HUMOR
+====================================================
+
+The formulas still reference Column F.
+
+The workbook was clearly not informed
+of the change.
+
+----------------------------------------------------
+
+A hidden-column indicator is visible.
+
+Magic or Excel?
+The investigation continues.
+
+----------------------------------------------------
+
+Filter settings were recently changed.
+
+Someone may still be explaining
+the difference between sorting and filtering.
+
+----------------------------------------------------
+
+The workbook size did not decrease.
+
+Column F may be missing,
+but the workbook remains impressively large.
+
+----------------------------------------------------
+
+Several innocent spreadsheets
+were questioned.
+
+====================================================
+VERSION CONTROL HUMOR
+====================================================
+
+Three versions of the file exist.
+
+All are named FINAL.
+
+----------------------------------------------------
+
+A reviewer located:
+
+FINAL_v8
+FINAL_v9
+FINAL_v9_REALFINAL
+FINAL_v9_REALFINAL2
+
+Confidence has decreased.
+
+====================================================
+COFFEE HUMOR
+====================================================
+
+The mug disappeared after lunch.
+
+Productivity immediately declined.
+
+----------------------------------------------------
+
+A similar mug was discovered.
+
+The owner insists the mug has character.
+
+====================================================
+WINNER SCREEN
+====================================================
+
+Show:
+
+🏆 CASE FILES CHAMPIONS
+
+[TEAM NAME]
+
+Final Rankings
+
+Confetti
+
+Awards
+
+Play Again
