@@ -1,375 +1,359 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useLocation, useParams } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  useGetRoom, getGetRoomQueryKey, useStartGame, useCastInvestigationVote, useSendRoomMessage,
-  useSubmitAccusation, useJoinRoom, type RoomView, type Evidence, type InvestigationAction,
+  useGetTournament, getGetTournamentQueryKey, useSetTournamentSettings, useStartTournament, useAdvanceTournamentScreen,
+  useRequestTournamentClue, useBeginTournamentVote, useNextTournamentRound, useResetTournament, useCastTournamentBallot,
+  type TournamentView,
 } from "@workspace/api-client-react";
 import { useRoomSocket, type ConnState } from "@/hooks/use-room-socket";
-import { loadSession, saveSession, clearSession, ACTION_LABELS } from "@/lib/session";
-import { HostControls } from "@/components/host-controls";
-import { Lock, Send, Crown, Copy, Check, Wifi, WifiOff, Gavel, Clock, FileText, UserSearch } from "lucide-react";
+import { loadSession, clearSession } from "@/lib/session";
+import { Portrait, Confetti, teamColor, useCountdown } from "@/components/tournament-bits";
+import { Briefcase, IdCard, Pin, Wifi, WifiOff, Crown, Copy, Check, ArrowRight, Vote, Search, Trophy, Clock, X, Medal, Home, Users, RotateCcw, LogOut } from "lucide-react";
 
-const btnGold = "bg-primary text-primary-foreground font-semibold px-4 py-2.5 rounded hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed";
-const panel = "border border-border bg-card rounded";
-
-function ConnPill({ s }: { s: ConnState }) {
-  const map = { live: ["Live", "text-primary"], connecting: ["Connecting", "text-muted-foreground"], offline: ["Offline - polling", "text-destructive"] } as const;
-  const [t, c] = map[s];
-  return <span data-testid="status-connection" className={"inline-flex items-center gap-1.5 text-xs font-mono " + c}>{s === "offline" ? <WifiOff className="h-3.5 w-3.5" /> : <Wifi className="h-3.5 w-3.5" />}{t}</span>;
-}
+const bigBtn = "w-full bg-primary text-primary-foreground font-bold text-xl py-5 rounded-2xl hover:brightness-110 active:scale-[.98] transition disabled:opacity-40 flex items-center justify-center gap-2";
+const eyebrow = "font-mono text-xs uppercase tracking-[0.3em] text-primary";
 
 export default function Room() {
   const params = useParams<{ code: string }>();
   const code = (params.code || "").toUpperCase();
   const [, nav] = useLocation();
-  const [session, setSession] = useState(() => { const s = loadSession(); return s && s.code === code ? s : null; });
-
-  if (!session) return <JoinGate code={code} onJoined={(s) => setSession(s)} onHome={() => nav("/")} />;
-  return <RoomInner code={code} playerId={session.playerId} onLeave={() => { clearSession(); nav("/"); }} />;
-}
-
-function JoinGate({ code, onJoined, onHome }: { code: string; onJoined: (s: { code: string; playerId: string }) => void; onHome: () => void }) {
-  const [name, setName] = useState("");
-  const [err, setErr] = useState("");
-  const join = useJoinRoom();
-  return (
-    <div className="min-h-[100dvh] board-bg grid place-items-center p-5">
-      <form onSubmit={(e) => { e.preventDefault(); setErr(""); join.mutate({ code, data: { displayName: name.trim(), consentAcknowledged: true } }, {
-        onSuccess: (r) => { const s = { code: r.code, playerId: r.me.id }; saveSession(s); onJoined(s); },
-        onError: () => setErr("Could not join. The case may not exist or has already started."),
-      }); }} className="paper rounded p-8 w-full max-w-sm space-y-4 border-l-[14px] border-primary/80">
-        <p className="font-mono text-xs uppercase tracking-widest opacity-60">Case {code}</p>
-        <h1 className="font-display text-3xl">Join this case</h1>
-        <label className="block text-sm">Fictional detective alias<input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={24} placeholder="Inspector Pencil" className="mt-1 w-full bg-white/70 border border-slate-400 px-3 py-2 rounded" /></label>
-        <p className="text-xs opacity-70">Use a made-up alias. Do not enter personal information.</p>
-        {err && <p className="text-sm text-red-700">{err}</p>}
-        <button data-testid="button-join" disabled={!name.trim() || join.isPending} className="w-full bg-[hsl(222,45%,12%)] text-[hsl(43,70%,60%)] font-semibold py-3 rounded disabled:opacity-50">Join case</button>
-        <button type="button" onClick={onHome} className="text-sm underline w-full">Back to agency</button>
-      </form>
+  const s = loadSession();
+  const session = s && s.code === code ? s : null;
+  if (!session) return (
+    <div className="min-h-[100dvh] stage-bg grid place-items-center p-6 text-center">
+      <div className="screen-in max-w-sm space-y-4">
+        <p className={eyebrow}>Tournament {code}</p>
+        <h1 className="font-display text-4xl font-bold">Pick a team to join</h1>
+        <p className="text-muted-foreground">Joining happens on the front door, where you choose a team and an alias.</p>
+        <button data-testid="button-go-join" className={bigBtn} onClick={() => nav("/")}>Go to join screen</button>
+      </div>
     </div>
   );
+  return <RoomInner code={code} playerId={session.playerId} onLeave={() => { clearSession(); nav("/"); }} />;
 }
 
 function RoomInner({ code, playerId, onLeave }: { code: string; playerId: string; onLeave: () => void }) {
   const conn = useRoomSocket(code, playerId);
-  const key = getGetRoomQueryKey(code, { playerId });
-  const q = useGetRoom(code, { playerId }, { query: { queryKey: key, refetchInterval: conn === "live" ? 20000 : 3000, retry: 1 } });
-  const room = q.data;
-
-  if (q.isLoading) return <div className="min-h-[100dvh] p-8 max-w-5xl mx-auto space-y-4">{[0,1,2].map(i => <div key={i} className="h-24 bg-card rounded animate-pulse" />)}</div>;
-  if (!room) return (
-    <div className="min-h-[100dvh] grid place-items-center p-5"><div className={panel + " p-8 max-w-sm text-center space-y-4"}>
-      <h1 className="font-display text-2xl">Case file unavailable</h1>
-      <p className="text-muted-foreground text-sm">We could not load case {code}.</p>
-      <div className="flex gap-2 justify-center"><button data-testid="button-retry" className={btnGold} onClick={() => q.refetch()}>Retry</button>
-      <button data-testid="button-leave" className="border border-border px-4 py-2 rounded" onClick={onLeave}>Leave</button></div></div></div>
+  const key = getGetTournamentQueryKey(code, { playerId });
+  const q = useGetTournament(code, { playerId }, { query: { queryKey: key, refetchInterval: conn === "live" ? 5000 : 2000, retry: 1 } });
+  const v = q.data;
+  if (q.isLoading) return <div className="min-h-[100dvh] stage-bg p-6 max-w-xl mx-auto space-y-4 pt-20">{[0, 1, 2].map((i) => <div key={i} className="h-28 rounded-2xl bg-card animate-pulse" />)}</div>;
+  if (!v) return (
+    <div className="min-h-[100dvh] stage-bg grid place-items-center p-6 text-center"><div className="space-y-4 max-w-sm">
+      <h1 className="font-display text-3xl font-bold">Game unavailable</h1><p className="text-muted-foreground">We could not load tournament {code}.</p>
+      <button data-testid="button-retry" className={bigBtn} onClick={() => q.refetch()}>Retry</button>
+      <button data-testid="button-leave" className="text-muted-foreground underline" onClick={onLeave}>Leave</button></div></div>
   );
-  return <RoomScreen room={room} conn={conn} playerId={playerId} onLeave={onLeave} />;
+  return <Game v={v} conn={conn} playerId={playerId} onLeave={onLeave} />;
 }
 
-function RoomScreen({ room, conn, playerId, onLeave }: { room: RoomView; conn: ConnState; playerId: string; onLeave: () => void }) {
+function Game({ v, conn, playerId, onLeave }: { v: TournamentView; conn: ConnState; playerId: string; onLeave: () => void }) {
   const qc = useQueryClient();
-  const key = getGetRoomQueryKey(room.code, { playerId });
-  const isHost = room.hostId === playerId;
-  const apply = (v: RoomView) => qc.setQueryData(key, v);
+  const key = getGetTournamentQueryKey(v.code, { playerId });
+  const apply = (nv: TournamentView) => qc.setQueryData(key, nv);
   const [err, setErr] = useState("");
-  const onErr = () => setErr("That did not go through. Check the state of the case and try again.");
-  const start = useStartGame();
-  const vote = useCastInvestigationVote();
-  const [copied, setCopied] = useState(false);
+  const [recall, setRecall] = useState<null | "brief" | "roster" | number>(null);
+  const [showChampions, setShowChampions] = useState(false);
+  const isHost = v.hostId === playerId;
+  const myTeam = v.teams.find((t) => t.id === v.me.teamId);
+  const opts = { onSuccess: (nv: TournamentView) => { setErr(""); setRecall(null); apply(nv); }, onError: () => setErr("That did not go through. Try again.") };
+  const call = { code: v.code, data: { playerId } };
+
+  const settings = useSetTournamentSettings();
+  const start = useStartTournament();
+  const advance = useAdvanceTournamentScreen();
+  const reqClue = useRequestTournamentClue();
+  const beginVote = useBeginTournamentVote();
+  const nextRound = useNextTournamentRound();
+  const reset = useResetTournament();
+  const ballot = useCastTournamentBallot();
+
+  const ts = v.teamState;
+  useEffect(() => { setRecall(null); setShowChampions(false); }, [v.case?.id, v.status]);
+  const inRound = v.status === "round" && v.case && ts;
+  const screen = ts?.screen;
+  const clueNo = screen === "clue1" ? 1 : screen === "clue2" ? 2 : screen === "clue3" ? 3 : 0;
+  const reached = (n: "brief" | "roster" | number) => {
+    if (!screen) return false;
+    const order = ["brief", "roster", "clue1", "clue2", "clue3"];
+    const idx = typeof n === "number" ? order.indexOf("clue" + Math.min(n, 3)) : order.indexOf(n);
+    if (typeof n === "number" && n > 3) return (ts?.clues.length ?? 0) >= n;
+    const cur = order.indexOf(screen);
+    return cur === -1 || cur > idx;
+  };
+  const recallable = (n: "brief" | "roster" | number) => reached(n) && !(typeof n === "number" && n > (ts?.clues.length ?? 0));
+
+  const Top = (
+    <header className="sticky top-0 z-20 bg-background/85 backdrop-blur border-b border-border">
+      <div className="max-w-3xl mx-auto px-3 py-2.5 flex items-center gap-2">
+        <button data-testid="button-leave" onClick={onLeave} aria-label="Leave" className="p-2 rounded-lg text-muted-foreground hover:text-foreground"><LogOut className="h-5 w-5" /></button>
+        <div className="flex-1 flex items-center gap-1.5 overflow-x-auto">
+          {inRound && <>
+            {([["brief", Briefcase], ["roster", IdCard]] as const).map(([id, Icon]) => (
+              <button key={id} data-testid={"button-recall-" + id} disabled={!recallable(id)} onClick={() => setRecall(recall === id ? null : id)}
+                className={"p-2.5 rounded-xl border transition disabled:opacity-30 " + (recall === id ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary")}><Icon className="h-5 w-5" /></button>
+            ))}
+            {Array.from({ length: Math.max(ts!.clues.length, 0) }, (_, i) => i + 1).map((n) => (
+              <button key={n} data-testid={"button-recall-clue-" + n} onClick={() => setRecall(recall === n ? null : n)}
+                className={"px-2.5 py-2 rounded-xl border flex items-center gap-1 font-mono text-sm transition " + (recall === n ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary")}><Pin className="h-4 w-4" />{n}</button>
+            ))}
+          </>}
+          {!inRound && <span className="font-display font-bold px-2" data-testid="text-code-top">{v.code}</span>}
+        </div>
+        {myTeam && <span className="hidden sm:flex items-center gap-1.5 text-sm font-semibold" data-testid="text-my-team"><span className="h-2.5 w-2.5 rounded-full" style={{ background: teamColor(myTeam.id) }} />{myTeam.name}</span>}
+        {v.status !== "lobby" && myTeam && <span className="font-mono text-sm text-primary" data-testid="text-my-score">{myTeam.score}</span>}
+        <span data-testid="status-connection" className={conn === "offline" ? "text-destructive" : conn === "live" ? "text-primary" : "text-muted-foreground"}>{conn === "offline" ? <WifiOff className="h-4 w-4" /> : <Wifi className="h-4 w-4" />}</span>
+      </div>
+      {inRound && <div className="max-w-3xl mx-auto px-4 pb-2 flex justify-between font-mono text-[11px] uppercase tracking-widest text-muted-foreground"><span data-testid="text-round">Case {v.roundIndex + 1} of {v.settings.casesPerTournament}</span><span data-testid="text-difficulty">{v.case!.difficulty}</span><span data-testid="text-value">Worth {ts!.value}</span></div>}
+    </header>
+  );
+
+  let body: ReactNode = null;
+  let bodyKey: string = v.status;
+
+  if (v.status === "lobby") {
+    bodyKey = "lobby";
+    body = <Lobby v={v} isHost={isHost} settings={settings} start={start} apply={opts} call={call} playerId={playerId} />;
+  } else if (v.status === "finished") {
+    bodyKey = showChampions ? "champions" : "final-reveal";
+    body = showChampions
+      ? <Finished v={v} isHost={isHost} reset={reset} opts={opts} call={call} onReview={() => setShowChampions(false)} />
+      : <Reveal v={v} isHost={isHost} next={nextRound} opts={opts} call={call} onShowChampions={() => setShowChampions(true)} />;
+  } else if (v.status === "reveal" && v.reveal) {
+    body = <Reveal v={v} isHost={isHost} next={nextRound} opts={opts} call={call} />;
+  } else if (inRound) {
+    const c = v.case!;
+    const shownKey = recall !== null ? "r" + recall : screen!;
+    bodyKey = shownKey;
+    const advBtn = (label: string) => (
+      <button data-testid="button-next" disabled={advance.isPending} onClick={() => advance.mutate(call, opts)} className={bigBtn}>{label}<ArrowRight className="h-6 w-6" /></button>
+    );
+    const ClueView = ({ n }: { n: number }) => (
+      <Stage eyebrow={`Clue ${n}`} title="">
+        <blockquote data-testid={"text-clue-" + n} className="font-display text-3xl sm:text-5xl font-bold leading-tight border-l-4 border-primary pl-5">{ts!.clues[n - 1]}</blockquote>
+      </Stage>
+    );
+    if (recall === "brief") body = <BriefView c={c} />;
+    else if (recall === "roster") body = <Roster c={c} />;
+    else if (typeof recall === "number") body = <ClueView n={recall} />;
+    else if (screen === "brief") body = <><BriefView c={c} />{advBtn("Meet the suspects")}</>;
+    else if (screen === "roster") body = <><Roster c={c} />{advBtn("See clue 1")}</>;
+    else if (clueNo) body = <><ClueView n={clueNo} />{advBtn(clueNo === 3 ? "Continue" : "Next")}</>;
+    else if (screen === "extra") body = <><ClueView n={ts!.clues.length} />{advBtn("Continue")}</>;
+    else if (screen === "choice") {
+      const canMore = ts!.clues.length < 10;
+      body = (
+        <Stage eyebrow="Team decision" title="What would your team like to do?">
+          <div className="grid gap-3">
+            <button data-testid="button-begin-vote" disabled={beginVote.isPending} onClick={() => beginVote.mutate(call, opts)} className={bigBtn}><Vote className="h-6 w-6" />Make accusation</button>
+            <button data-testid="button-request-clue" disabled={!canMore || reqClue.isPending} onClick={() => reqClue.mutate(call, opts)} className="w-full border-2 border-primary text-primary font-bold text-xl py-5 rounded-2xl hover:bg-primary/10 disabled:opacity-40 flex items-center justify-center gap-2">
+              <Search className="h-6 w-6" />{canMore ? `Request another clue (case drops to ${ts!.value - 10})` : "No more clues"}</button>
+          </div>
+        </Stage>
+      );
+    } else if (screen === "vote" || screen === "runoff") {
+      body = <VoteScreen v={v} runoff={screen === "runoff"} ballot={ballot} opts={opts} playerId={playerId} />;
+    } else body = (
+      <Stage eyebrow="Locked in" title="Waiting for other teams">
+        <p className="text-muted-foreground text-lg">Your team has voted. The reveal starts when every team finishes its ballot; each team's timer counts only submitted votes.</p>
+        <Tallies v={v} />
+      </Stage>
+    );
+  } else body = <Stage eyebrow="Hang on" title="Loading the next screen"><div className="h-24 rounded-2xl bg-card animate-pulse" /></Stage>;
 
   return (
-    <div className="min-h-[100dvh] board-bg">
-      <header className="border-b border-border bg-background/90 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
-          <button onClick={onLeave} data-testid="button-leave" className="font-display text-primary font-bold text-lg">BDS</button>
-          <div className="min-w-0 flex-1">
-            <div className="font-display text-lg truncate" data-testid="text-case-title">{room.case?.title ?? "Case lobby"}</div>
-            <div className="text-xs text-muted-foreground font-mono">Case {room.code} / {room.players.filter(p => p.connected).length} of {room.players.length} connected</div>
-          </div>
-          {room.status === "investigation" && (
-            <div className="flex items-center gap-4 text-sm font-mono">
-              <span data-testid="text-actions-remaining">Actions <b className="text-primary">{room.actionsRemaining}</b>/{room.investigationLimit}</span>
-              <span>Score <b className="text-primary">{room.teamScore}</b></span>
-            </div>
-          )}
-          <ConnPill s={conn} />
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto p-4 grid lg:grid-cols-[1fr_340px] gap-5">
-        <main className="space-y-5 min-w-0">
-          {err && <div data-testid="text-error" className="border border-destructive/60 bg-destructive/10 px-3 py-2 rounded text-sm flex justify-between"><span>{err}</span><button onClick={() => setErr("")}>Dismiss</button></div>}
-          {room.status === "lobby" && (
-            <section className={panel + " p-6"}>
-              <p className="font-mono text-xs uppercase tracking-widest text-primary">Waiting room</p>
-              <h1 className="font-display text-3xl mt-1">Assemble the team</h1>
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                <span data-testid="text-room-code" className="font-mono text-3xl tracking-[0.35em] border border-primary px-4 py-2 text-primary">{room.code}</span>
-                <button data-testid="button-copy" className="border border-border px-3 py-2 rounded text-sm flex items-center gap-2" onClick={() => { navigator.clipboard?.writeText(room.code); setCopied(true); setTimeout(() => setCopied(false), 1500); }}>
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}{copied ? "Copied" : "Copy code"}</button>
-              </div>
-              <ul className="mt-6 grid sm:grid-cols-2 gap-2">
-                {room.players.map((p) => (
-                  <li key={p.id} data-testid={"row-player-" + p.id} className="flex items-center gap-3 border border-border rounded px-3 py-2 bg-background/50">
-                    <span className="h-8 w-8 rounded-full bg-primary/20 text-primary grid place-items-center font-semibold">{p.displayName.slice(0, 1).toUpperCase()}</span>
-                    <span className="flex-1 truncate">{p.displayName}{p.id === playerId && <span className="text-muted-foreground"> (you)</span>}</span>
-                    <span className={"text-xs " + (p.connected ? "text-primary" : "text-muted-foreground")}>{p.connected ? "Online" : "Offline"}</span>
-                    {p.isHost && <Crown className="h-4 w-4 text-primary" />}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6">
-                {isHost ? (
-                  <button data-testid="button-start" disabled={room.players.length < 2 || start.isPending} className={btnGold}
-                    onClick={() => { setErr(""); start.mutate({ code: room.code, data: { playerId } }, { onSuccess: apply, onError: onErr }); }}>
-                    {start.isPending ? "Opening file..." : "Begin investigation"}</button>
-                ) : <p className="text-sm text-muted-foreground">Waiting for the host to begin.</p>}
-                {isHost && room.players.length < 2 && <p className="text-sm text-muted-foreground mt-2">At least 2 players are needed.</p>}
-              </div>
-            </section>
-          )}
-
-           {room.status !== "lobby" && room.case && <CaseBody key={room.caseId} room={room} playerId={playerId} isHost={isHost} apply={apply} onErr={onErr} vote={vote} />}
-          {room.status === "resolved" && room.resolution && <Resolution room={room} />}
-        </main>
-
-        <aside className="space-y-5">
-          <RolePanel room={room} playerId={playerId} apply={apply} />
-           {isHost ? <HostControls room={room} playerId={playerId} apply={apply} /> :
-             <p className="border border-border rounded p-3 text-xs text-muted-foreground">Host settings: rumors {room.settings.rumorsEnabled ? "on" : "off"} · chat {room.settings.chatEnabled ? "on" : "off"}</p>}
-           {room.settings.chatEnabled ? <Chat key={`chat-${room.caseId}`} room={room} playerId={playerId} /> :
-             <section className={panel + " p-4"} data-testid="text-chat-disabled"><h2 className="font-display text-lg">Team chat is disabled</h2><p className="text-xs text-muted-foreground mt-2">The host switched off chat and discarded its messages. Discuss clues on your team call.</p></section>}
-           <Notebook key={`notes-${room.caseId}`} />
-        </aside>
-      </div>
+    <div className="min-h-[100dvh] stage-bg">
+      {Top}
+      <main className="max-w-3xl mx-auto px-4 py-6 sm:py-10 pb-16">
+        {err && <div data-testid="text-error" className="mb-4 rounded-xl border border-destructive/60 bg-destructive/10 px-4 py-3 flex justify-between"><span>{err}</span><button aria-label="Dismiss" onClick={() => setErr("")}><X className="h-5 w-5" /></button></div>}
+        <div key={bodyKey} className="screen-in space-y-6">{body}</div>
+      </main>
     </div>
   );
 }
 
-function RolePanel({ room, playerId, apply }: { room: RoomView; playerId: string; apply: (v: RoomView) => void }) {
-  const me = room.me;
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState("");
-  const interview = async () => {
-    setBusy(true); setMsg("");
-    try {
-      const r = await fetch("/api/rooms/" + room.code + "/interview", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ playerId }) });
-      if (!r.ok) throw new Error();
-      const v = await r.json();
-      if (v && v.code && v.me) apply(v as RoomView);
-    } catch { setMsg("Follow-up interview failed."); }
-    setBusy(false);
-  };
-  return (
-    <section className="paper rounded p-4 border-l-[10px] border-primary/80" data-testid="panel-role">
-      <p className="font-mono text-[11px] uppercase tracking-widest opacity-60">Your role (private)</p>
-      <h2 className="font-display text-xl" data-testid="text-role">{me.role}</h2>
-      <p className="text-sm mt-1">{me.roleDescription}</p>
-      {room.status !== "lobby" && me.privateBrief && <div className="mt-3 text-sm border-t border-slate-400/50 pt-2"><b>Private brief.</b> {me.privateBrief}</div>}
-      {me.extraClue && <div className="mt-3 text-sm border-t border-slate-400/50 pt-2" data-testid="text-extra-clue"><b>{me.extraClue.heading}.</b> {me.extraClue.text}</div>}
-      {room.status === "investigation" && me.extraInterviewAvailable && (
-        <button data-testid="button-extra-interview" disabled={busy} onClick={interview} className="mt-3 w-full bg-[hsl(222,45%,12%)] text-[hsl(43,70%,60%)] text-sm font-semibold py-2 rounded disabled:opacity-50">
-          {busy ? "Interviewing..." : "Free follow-up interview"}</button>
-      )}
-      {msg && <p className="text-xs text-red-700 mt-1">{msg}</p>}
-    </section>
-  );
+function Stage({ eyebrow: e, title, children }: { eyebrow: string; title: string; children?: ReactNode }) {
+  return <section className="space-y-5"><p className={eyebrow}>{e}</p>{title && <h1 className="font-display text-4xl sm:text-5xl font-bold leading-tight">{title}</h1>}{children}</section>;
 }
 
-function EvidenceCard({ e, index }: { e: Evidence; index: number }) {
+function BriefView({ c }: { c: NonNullable<TournamentView["case"]> }) {
+  return <Stage eyebrow={`Case brief / ${c.difficulty}`} title={c.title}><p data-testid="text-brief" className="text-xl sm:text-2xl text-muted-foreground leading-relaxed">{c.brief}</p></Stage>;
+}
+
+function Roster({ c }: { c: NonNullable<TournamentView["case"]> }) {
   return (
-    <article data-testid={"card-evidence-" + e.id} className="paper rounded p-4 relative">
-      <div className="flex justify-between gap-2 font-mono text-[11px] uppercase tracking-wider opacity-70">
-        <span>Exhibit {index + 1} / {ACTION_LABELS[e.action]?.label ?? e.action}</span>
-        {e.privateTo && <span className="flex items-center gap-1"><Lock className="h-3 w-3" />Private</span>}
+    <Stage eyebrow="The suspects" title="Meet the team">
+      <div className="grid sm:grid-cols-2 gap-4">
+        {c.characters.map((ch) => (
+          <article key={ch.name} data-testid={"card-character-" + ch.name} className="rounded-2xl overflow-hidden border border-border bg-card">
+            <Portrait src={ch.portrait} name={ch.name} className="w-full aspect-[4/3] text-6xl" />
+            <div className="p-4"><h3 className="font-display text-2xl font-bold">{ch.name}</h3><p className="text-primary text-sm font-semibold">{ch.title}</p><p className="text-muted-foreground mt-1">{ch.personality}</p></div>
+          </article>
+        ))}
       </div>
-      <h3 className="font-display text-lg mt-1">{e.heading}</h3>
-      <p className="text-sm mt-1">{e.text}</p>
-      <p className="text-xs mt-2 opacity-60">Found at {e.foundAt}</p>
-    </article>
+    </Stage>
   );
 }
 
-function CaseBody({ room, playerId, isHost, apply, onErr, vote }: { room: RoomView; playerId: string; isHost: boolean; apply: (v: RoomView) => void; onErr: () => void; vote: ReturnType<typeof useCastInvestigationVote> }) {
-  const c = room.case!;
-  const [tab, setTab] = useState<"brief" | "board" | "suspects" | "accuse">("brief");
-  const live = room.status === "investigation";
-  const used = useMemo(() => new Set(room.evidence.map((e) => e.action)), [room.evidence]);
-  const myVote = room.votes.find((v) => v.playerIds.includes(playerId))?.action;
-  const tabs = [["brief", "Brief"], ["board", "Evidence board"], ["suspects", "Suspects"], ...(live ? [["accuse", "Accusation"]] : [])] as [typeof tab, string][];
-  const cast = (action: InvestigationAction) => vote.mutate({ code: room.code, data: { playerId, action } }, { onSuccess: apply, onError: onErr });
+function Tallies({ v }: { v: TournamentView }) {
+  const t = v.teamState;
+  if (!t || t.tallies.length === 0) return null;
+  return (
+    <div className="space-y-3" data-testid="list-tallies">
+      {t.tallies.map((x) => (
+        <div key={x.suspect}><div className="flex justify-between text-lg font-semibold"><span>{x.suspect}</span><span className="font-mono text-primary">{Math.round(x.percent)}%</span></div>
+          <div className="h-3 rounded-full bg-secondary overflow-hidden"><div className="h-full bg-primary origin-left transition-transform duration-500" style={{ transform: `scaleX(${Math.min(1, x.percent / 100)})` }} /></div></div>
+      ))}
+    </div>
+  );
+}
 
+function VoteScreen({ v, runoff, ballot, opts, playerId }: { v: TournamentView; runoff: boolean; ballot: ReturnType<typeof useCastTournamentBallot>; opts: { onSuccess: (nv: TournamentView) => void; onError: () => void }; playerId: string }) {
+  const ts = v.teamState!;
+  const left = useCountdown(ts.deadline);
+  const total = runoff ? 30 : v.settings.votingSeconds;
+  const names = runoff && ts.runoffOptions.length ? ts.runoffOptions : v.case!.characters.map((c) => c.name);
+  const chars = v.case!.characters;
+  return (
+    <Stage eyebrow={runoff ? "Runoff: tied suspects only" : "Team vote"} title={ts.hasVoted ? "You already voted." : "Who did it?"}>
+      <div className="flex items-center gap-3"><Clock className="h-5 w-5 text-primary" />
+        <div className="flex-1 h-2 rounded-full bg-secondary overflow-hidden"><div className="h-full bg-primary origin-left transition-transform duration-300 ease-linear" style={{ transform: `scaleX(${left === null ? 1 : Math.min(1, left / total)})` }} /></div>
+        <span data-testid="text-timer" className="font-mono text-2xl font-bold w-12 text-right">{left ?? "--"}</span></div>
+      <div className="grid grid-cols-2 gap-3">
+        {names.map((n) => {
+          const ch = chars.find((c) => c.name === n); const mine = ts.choice === n;
+          return (
+            <button key={n} data-testid={"button-suspect-" + n} disabled={ts.hasVoted || ballot.isPending || left === 0}
+              onClick={() => ballot.mutate({ code: v.code, data: { playerId, suspect: n } }, opts)}
+              className={"text-left rounded-2xl overflow-hidden border-2 transition active:scale-[.97] disabled:cursor-not-allowed " + (mine ? "border-primary bg-primary/15" : "border-border bg-card hover:border-primary/60")}>
+              {ch && <Portrait src={ch.portrait} name={n} className="w-full aspect-square text-5xl" />}
+              <div className="p-3 flex items-center justify-between gap-2"><span className="font-display font-bold leading-tight">{n}</span>{mine && <Check className="h-5 w-5 text-primary shrink-0" />}</div>
+            </button>
+          );
+        })}
+      </div>
+      <p className="text-sm text-muted-foreground" data-testid="text-votes-in"><Users className="inline h-4 w-4 mr-1" />{ts.submittedVotes} votes in. Votes are final for this ballot.{runoff && " If this runoff also ties, a draw between tied leaders decides."}</p>
+      <Tallies v={v} />
+    </Stage>
+  );
+}
+
+function Lobby({ v, isHost, settings, start, apply, call, playerId }: { v: TournamentView; isHost: boolean; settings: ReturnType<typeof useSetTournamentSettings>; start: ReturnType<typeof useStartTournament>; apply: { onSuccess: (nv: TournamentView) => void; onError: () => void }; call: { code: string; data: { playerId: string } }; playerId: string }) {
+  const [copied, setCopied] = useState(false);
+  const s = v.settings;
+  const active = v.teams.slice(0, s.teamCount);
+  const ready = active.length >= 2 && active.every((t) => t.playerCount >= 6 && t.playerCount <= 10);
+  const set = (p: Partial<typeof s>) => settings.mutate({ code: v.code, data: { playerId, teamCount: p.teamCount ?? s.teamCount, casesPerTournament: (p.casesPerTournament ?? s.casesPerTournament) as 1 | 3 | 5 | 7 | 10, votingSeconds: p.votingSeconds ?? s.votingSeconds } }, apply);
+  const chip = (on: boolean) => "min-w-12 px-4 py-2.5 rounded-xl border-2 font-bold transition " + (on ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary");
   return (
     <>
-      <nav className="flex gap-1 border-b border-border overflow-x-auto">
-        {tabs.map(([id, l]) => <button key={id} data-testid={"tab-" + id} onClick={() => setTab(id)} className={"px-4 py-2 text-sm whitespace-nowrap border-b-2 " + (tab === id ? "border-primary text-primary font-semibold" : "border-transparent text-muted-foreground")}>{l}</button>)}
-      </nav>
-
-      {tab === "brief" && (
-        <section className={panel + " p-6"}>
-          <p className="font-mono text-xs uppercase tracking-widest text-primary">{c.location}</p>
-          <h1 className="font-display text-3xl mt-1">{c.title}</h1>
-          <p className="mt-3 font-semibold">{c.crime}</p>
-          <p className="mt-2 text-muted-foreground">{c.openingBrief}</p>
-           <h2 className="font-display text-xl mt-5">Initial evidence</h2>
-           <ul className="mt-2 list-disc pl-5 space-y-2 text-sm" data-testid="list-initial-evidence">{c.initialEvidence.map(text => <li key={text}>{text}</li>)}</ul>
-           <h2 className="font-display text-xl mt-5">Suspect roster</h2>
-           <p className="text-sm text-muted-foreground">All are fictional workplace characters, not real employees.</p>
-           <ul className="grid sm:grid-cols-2 gap-2 mt-3 text-sm">{c.suspects.map(s => <li key={s.name}><b>{s.name}</b> · {s.title}</li>)}</ul>
-           <OfficeRumors room={room} />
-        </section>
-      )}
-
-      {tab === "board" && (
-        <>
-          {live && (
-            <section className={panel + " p-4"}>
-              <div className="flex items-center gap-2 mb-1"><Gavel className="h-4 w-4 text-primary" /><h2 className="font-display text-xl">Vote the next action</h2></div>
-              <p className="text-xs text-muted-foreground mb-3">Majority executes. In a full tie the host's vote decides. Changing your vote is allowed until it resolves.</p>
-              {room.actionsRemaining <= 0 && <p className="text-sm text-primary mb-2">No actions left. The host must file the accusation.</p>}
-              <div className="grid sm:grid-cols-2 gap-2">
-                {Object.entries(ACTION_LABELS).map(([a, m]) => {
-                  const done = used.has(a as InvestigationAction);
-                  const t = room.votes.find((v) => v.action === a);
-                  const mine = myVote === a;
-                  return (
-                    <button key={a} data-testid={"button-vote-" + a} disabled={done || room.actionsRemaining <= 0 || vote.isPending} onClick={() => cast(a as InvestigationAction)}
-                      className={"text-left p-3 rounded border transition-colors disabled:opacity-40 disabled:cursor-not-allowed " + (mine ? "border-primary bg-primary/15" : "border-border bg-background/40 hover:border-primary/60")}>
-                      <div className="flex justify-between"><span className="font-semibold text-sm">{m.label}</span>
-                        <span className="font-mono text-xs text-primary">{done ? "Done" : t ? t.count + " / " + room.players.length : ""}</span></div>
-                      <div className="text-xs text-muted-foreground">{m.hint}</div>
-                      {t && !done && <div className="text-[11px] mt-1 text-muted-foreground">{t.playerIds.map((id) => room.players.find((p) => p.id === id)?.displayName).filter(Boolean).join(", ")}</div>}
-                    </button>
-                  );
-                })}
-              </div>
+      <Stage eyebrow="Lobby" title="Gather the teams">
+        <div className="flex items-center gap-3 flex-wrap">
+          <span data-testid="text-room-code" className="font-mono text-4xl sm:text-5xl tracking-[0.3em] text-primary border-2 border-primary rounded-2xl px-5 py-3">{v.code}</span>
+          <button data-testid="button-copy" onClick={() => { navigator.clipboard?.writeText(v.code); setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="p-3 rounded-xl border border-border hover:border-primary">{copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}</button>
+        </div>
+      </Stage>
+      <div className="space-y-4">
+        {active.map((t) => {
+          const members = v.players.filter((p) => p.teamId === t.id); const ok = t.playerCount >= 6 && t.playerCount <= 10;
+          return (
+            <section key={t.id} data-testid={"card-team-" + t.id} className="rounded-2xl border-2 bg-card p-4" style={{ borderColor: teamColor(t.id) + "88" }}>
+              <div className="flex justify-between items-center"><h3 className="font-display text-2xl font-bold" style={{ color: teamColor(t.id) }}>{t.name}</h3><span className={"font-mono text-sm " + (ok ? "text-primary" : "text-muted-foreground")}>{t.playerCount} / 6-10</span></div>
+              <div className="flex flex-wrap gap-2 mt-3">{members.length === 0 && <span className="text-sm text-muted-foreground">Nobody yet</span>}
+                {members.map((p) => <span key={p.id} data-testid={"row-player-" + p.id} className={"px-3 py-1.5 rounded-full bg-secondary text-sm flex items-center gap-1.5 " + (p.connected ? "" : "opacity-50")}>{p.isHost && <Crown className="h-3.5 w-3.5 text-primary" />}{p.displayName}{p.id === playerId && " (you)"}</span>)}</div>
             </section>
-          )}
-          <section>
-            <h2 className="font-display text-xl mb-2">Evidence</h2>
-             <div className="border border-border rounded p-4 mb-3 text-sm"><h3 className="font-semibold mb-2">Initial evidence</h3>{c.initialEvidence.map(text => <p className="mb-2 text-muted-foreground" key={text}>{text}</p>)}</div>
-            {room.evidence.length === 0 ? <div className={panel + " p-6 text-sm text-muted-foreground"} data-testid="text-no-evidence">The board is empty. Vote on an action to pin the first exhibit.</div> :
-              <div className="grid sm:grid-cols-2 gap-3">{room.evidence.map((e, i) => <EvidenceCard key={e.id} e={e} index={i} />)}</div>}
-          </section>
-           <OfficeRumors room={room} />
-          <section className={panel + " p-4"}>
-            <div className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4 text-primary" /><h2 className="font-display text-xl">Timeline</h2></div>
-            {room.timeline.length === 0 ? <p className="text-sm text-muted-foreground">No timeline entries yet.</p> :
-              <ol className="border-l border-primary/50 ml-1 space-y-3">{room.timeline.map((t, i) => <li key={i} className="pl-4"><span className="font-mono text-xs text-primary">{t.time}</span><p className="text-sm">{t.event}</p></li>)}</ol>}
-          </section>
-        </>
-      )}
-
-      {tab === "suspects" && (
-        <section className="grid sm:grid-cols-2 gap-3">
-          {c.suspects.map((s) => (
-            <article key={s.name} data-testid={"card-suspect-" + s.name} className="paper rounded p-4">
-              <div className="flex items-center gap-3">
-                <span className="h-11 w-11 bg-[hsl(222,45%,12%)] text-[hsl(43,70%,60%)] grid place-items-center font-display text-lg"><UserSearch className="h-5 w-5" /></span>
-                <div><h3 className="font-display text-lg leading-tight">{s.name}</h3><p className="text-xs opacity-70">{s.title}</p></div>
-              </div>
-              <p className="text-sm mt-3">{s.profile}</p>
-               <p className="text-sm mt-2"><b>Quirk.</b> {s.suspiciousTrait}</p>
-              <p className="text-sm mt-2 border-t border-slate-400/50 pt-2"><b>Alibi.</b> {s.alibi}</p>
-            </article>
-          ))}
+          );
+        })}
+      </div>
+      {isHost ? (
+        <section className="rounded-2xl border border-border bg-card p-5 space-y-5" data-testid="panel-host-setup">
+          <div><p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">Teams</p><div className="flex gap-2 flex-wrap">{[2, 3, 4, 5].map((n) => <button key={n} data-testid={"button-teams-" + n} onClick={() => set({ teamCount: n })} className={chip(s.teamCount === n)}>{n}</button>)}</div></div>
+          <div><p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">Cases</p><div className="flex gap-2 flex-wrap">{[1, 3, 5, 7, 10].map((n) => <button key={n} data-testid={"button-cases-" + n} onClick={() => set({ casesPerTournament: n })} className={chip(s.casesPerTournament === n)}>{n}</button>)}</div></div>
+          <div><p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">Voting seconds</p><div className="flex gap-2 flex-wrap">{[30, 45, 60, 90, 120].map((n) => <button key={n} data-testid={"button-seconds-" + n} onClick={() => set({ votingSeconds: n })} className={chip(s.votingSeconds === n)}>{n}</button>)}</div></div>
+          <button data-testid="button-start" disabled={!ready || start.isPending} onClick={() => start.mutate(call, apply)} className={bigBtn}>{start.isPending ? "Starting..." : "Start tournament"}<ArrowRight className="h-6 w-6" /></button>
+          {!ready && <p className="text-sm text-muted-foreground">Every team needs 6 to 10 players to start.</p>}
+          {settings.isError && <p className="text-sm text-destructive">Could not save settings.</p>}
         </section>
+      ) : (
+        <p className="text-center text-muted-foreground" data-testid="text-waiting-host">{s.casesPerTournament} cases, {s.votingSeconds}s votes. Waiting for the host to start.</p>
       )}
-
-      {tab === "accuse" && live && <Accuse room={room} playerId={playerId} isHost={isHost} apply={apply} onErr={onErr} />}
     </>
   );
 }
 
-function Accuse({ room, playerId, isHost, apply, onErr }: { room: RoomView; playerId: string; isHost: boolean; apply: (v: RoomView) => void; onErr: () => void }) {
-  const sub = useSubmitAccusation();
-  const [suspect, setSuspect] = useState("");
-  const [motive, setMotive] = useState("");
-  const [method, setMethod] = useState("");
-  const [confirm, setConfirm] = useState(false);
-  const sel = "mt-1 w-full bg-background border border-input rounded px-3 py-2";
-  if (!isHost) return <section className={panel + " p-6"}><h2 className="font-display text-2xl">Final accusation</h2><p className="text-muted-foreground mt-2 text-sm">Only the host files the accusation. Make your case in the team chat.</p></section>;
+function Leaderboard({ v }: { v: TournamentView }) {
+  const sorted = [...v.teams].sort((a, b) => b.score - a.score);
+  const max = Math.max(1, ...sorted.map((t) => t.score));
   return (
-    <section className={panel + " p-6 space-y-4"}>
-      <h2 className="font-display text-2xl">File the accusation</h2>
-      <p className="text-sm text-muted-foreground">One filing, no appeals. Each unspent action is worth 10 points ({room.actionsRemaining} left).</p>
-      <label className="block text-sm">Suspect<select data-testid="select-suspect" value={suspect} onChange={(e) => setSuspect(e.target.value)} className={sel}><option value="">Select</option>{room.case!.suspects.map((s) => <option key={s.name}>{s.name}</option>)}</select></label>
-      <p className="text-xs text-muted-foreground">These are fictional game labels for a harmless workflow mix-up, not allegations against employees.</p>
-      <label className="block text-sm">Motive<select data-testid="select-motive" value={motive} onChange={(e) => setMotive(e.target.value)} className={sel}><option value="">Select</option>{room.motives.map((m) => <option key={m}>{m}</option>)}</select></label>
-      <label className="block text-sm">Method<select data-testid="select-method" value={method} onChange={(e) => setMethod(e.target.value)} className={sel}><option value="">Select</option>{room.methods.map((m) => <option key={m}>{m}</option>)}</select></label>
-      {!confirm ? <button data-testid="button-accuse" disabled={!suspect || !motive || !method} className={btnGold} onClick={() => setConfirm(true)}>Review accusation</button> :
-        <div className="border border-primary p-3 rounded space-y-3"><p className="text-sm">Accuse <b>{suspect}</b> of acting for <b>{motive}</b> via <b>{method}</b>?</p>
-          <div className="flex gap-2"><button data-testid="button-confirm-accuse" disabled={sub.isPending} className={btnGold} onClick={() => sub.mutate({ code: room.code, data: { playerId, suspect, motive, method } }, { onSuccess: apply, onError: onErr })}>{sub.isPending ? "Filing..." : "File it"}</button>
-            <button className="border border-border px-4 rounded" onClick={() => setConfirm(false)}>Back</button></div></div>}
-    </section>
+    <div className="space-y-2.5" data-testid="list-leaderboard">
+      {sorted.map((t) => (
+        <div key={t.id} data-testid={"row-rank-" + t.id} className="rounded-2xl bg-card border border-border p-3 relative overflow-hidden">
+          <div className="absolute inset-y-0 left-0 opacity-25 origin-left transition-transform duration-700" style={{ width: "100%", transform: `scaleX(${t.score / max})`, background: teamColor(t.id) }} />
+          <div className="relative flex items-center gap-3"><span className="font-display text-2xl font-bold w-8 text-center">{sorted[0]!.score === t.score ? <Medal className="h-7 w-7 text-primary mx-auto" /> : sorted.findIndex(other => other.score === t.score) + 1}</span><span className="flex-1 min-w-0 font-semibold text-lg">{t.name}</span><span className="font-mono text-2xl font-bold">{t.score}</span></div>
+        </div>
+      ))}
+    </div>
   );
 }
 
-function Resolution({ room }: { room: RoomView }) {
-  const r = room.resolution!;
+function Reveal({ v, isHost, next, opts, call, onShowChampions }: { v: TournamentView; isHost: boolean; next: ReturnType<typeof useNextTournamentRound>; opts: { onSuccess: (nv: TournamentView) => void; onError: () => void }; call: { code: string; data: { playerId: string } }; onShowChampions?: () => void }) {
+  const r = v.reveal!; const [step, setStep] = useState(0);
   return (
-    <section data-testid="panel-resolution" className="paper rounded p-6 border-t-8 border-primary">
-      <p className="font-mono text-xs uppercase tracking-widest opacity-60">Case closed</p>
-      <h2 className="font-display text-3xl">The solution</h2>
-      <dl className="grid sm:grid-cols-3 gap-3 mt-4 text-sm">
-        <div><dt className="opacity-60">Fictional suspect</dt><dd className="font-semibold">{r.suspect}</dd></div>
-        <div><dt className="opacity-60">Motive</dt><dd className="font-semibold">{r.motive}</dd></div>
-        <div><dt className="opacity-60">Method</dt><dd className="font-semibold">{r.method}</dd></div>
-      </dl>
-      <p className="mt-4 text-sm">{r.summary}</p>
-      <p data-testid="text-team-rank" className="font-display text-2xl mt-5">{r.rank}</p>
-      <h3 className="font-display text-xl mt-4">How the clues connect</h3>
-      <ul className="text-sm list-disc pl-5 mt-2 space-y-2" data-testid="list-clue-explanations">{r.clueExplanations.map(text => <li key={text}>{text}</li>)}</ul>
-      <div className="mt-5 flex items-end gap-6"><div><div className="text-xs opacity-60">Team score</div><div data-testid="text-final-score" className="font-display text-5xl">{r.score}</div></div>
-        <div className="text-xs opacity-70">Includes {r.remainingActionBonus} points from unspent actions.<br />Scoring: suspect 50, motive 25, method 25.</div></div>
-      <a href="/" className="inline-block mt-5 bg-[hsl(222,45%,12%)] text-[hsl(43,70%,60%)] px-4 py-2 rounded font-semibold" data-testid="link-home">Back to agency</a>
-    </section>
+    <>
+      {step === 0 ? (
+        <>
+          <Stage eyebrow="Case closed" title="The culprit was">
+            <div className="gold-card rounded-3xl p-6 sm:p-8"><p data-testid="text-culprit" className="font-display text-5xl sm:text-6xl font-bold">{r.culprit}</p></div>
+            <div className="space-y-3 text-lg"><p data-testid="text-what"><b className="text-primary">What happened.</b> {r.what}</p><p data-testid="text-why"><b className="text-primary">Why.</b> {r.why}</p></div>
+          </Stage>
+          <button data-testid="button-show-results" onClick={() => setStep(1)} className={bigBtn}>Team results<ArrowRight className="h-6 w-6" /></button>
+        </>
+      ) : (
+        <>
+          <Stage eyebrow="Round results" title="Who got it?">
+            <div className="space-y-2">{r.results.map((x) => (
+              <div key={x.teamId} data-testid={"row-result-" + x.teamId} className="rounded-2xl border border-border bg-card p-3 flex items-center gap-3">
+                <span className={"h-10 w-10 rounded-full grid place-items-center shrink-0 " + (x.correct ? "bg-primary text-primary-foreground" : "bg-destructive/20 text-destructive")}>{x.correct ? <Check className="h-5 w-5" /> : <X className="h-5 w-5" />}</span>
+                <div className="flex-1 min-w-0"><div className="font-semibold">{x.teamName}</div><div className="text-sm text-muted-foreground truncate">{x.suspect ?? "No vote"} / {x.extraClues} extra clue{x.extraClues === 1 ? "" : "s"}</div></div>
+                <span className="font-mono text-xl font-bold">+{x.points}</span></div>))}</div>
+          </Stage>
+          <div><p className={eyebrow + " mb-3"}>Leaderboard</p><Leaderboard v={v} /></div>
+          {onShowChampions ? <button data-testid="button-show-champions" onClick={onShowChampions} className={bigBtn}>Show champions<Trophy className="h-6 w-6" /></button>
+            : isHost ? <button data-testid="button-next-round" disabled={next.isPending} onClick={() => next.mutate(call, opts)} className={bigBtn}>Next case<ArrowRight className="h-6 w-6" /></button>
+            : <p className="text-center text-muted-foreground" data-testid="text-waiting-host">Waiting for the host to continue.</p>}
+        </>
+      )}
+    </>
   );
 }
 
-function Chat({ room, playerId }: { room: RoomView; playerId: string }) {
-  const send = useSendRoomMessage();
-  const qc = useQueryClient();
-  const [text, setText] = useState("");
-  const end = useRef<HTMLDivElement>(null);
-  useEffect(() => { end.current?.scrollIntoView({ block: "nearest" }); }, [room.messages.length]);
+function Finished({ v, isHost, reset, opts, call, onReview }: { v: TournamentView; isHost: boolean; reset: ReturnType<typeof useResetTournament>; opts: { onSuccess: (nv: TournamentView) => void; onError: () => void }; call: { code: string; data: { playerId: string } }; onReview: () => void }) {
+  const [, nav] = useLocation();
+  const done = useRef(false);
+  useEffect(() => { done.current = true; }, []);
   return (
-    <section className={panel + " flex flex-col h-80"}>
-      <h2 className="font-display text-lg px-3 pt-3">Team chat</h2>
-      <p className="text-[11px] text-muted-foreground px-3">Session only. Share fictional clues, not personal information.</p>
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2" data-testid="list-messages">
-        {room.messages.length === 0 && <p className="text-xs text-muted-foreground">No messages yet. Say something to your team.</p>}
-        {room.messages.map((m) => <div key={m.id} className="text-sm"><span className={"font-semibold " + (m.playerId === playerId ? "text-primary" : "")}>{m.displayName}</span> <span className="text-muted-foreground">{m.text}</span></div>)}
-        <div ref={end} />
-      </div>
-      <form className="flex gap-2 p-2 border-t border-border" onSubmit={(e) => { e.preventDefault(); const t = text.trim(); if (!t) return;
-        send.mutate({ code: room.code, data: { playerId, text: t } }, { onSuccess: (v) => { qc.setQueryData(getGetRoomQueryKey(room.code, { playerId }), v); setText(""); } }); }}>
-        <input data-testid="input-chat" value={text} maxLength={500} onChange={(e) => setText(e.target.value)} placeholder="Message" className="flex-1 min-w-0 bg-background border border-input rounded px-3 py-2 text-sm" />
-        <button data-testid="button-send" disabled={send.isPending || !text.trim()} className={btnGold + " px-3"} aria-label="Send"><Send className="h-4 w-4" /></button>
-      </form>
-      {send.isError && <p role="alert" className="text-xs text-destructive px-3 pb-2">Message not sent. Please try again.</p>}
-    </section>
+    <>
+      <Confetti />
+      <Stage eyebrow="Case Files champions" title="">
+        <div className="gold-card rounded-3xl p-8 text-center">
+          <Trophy className="h-14 w-14 mx-auto" />
+          <p data-testid="text-champion" className="font-display text-5xl sm:text-6xl font-bold mt-3">{v.winners.join(" & ") || "No winner"}</p>
+        </div>
+      </Stage>
+      <div><p className={eyebrow + " mb-3"}>Final rankings</p><Leaderboard v={v} /></div>
+      {v.awards.length > 0 && <div><p className={eyebrow + " mb-3"}>Awards</p>
+        <div className="grid sm:grid-cols-2 gap-3">{v.awards.map((a) => (
+          <div key={a.name} data-testid={"card-award-" + a.name} className="min-w-0 rounded-2xl border border-border bg-card p-4 break-words"><Medal className="h-5 w-5 text-primary" /><div className="font-display text-xl font-bold mt-1">{a.name}</div><div className="text-muted-foreground">{a.teamNames.join(", ") || "Nobody this tournament"}</div><div className="font-mono text-sm text-primary">
+            {a.name === "Clue Hoarders" ? `${a.value + 3 * v.settings.casesPerTournament} clues used`
+              : a.name === "Bold Detectives" ? (a.teamNames.length ? `${a.value + 3} clues in a correct solve` : "No correct solves")
+              : a.name === "Prince Blamers" ? `${a.value} votes for Prince`
+              : `${a.value} cases solved`}
+          </div></div>))}</div></div>}
+      <button data-testid="button-review-final-case" onClick={onReview} className="w-full text-primary py-2 underline">Review the final case</button>
+      {isHost && <button data-testid="button-new-tournament" disabled={reset.isPending} onClick={() => reset.mutate(call, opts)} className={bigBtn}><RotateCcw className="h-6 w-6" />New tournament</button>}
+      {!isHost && <p className="text-center text-muted-foreground">The host can start a new tournament.</p>}
+      <button data-testid="button-home" onClick={() => { clearSession(); nav("/"); }} className="w-full text-muted-foreground py-2 flex items-center justify-center gap-2"><Home className="h-4 w-4" />Leave game</button>
+    </>
   );
-}
-
-function Notebook() {
-  const [t, setT] = useState("");
-  return (
-    <section className="paper rounded p-3 border-l-[10px] border-primary/80">
-      <div className="flex items-center gap-2"><FileText className="h-4 w-4" /><h2 className="font-display text-lg">My notebook</h2></div>
-      <p className="text-[11px] opacity-70 mb-1">Private, in-memory notes. Cleared on reload, reset, or new case. Never saved.</p>
-      <textarea data-testid="input-notes" value={t} onChange={(e) => setT(e.target.value)} rows={6} maxLength={3000} placeholder="Theories, contradictions, questions..." className="w-full bg-white/60 border border-slate-400 rounded p-2 text-sm" />
-    </section>
-  );
-}
-function OfficeRumors({ room }: { room: RoomView }) {
-  return <section className={panel + " p-4 mt-4"} data-testid="panel-rumors">
-    <h2 className="font-display text-xl">Office rumor notebook</h2>
-    {!room.settings.rumorsEnabled ? <p className="text-sm text-muted-foreground mt-2">Rumors are disabled by the host.</p> : <>
-      <p className="text-xs text-muted-foreground mt-1">Playful fictional chatter: mostly harmless, sometimes irrelevant, occasionally a clue. Never an allegation.</p>
-      <ul className="list-disc pl-5 text-sm space-y-2 mt-3">{room.case?.rumors.map(text => <li key={text}>{text}</li>)}</ul>
-    </>}
-  </section>;
 }

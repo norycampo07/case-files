@@ -5,6 +5,209 @@
  * BDS Case Files room and cooperative mystery game API
  * OpenAPI spec version: 0.1.0
  */
+export interface TournamentCreateInput {
+  /**
+     * @minLength 1
+     * @maxLength 24
+     */
+  displayName: string;
+  consentAcknowledged: true;
+}
+
+export interface TournamentJoinInput {
+  /**
+     * @minLength 1
+     * @maxLength 24
+     */
+  displayName: string;
+  /**
+     * @minimum 0
+     * @maximum 4
+     */
+  teamId: number;
+  consentAcknowledged: true;
+}
+
+export interface TournamentPlayerInput {
+  playerId: string;
+}
+
+export type TournamentSettingsInputCasesPerTournament = typeof TournamentSettingsInputCasesPerTournament[keyof typeof TournamentSettingsInputCasesPerTournament];
+
+
+export const TournamentSettingsInputCasesPerTournament = {
+  NUMBER_1: 1,
+  NUMBER_3: 3,
+  NUMBER_5: 5,
+  NUMBER_7: 7,
+  NUMBER_10: 10,
+} as const;
+
+export interface TournamentSettingsInput {
+  playerId: string;
+  /**
+     * @minimum 2
+     * @maximum 5
+     */
+  teamCount: number;
+  casesPerTournament: TournamentSettingsInputCasesPerTournament;
+  /**
+     * @minimum 15
+     * @maximum 180
+     */
+  votingSeconds: number;
+}
+
+export interface TournamentBallotInput {
+  playerId: string;
+  suspect: string;
+}
+
+export interface TournamentPlayer {
+  id: string;
+  displayName: string;
+  teamId: number;
+  isHost: boolean;
+  connected: boolean;
+}
+
+export interface TournamentSettings {
+  teamCount: number;
+  casesPerTournament: number;
+  votingSeconds: number;
+}
+
+export interface TournamentTeam {
+  id: number;
+  name: string;
+  playerCount: number;
+  score: number;
+  correctCount: number;
+  extraCluesUsed: number;
+  princeBlames: number;
+  coffeeSolves: number;
+}
+
+export interface TournamentLobby {
+  code: string;
+  status: string;
+  teamCount: number;
+  teams: TournamentTeam[];
+}
+
+export interface TournamentCharacter {
+  name: string;
+  title: string;
+  personality: string;
+  portrait: string;
+}
+
+export type TournamentCaseDifficulty = typeof TournamentCaseDifficulty[keyof typeof TournamentCaseDifficulty];
+
+
+export const TournamentCaseDifficulty = {
+  Easy: 'Easy',
+  Medium: 'Medium',
+  Hard: 'Hard',
+} as const;
+
+export interface TournamentCase {
+  id: string;
+  title: string;
+  brief: string;
+  characters: TournamentCharacter[];
+  clueCount: number;
+  difficulty: TournamentCaseDifficulty;
+}
+
+export interface TournamentTally {
+  suspect: string;
+  count: number;
+  percent: number;
+}
+
+export type TournamentTeamStateScreen = typeof TournamentTeamStateScreen[keyof typeof TournamentTeamStateScreen];
+
+
+export const TournamentTeamStateScreen = {
+  brief: 'brief',
+  roster: 'roster',
+  clue1: 'clue1',
+  clue2: 'clue2',
+  clue3: 'clue3',
+  choice: 'choice',
+  extra: 'extra',
+  vote: 'vote',
+  runoff: 'runoff',
+  waiting: 'waiting',
+} as const;
+
+export interface TournamentTeamState {
+  teamId: number;
+  screen: TournamentTeamStateScreen;
+  clues: string[];
+  value: number;
+  hasVoted: boolean;
+  /** @nullable */
+  deadline: number | null;
+  runoffOptions: string[];
+  tallies: TournamentTally[];
+  submittedVotes: number;
+  /** @nullable */
+  choice: string | null;
+}
+
+export interface TournamentResult {
+  teamId: number;
+  teamName: string;
+  /** @nullable */
+  suspect: string | null;
+  correct: boolean;
+  points: number;
+  extraClues: number;
+}
+
+export interface TournamentReveal {
+  culprit: string;
+  what: string;
+  why: string;
+  results: TournamentResult[];
+}
+
+export interface TournamentAward {
+  name: string;
+  teamNames: string[];
+  value: number;
+}
+
+export type TournamentViewStatus = typeof TournamentViewStatus[keyof typeof TournamentViewStatus];
+
+
+export const TournamentViewStatus = {
+  lobby: 'lobby',
+  round: 'round',
+  reveal: 'reveal',
+  finished: 'finished',
+} as const;
+
+export interface TournamentView {
+  code: string;
+  status: TournamentViewStatus;
+  hostId: string;
+  me: TournamentPlayer;
+  settings: TournamentSettings;
+  roundIndex: number;
+  /** @nullable */
+  difficulty: string | null;
+  teams: TournamentTeam[];
+  players: TournamentPlayer[];
+  case: TournamentCase | null;
+  teamState: TournamentTeamState | null;
+  reveal: TournamentReveal | null;
+  winners: string[];
+  awards: TournamentAward[];
+}
+
 export interface HealthStatus {
   status: string;
 }
@@ -207,6 +410,10 @@ export interface RoomView {
 }
 
 export type GetRoomParams = {
+playerId: string;
+};
+
+export type GetTournamentParams = {
 playerId: string;
 };
 

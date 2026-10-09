@@ -1,2 +1,3 @@
 - [Orval generated barrels](orval-barrels.md) — split generation can append wildcard exports; handwritten export lists alone do not prevent type/schema collisions.
 - [Privacy clearing](privacy-clearing.md) — verify cleared chat and notes in both clients, not only the API response.
+- [Tournament player floor](tournament-player-floor.md) — the user approved smaller tournaments; do not restore the original brief's 30-player minimum.

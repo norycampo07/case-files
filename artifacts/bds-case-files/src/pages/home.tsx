@@ -1,144 +1,143 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { useCreateRoom, useJoinRoom, useHealthCheck } from "@workspace/api-client-react";
+import { useForm } from "react-hook-form";
+import { useCreateTournament, useJoinTournament, useGetTournamentLobby, getGetTournamentLobbyQueryKey } from "@workspace/api-client-react";
 import { loadSession, saveSession } from "@/lib/session";
-import { Search, Users, BookOpen, Award, KeyRound, FolderOpen } from "lucide-react";
+import { teamColor } from "@/components/tournament-bits";
+import { Trophy, KeyRound, BookOpen, ArrowLeft, ArrowRight, ShieldCheck, Users, Play, Check } from "lucide-react";
 
-type Panel = "none" | "start" | "join" | "rules" | "credits";
+type Mode = "menu" | "create" | "join" | "rules";
+type F = { name: string; code: string; consent: boolean };
+const field = "w-full bg-background/60 border-2 border-border focus:border-primary rounded-xl px-4 py-3.5 text-lg outline-none transition-colors";
+const bigBtn = "w-full bg-primary text-primary-foreground font-bold text-lg py-4 rounded-xl hover:brightness-110 active:scale-[.98] transition disabled:opacity-40 flex items-center justify-center gap-2";
 
 export default function Home() {
   const [, nav] = useLocation();
-  const [panel, setPanel] = useState<Panel>("none");
-  const [name, setName] = useState("");
-  const [code, setCode] = useState("");
+  const [mode, setMode] = useState<Mode>("menu");
   const [err, setErr] = useState("");
-  const create = useCreateRoom();
-  const join = useJoinRoom();
-  const health = useHealthCheck({ query: { queryKey: ["health"], refetchInterval: 15000, retry: false } as never });
+  const [teamId, setTeamId] = useState<number | null>(null);
+  const [lobbyCode, setLobbyCode] = useState("");
+  const { register, handleSubmit, watch } = useForm<F>({ defaultValues: { name: "", code: "", consent: false } });
+  const create = useCreateTournament();
+  const join = useJoinTournament();
+  const lobby = useGetTournamentLobby(lobbyCode, { query: { enabled: !!lobbyCode, queryKey: getGetTournamentLobbyQueryKey(lobbyCode), retry: false } });
   const session = loadSession();
-  const online = health.isSuccess;
+  const w = watch();
+  const go = (m: Mode) => { setMode(m); setErr(""); };
 
-  const submitStart = () => {
+  const onCreate = (v: F) => {
     setErr("");
-    create.mutate({ data: { displayName: name.trim(), consentAcknowledged: true } }, {
+    create.mutate({ data: { displayName: v.name.trim(), consentAcknowledged: true } }, {
       onSuccess: (r) => { saveSession({ code: r.code, playerId: r.me.id }); nav("/room/" + r.code); },
-      onError: () => setErr("Could not open a case file. Check the server and try again."),
+      onError: () => setErr("Could not open a tournament. Try again."),
     });
   };
-  const submitJoin = () => {
+  const onJoin = (v: F) => {
     setErr("");
-    const c = code.trim().toUpperCase();
-    join.mutate({ code: c, data: { displayName: name.trim(), consentAcknowledged: true } }, {
+    if (teamId === null) return setErr("Pick a team first.");
+    join.mutate({ code: lobbyCode, data: { displayName: v.name.trim(), teamId, consentAcknowledged: true } }, {
       onSuccess: (r) => { saveSession({ code: r.code, playerId: r.me.id }); nav("/room/" + r.code); },
-      onError: () => setErr("No open case with that code, or it has already begun."),
+      onError: () => setErr("Could not join. That team may be full or the game already started."),
     });
   };
-
-  const tiles: { id: Panel; icon: typeof Search; title: string; sub: string }[] = [
-    { id: "start", icon: FolderOpen, title: "Start New Case", sub: "Open a file and invite your team" },
-    { id: "join", icon: KeyRound, title: "Join Case", sub: "Enter a code from your host" },
-    { id: "rules", icon: BookOpen, title: "Rules", sub: "How the agency works" },
-    { id: "credits", icon: Award, title: "Credits", sub: "Who built this" },
-  ];
+  const findCode = () => { const c = w.code.trim().toUpperCase(); if (c) { setLobbyCode(c); setTeamId(null); setErr(""); } };
 
   return (
-    <div className="min-h-[100dvh] board-bg">
-      <header className="max-w-6xl mx-auto px-5 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 border-2 border-primary grid place-items-center font-display text-primary font-bold">B</div>
-          <span className="font-display text-lg tracking-wide">BDS Case Files</span>
-        </div>
-        <span data-testid="status-server" className="text-xs font-mono flex items-center gap-2 text-muted-foreground">
-          <span className={"h-2 w-2 rounded-full " + (online ? "bg-primary" : "bg-destructive")} />
-          {online ? "Server online" : health.isLoading ? "Checking server" : "Server unreachable"}
-        </span>
+    <div className="min-h-[100dvh] stage-bg flex flex-col">
+      <header className="px-5 py-5 max-w-3xl w-full mx-auto flex items-center justify-between">
+        <div className="flex items-center gap-2 font-display font-bold text-xl"><Trophy className="h-6 w-6 text-primary" />BDS Case Files</div>
+        {mode !== "menu" && <button data-testid="button-back" onClick={() => go("menu")} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" />Back</button>}
       </header>
-
-      <main className="max-w-6xl mx-auto px-5 pb-16 grid lg:grid-cols-[1.1fr_1fr] gap-10 pt-6 lg:pt-14">
-        <section>
-          <p className="font-mono text-xs uppercase tracking-[0.25em] text-primary mb-4">Cooperative detective agency</p>
-          <h1 className="font-display text-5xl sm:text-6xl font-bold leading-[1.02]">Your colleagues are now <span className="text-primary">investigators.</span></h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl">Two to ten of you share one workplace mystery. Take a specialist role, compare clues, and unravel a harmless file mix-up before the action budget runs out.</p>
-          <p className="mt-5 text-sm text-muted-foreground whitespace-pre-line">{"Welcome to Case Files.\nAll mysteries are fictional.\nAll clues are fabricated.\nAll suspects are innocent until randomly proven guilty."}</p>
-
-          {session && (
-            <button data-testid="button-resume" onClick={() => nav("/room/" + session.code)} className="mt-6 w-full sm:w-auto text-left border border-primary/60 bg-primary/10 px-4 py-3 rounded hover:bg-primary/20">
-              <span className="block text-xs font-mono text-primary uppercase tracking-widest">Case in progress</span>
-              <span className="font-display text-lg">Resume case {session.code}</span>
-            </button>
+      <main className="flex-1 max-w-3xl w-full mx-auto px-5 pb-10">
+        <div key={mode + (lobbyCode && mode === "join" ? "-l" : "")} className="screen-in">
+          {mode === "menu" && (
+            <div className="pt-6 sm:pt-14">
+              <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary mb-4">Workplace mystery night</p>
+              <h1 className="font-display text-5xl sm:text-7xl font-bold leading-[0.98]">Who did it?<br /><span className="text-primary">Your team votes.</span></h1>
+              <p className="mt-5 text-lg text-muted-foreground max-w-lg">Teams of colleagues read the same fictional office clues, argue it out, and vote. Fewer clues, more points.</p>
+              {session && <button data-testid="button-resume" onClick={() => nav("/room/" + session.code)} className="mt-6 w-full text-left border-2 border-primary bg-primary/10 rounded-xl px-5 py-4 flex items-center justify-between"><span><span className="block font-mono text-xs uppercase tracking-widest text-primary">Game in progress</span><span className="font-display text-xl">Rejoin {session.code}</span></span><ArrowRight className="h-5 w-5 text-primary" /></button>}
+              <div className="mt-8 grid gap-3">
+                <button data-testid="button-create" onClick={() => go("create")} className={bigBtn + " py-6 text-xl"}><Play className="h-6 w-6" />Host a tournament</button>
+                <button data-testid="button-join" onClick={() => go("join")} className="w-full border-2 border-primary text-primary font-bold text-lg py-5 rounded-xl hover:bg-primary/10 flex items-center justify-center gap-2"><KeyRound className="h-5 w-5" />Join with a code</button>
+                <button data-testid="button-rules" onClick={() => go("rules")} className="text-muted-foreground hover:text-foreground py-2 flex items-center justify-center gap-2 text-sm"><BookOpen className="h-4 w-4" />Rules and privacy</button>
+              </div>
+            </div>
           )}
 
-          <div className="mt-8 grid sm:grid-cols-2 gap-3">
-            {tiles.map((t) => (
-              <button key={t.id} data-testid={"button-" + t.id} onClick={() => { setPanel(t.id); setErr(""); }}
-                className={"text-left p-4 border rounded transition-colors " + (panel === t.id ? "border-primary bg-primary/10" : "border-border bg-card hover:border-primary/60")}>
-                <t.icon className="h-5 w-5 text-primary mb-3" />
-                <div className="font-display text-lg">{t.title}</div>
-                <div className="text-sm text-muted-foreground">{t.sub}</div>
-              </button>
-            ))}
-          </div>
-        </section>
+          {mode === "create" && (
+            <form onSubmit={handleSubmit(onCreate)} className="pt-8 space-y-5">
+              <h2 className="font-display text-4xl font-bold">Host a tournament</h2>
+              <p className="text-muted-foreground">12 to 50 colleagues, 2 to 5 teams. You will set the rounds in the lobby.</p>
+              <NameConsent register={register} />
+              {err && <p data-testid="text-error" className="text-destructive">{err}</p>}
+              <button data-testid="button-submit" disabled={create.isPending || !w.name.trim() || !w.consent} className={bigBtn}>{create.isPending ? "Opening..." : "Open lobby"}<ArrowRight className="h-5 w-5" /></button>
+            </form>
+          )}
 
-        <section className="lg:pt-6">
-          <div className="paper rounded shadow-xl p-6 sm:p-8 min-h-[420px] relative border-l-[14px] border-primary/80">
-            {panel === "none" && (
-              <div className="h-full flex flex-col justify-center">
-                <p className="font-mono text-xs uppercase tracking-widest opacity-60">Case notebook</p>
-                <h2 className="font-display text-3xl mt-2">Choose a door.</h2>
-                <ul className="mt-6 space-y-3 text-sm">
-                  <li className="flex gap-3"><Users className="h-4 w-4 mt-0.5 shrink-0" />Five roles, each with a private brief and sometimes a clue only they hold.</li>
-                  <li className="flex gap-3"><Search className="h-4 w-4 mt-0.5 shrink-0" />Six investigative actions. Ten to choose from. No repeats.</li>
-                  <li className="flex gap-3"><Award className="h-4 w-4 mt-0.5 shrink-0" />Unspent actions score bonus points at the accusation.</li>
-                </ul>
+          {mode === "join" && (
+            <form onSubmit={handleSubmit(onJoin)} className="pt-8 space-y-5">
+              <h2 className="font-display text-4xl font-bold">Join a tournament</h2>
+              <div className="flex gap-2">
+                <input data-testid="input-code" {...register("code")} onChange={(e) => { e.target.value = e.target.value.toUpperCase(); register("code").onChange(e); }} placeholder="CODE" className={field + " font-mono tracking-[0.3em] uppercase"} />
+                <button type="button" data-testid="button-find" onClick={findCode} className="px-6 rounded-xl bg-secondary font-semibold hover:bg-secondary/70">Find</button>
               </div>
-            )}
-            {(panel === "start" || panel === "join") && (
-              <form onSubmit={(e) => { e.preventDefault(); panel === "start" ? submitStart() : submitJoin(); }} className="space-y-4">
-                <p className="font-mono text-xs uppercase tracking-widest opacity-60">{panel === "start" ? "New file" : "Join file"}</p>
-                <h2 className="font-display text-3xl">{panel === "start" ? "Open a new case" : "Join your team"}</h2>
-                <label className="block text-sm font-semibold">Fictional detective alias
-                  <input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={24} required className="mt-1 w-full bg-white/70 border border-slate-400 px-3 py-2 rounded outline-none focus:border-slate-900" placeholder="e.g. Inspector Pencil" />
-                </label>
-                <p className="text-xs opacity-70">Do not use real names or personal information.</p>
-                {panel === "join" && (
-                  <label className="block text-sm font-semibold">Case code
-                    <input data-testid="input-code" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} required className="mt-1 w-full bg-white/70 border border-slate-400 px-3 py-2 rounded font-mono tracking-[0.3em] uppercase outline-none focus:border-slate-900" placeholder="CODE" />
-                  </label>
-                )}
-                {err && <p data-testid="text-error" className="text-sm text-red-700">{err}</p>}
-                <button data-testid="button-submit" disabled={create.isPending || join.isPending || !name.trim() || (panel === "join" && !code.trim())} className="w-full bg-[hsl(222,45%,12%)] text-[hsl(43,70%,60%)] font-semibold py-3 rounded disabled:opacity-50">
-                  {create.isPending || join.isPending ? "Working..." : panel === "start" ? "Open case file" : "Join case"}
-                </button>
-              </form>
-            )}
-            {panel === "rules" && (
-              <div className="text-sm space-y-3" data-testid="panel-rules">
-                <h2 className="font-display text-3xl">Agency rules</h2>
-                <ol className="list-decimal pl-5 space-y-2">
-                  <li>The host opens a case; 2 to 10 players join with the code. Only the host starts it.</li>
-                  <li>Everyone gets a role, a private brief, and sometimes an extra clue. Share it or keep it; that is your call.</li>
-                  <li>The team has 6 actions. Each round, everyone votes for one of ten actions. A majority wins; when all connected players have voted, plurality wins and the host breaks a tie.</li>
-                  <li>An action can only be taken once. Not every finding points at the culprit.</li>
-                  <li>The host files the final accusation: suspect, motive and method.</li>
-                  <li>Score: 50 for the suspect, 25 for motive, 25 for method, and 10 per unused action.</li>
-                  <li>Ranks: Rookie (under 50), Junior (50–74), Senior (75–99), Elite (100–129), Master (130+).</li>
-                  <li>Rumors are playful leads, not allegations. The host may disable rumors or chat, reset a case, or start another with the same team.</li>
-                  <li>Everything is fictional. Use aliases and avoid personal information. Only active session state is kept; reset and new case discard chat, notes, and investigation state.</li>
-                </ol>
-              </div>
-            )}
-            {panel === "credits" && (
-              <div className="text-sm space-y-3" data-testid="panel-credits">
-                <h2 className="font-display text-3xl">Credits</h2>
-                <p>BDS Case Files is a template-driven cooperative mystery. Every case is assembled from hand-written parts: no AI services, no paid APIs.</p>
-                <p>Type set in Fraunces, Plus Jakarta Sans and Spline Sans Mono. Icons by Lucide.</p>
-                <p>Built for teams who solve problems together.</p>
-              </div>
-            )}
-          </div>
-        </section>
+              {lobbyCode && lobby.isLoading && <div className="h-28 rounded-xl bg-card animate-pulse" />}
+              {lobbyCode && lobby.isError && <p data-testid="text-error" className="text-destructive">No open tournament with that code.</p>}
+              {lobby.data && lobby.data.status !== "lobby" && <p className="text-destructive">That game has already started.</p>}
+              {lobby.data && lobby.data.status === "lobby" && (
+                <>
+                  <div>
+                    <p className="font-mono text-xs uppercase tracking-widest text-primary mb-2">Choose your team</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      {lobby.data.teams.map((t) => {
+                        const full = t.playerCount >= 10; const on = teamId === t.id;
+                        return (
+                          <button type="button" key={t.id} disabled={full} data-testid={"button-team-" + t.id} onClick={() => setTeamId(t.id)}
+                            className="text-left rounded-xl p-4 border-2 transition disabled:opacity-40 active:scale-[.97]"
+                            style={{ borderColor: on ? teamColor(t.id) : "hsl(var(--border))", background: on ? teamColor(t.id) + "22" : "hsl(var(--card))" }}>
+                            <div className="flex justify-between"><span className="h-3 w-3 rounded-full mt-1.5" style={{ background: teamColor(t.id) }} />{on && <Check className="h-5 w-5" style={{ color: teamColor(t.id) }} />}</div>
+                            <div className="font-display text-xl font-bold mt-2">{t.name}</div>
+                            <div className="text-sm text-muted-foreground flex items-center gap-1"><Users className="h-3.5 w-3.5" />{t.playerCount}/10{full ? " full" : ""}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <NameConsent register={register} />
+                  {err && <p data-testid="text-error" className="text-destructive">{err}</p>}
+                  <button data-testid="button-submit" disabled={join.isPending || teamId === null || !w.name.trim() || !w.consent} className={bigBtn}>{join.isPending ? "Joining..." : "Join team"}<ArrowRight className="h-5 w-5" /></button>
+                </>
+              )}
+            </form>
+          )}
+
+          {mode === "rules" && (
+            <div className="pt-8 space-y-5" data-testid="panel-rules">
+              <h2 className="font-display text-4xl font-bold">How it works</h2>
+              <ol className="space-y-3 text-lg">
+                {["Everyone gets the same case. Your team sees three clues, one at a time.", "Ask for extra clues if you dare. Each costs 10 points off a 100 point case.", "Every player gets one final vote. Ties get a 30-second runoff, then a draw if still tied.", "The culprit is revealed to all teams. Right answer scores the case value, wrong scores zero.", "Highest total after the last case wins."].map((t, i) => (
+                  <li key={i} className="flex gap-4"><span className="font-display text-primary text-2xl font-bold w-6">{i + 1}</span><span>{t}</span></li>
+                ))}
+              </ol>
+              <div className="rounded-xl border border-primary/40 bg-primary/10 p-4 flex gap-3"><ShieldCheck className="h-6 w-6 text-primary shrink-0" /><p className="text-sm">Everything is fictional. Characters, clues and misdeeds are invented and no real person is accused of anything. Use a made-up alias and never enter personal information. Only live game state is kept.</p></div>
+            </div>
+          )}
+        </div>
       </main>
     </div>
+  );
+}
+
+function NameConsent({ register }: { register: ReturnType<typeof useForm<F>>["register"] }) {
+  return (
+    <>
+      <label className="block font-semibold">Fictional alias
+        <input data-testid="input-name" {...register("name")} maxLength={24} placeholder="e.g. Captain Stapler" className={field + " mt-2 font-normal"} />
+      </label>
+      <label className="flex gap-3 items-start text-sm text-muted-foreground cursor-pointer">
+        <input data-testid="checkbox-consent" type="checkbox" {...register("consent")} className="mt-1 h-5 w-5 accent-[hsl(43,70%,52%)]" />
+        <span>I understand this is a fictional game, I am using an alias, and I will not share personal information.</span>
+      </label>
+    </>
   );
 }

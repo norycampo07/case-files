@@ -7,4 +7,4 @@ Orval split generation may append wildcard exports to an existing package entry 
 
 **Why:** Regeneration reintroduced a type/schema name collision after an explicit type-export list had been written. The generator preserves existing content but appends its own generated wildcard exports.
 
-**How to apply:** When generated query types and runtime schemas share names, resolve barrel ambiguity explicitly and run the full codegen command, including its chained TypeScript check. Avoid hand-editing generated files.
+**How to apply:** When generated query types and runtime schemas share names, add a named re-export of the runtime schema to disambiguate the barrel. Removing wildcard exports is only a temporary fix: codegen may append them again. Run the full codegen command, including its chained TypeScript check. Avoid hand-editing generated files.

@@ -1,6 +1,6 @@
 # BDS Case Files
 
-A cooperative multiplayer browser detective game for virtual teams of 2–10 players.
+A fictional workplace mystery tournament for 12–50 players in 2–5 teams of 6–10.
 
 ## Run & Operate
 
@@ -31,18 +31,19 @@ A cooperative multiplayer browser detective game for virtual teams of 2–10 pla
 
 - No AI APIs, OpenAI integration, or paid services. Content uses templates, randomization, and predefined data, as requested.
 - Anonymous room membership uses an HTTP-only browser session cookie, not user accounts. It allows separate players in separate tabs while preventing other browsers from impersonating a player ID.
-- Specialist clues are sent only to their owner; the solution is not exposed until the case is resolved.
-- The host submits the team's final accusation. Majority votes execute investigations; when everyone votes without a majority, plurality wins, with the host's vote breaking a tie.
+- Teams play the same case each round, but advance through their own brief, roster and clues. Extra clues and ballots are scoped to that team. Solutions and current-round scores stay hidden until every team has finished.
+- Each player casts one suspect ballot. Timers count submitted ballots only. A tied ballot opens a 30-second runoff among tied leaders; if the runoff still ties, a draw among those leaders resolves it.
+- The host chooses 1, 3, 5, 7 or 10 cases (default 3), 2–5 teams and a 15–180-second vote timer (default 60). Starting requires 6–10 members on every team.
 
 ## Product
 
-Create and join rooms by code, investigate generated cases, share clues in chat, use role-specific information, submit a suspect/motive/method accusation, and receive a scored solution.
+Create and join by room code with a fictional alias and chosen team. Read a short brief, meet seven fictional characters, then reveal three clues one at a time. Request up to seven additional clues before starting the team ballot. Correct suspect earns the case value: 100 points less 10 per extra clue, minimum 30; incorrect or absent accusation earns zero. After each round, show the culprit, explanation and team leaderboard; at tournament end, show winners, final rankings, five playful awards and New Tournament. Reuse the same room and teams, but clear all previous cases, ballots and results when restarting.
 
 ## Workplace safety and privacy
 
-The attached workplace brief is the product's standing scope: only playful workplace file mix-ups, never criminal allegations, HR complaints, medical issues, fraud, real company incidents, or disciplinary matters. The six recurring characters are explicitly fictional and are not representations of real employees. Motive/method labels from the brief must be framed as ordinary authorized workflow quirks, not misconduct.
+The workplace briefs are the product's standing scope: only playful workplace file mix-ups and break-room surprises, never criminal allegations, HR complaints, medical issues, fraud, real company incidents, or disciplinary matters. The seven recurring characters and their generated portraits are explicitly fictional and are not representations of real employees.
 
-Consent is required before room entry. Ask for fictional aliases, never personal details. No database, AI API, paid runtime service, or case history. Keep active room/chat state in memory only; reset/new case discard previous case and chat. Disabling chat also clears its messages. Notes are private in-memory UI state, cleared on reload or case replacement. The browser keeps only session membership and consent.
+Consent is required before room entry. Ask for fictional aliases, never personal details. No database, AI API, paid runtime service, or case history. Keep tournament state in memory only; New Tournament discards previous case and voting state. A refresh restores membership and server-held team progress and vote status; server restart loses rooms. The browser keeps only session membership and consent. The older single-team API remains for compatibility, but the game UI uses the tournament API.
 
 The promo follows the same workplace-safe scope; preserve its existing 25-second 16:9 format and soundtrack during content revisions.
 

@@ -293,8 +293,394 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/RoomView" }
         "403": { description: Host only }
+  /tournaments:
+    post:
+      operationId: createTournament
+      tags: [case-files]
+      summary: Create a tournament lobby as host
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentCreateInput" }
+      responses:
+        "201":
+          description: Tournament lobby
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/lobby:
+    get:
+      operationId: getTournamentLobby
+      tags: [case-files]
+      summary: Get joinable team slots for a room code
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Public lobby information; does not expose case solutions
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentLobby" }
+  /tournaments/{code}:
+    get:
+      operationId: getTournament
+      tags: [case-files]
+      summary: Get tournament state for an authenticated room member
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+        - { name: playerId, in: query, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Member-scoped tournament state
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/players:
+    post:
+      operationId: joinTournament
+      tags: [case-files]
+      summary: Join an available team before the tournament starts
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentJoinInput" }
+      responses:
+        "200":
+          description: Joined tournament
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/settings:
+    patch:
+      operationId: setTournamentSettings
+      tags: [case-files]
+      summary: Host configures cases, teams and voting timer before start
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentSettingsInput" }
+      responses:
+        "200":
+          description: Updated tournament
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/start:
+    post:
+      operationId: startTournament
+      tags: [case-files]
+      summary: Host starts the first shared case when all teams have 6-10 players
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentPlayerInput" }
+      responses:
+        "200":
+          description: First round
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/advance:
+    post:
+      operationId: advanceTournamentScreen
+      tags: [case-files]
+      summary: Advance this team through its brief, roster and three clues
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentPlayerInput" }
+      responses:
+        "200":
+          description: Next team screen
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/clues:
+    post:
+      operationId: requestTournamentClue
+      tags: [case-files]
+      summary: Reveal one more team clue and reduce case value by 10
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentPlayerInput" }
+      responses:
+        "200":
+          description: New team clue
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/voting:
+    post:
+      operationId: beginTournamentVote
+      tags: [case-files]
+      summary: Start this team's timed accusation ballot
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentPlayerInput" }
+      responses:
+        "200":
+          description: Active team ballot
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/ballots:
+    post:
+      operationId: castTournamentBallot
+      tags: [case-files]
+      summary: Cast one individual suspect vote for this team's ballot
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentBallotInput" }
+      responses:
+        "200":
+          description: Updated real-time vote totals
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/next:
+    post:
+      operationId: nextTournamentRound
+      tags: [case-files]
+      summary: Host advances the tournament to the next shared case
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentPlayerInput" }
+      responses:
+        "200":
+          description: Next round
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
+  /tournaments/{code}/reset:
+    post:
+      operationId: resetTournament
+      tags: [case-files]
+      summary: Host clears results and returns the same teams to a fresh lobby
+      parameters:
+        - { name: code, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TournamentPlayerInput" }
+      responses:
+        "200":
+          description: Fresh tournament lobby
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TournamentView" }
 components:
   schemas:
+    TournamentCreateInput:
+      type: object
+      required: [displayName, consentAcknowledged]
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 24 }
+        consentAcknowledged: { type: boolean, enum: [true] }
+    TournamentJoinInput:
+      type: object
+      required: [displayName, teamId, consentAcknowledged]
+      properties:
+        displayName: { type: string, minLength: 1, maxLength: 24 }
+        teamId: { type: integer, minimum: 0, maximum: 4 }
+        consentAcknowledged: { type: boolean, enum: [true] }
+    TournamentPlayerInput:
+      type: object
+      required: [playerId]
+      properties:
+        playerId: { type: string }
+    TournamentSettingsInput:
+      type: object
+      required: [playerId, teamCount, casesPerTournament, votingSeconds]
+      properties:
+        playerId: { type: string }
+        teamCount: { type: integer, minimum: 2, maximum: 5 }
+        casesPerTournament: { type: integer, enum: [1, 3, 5, 7, 10] }
+        votingSeconds: { type: integer, minimum: 15, maximum: 180 }
+    TournamentBallotInput:
+      type: object
+      required: [playerId, suspect]
+      properties:
+        playerId: { type: string }
+        suspect: { type: string }
+    TournamentPlayer:
+      type: object
+      required: [id, displayName, teamId, isHost, connected]
+      properties:
+        id: { type: string }
+        displayName: { type: string }
+        teamId: { type: integer }
+        isHost: { type: boolean }
+        connected: { type: boolean }
+    TournamentSettings:
+      type: object
+      required: [teamCount, casesPerTournament, votingSeconds]
+      properties:
+        teamCount: { type: integer }
+        casesPerTournament: { type: integer }
+        votingSeconds: { type: integer }
+    TournamentTeam:
+      type: object
+      required: [id, name, playerCount, score, correctCount, extraCluesUsed, princeBlames, coffeeSolves]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        playerCount: { type: integer }
+        score: { type: integer }
+        correctCount: { type: integer }
+        extraCluesUsed: { type: integer }
+        princeBlames: { type: integer }
+        coffeeSolves: { type: integer }
+    TournamentLobby:
+      type: object
+      required: [code, status, teamCount, teams]
+      properties:
+        code: { type: string }
+        status: { type: string }
+        teamCount: { type: integer }
+        teams:
+          type: array
+          items: { $ref: "#/components/schemas/TournamentTeam" }
+    TournamentCharacter:
+      type: object
+      required: [name, title, personality, portrait]
+      properties:
+        name: { type: string }
+        title: { type: string }
+        personality: { type: string }
+        portrait: { type: string }
+    TournamentCase:
+      type: object
+      required: [id, title, brief, characters, clueCount, difficulty]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        brief: { type: string }
+        characters:
+          type: array
+          items: { $ref: "#/components/schemas/TournamentCharacter" }
+        clueCount: { type: integer }
+        difficulty: { type: string, enum: [Easy, Medium, Hard] }
+    TournamentTally:
+      type: object
+      required: [suspect, count, percent]
+      properties:
+        suspect: { type: string }
+        count: { type: integer }
+        percent: { type: integer }
+    TournamentTeamState:
+      type: object
+      required: [teamId, screen, clues, value, hasVoted, deadline, runoffOptions, tallies, submittedVotes, choice]
+      properties:
+        teamId: { type: integer }
+        screen: { type: string, enum: [brief, roster, clue1, clue2, clue3, choice, extra, vote, runoff, waiting] }
+        clues:
+          type: array
+          items: { type: string }
+        value: { type: integer }
+        hasVoted: { type: boolean }
+        deadline: { type: ["integer", "null"] }
+        runoffOptions:
+          type: array
+          items: { type: string }
+        tallies:
+          type: array
+          items: { $ref: "#/components/schemas/TournamentTally" }
+        submittedVotes: { type: integer }
+        choice: { type: ["string", "null"] }
+    TournamentResult:
+      type: object
+      required: [teamId, teamName, suspect, correct, points, extraClues]
+      properties:
+        teamId: { type: integer }
+        teamName: { type: string }
+        suspect: { type: ["string", "null"] }
+        correct: { type: boolean }
+        points: { type: integer }
+        extraClues: { type: integer }
+    TournamentReveal:
+      type: object
+      required: [culprit, what, why, results]
+      properties:
+        culprit: { type: string }
+        what: { type: string }
+        why: { type: string }
+        results:
+          type: array
+          items: { $ref: "#/components/schemas/TournamentResult" }
+    TournamentAward:
+      type: object
+      required: [name, teamNames, value]
+      properties:
+        name: { type: string }
+        teamNames:
+          type: array
+          items: { type: string }
+        value: { type: integer }
+    TournamentView:
+      type: object
+      required: [code, status, hostId, me, settings, roundIndex, difficulty, teams, players, case, teamState, reveal, winners, awards]
+      properties:
+        code: { type: string }
+        status: { type: string, enum: [lobby, round, reveal, finished] }
+        hostId: { type: string }
+        me: { $ref: "#/components/schemas/TournamentPlayer" }
+        settings: { $ref: "#/components/schemas/TournamentSettings" }
+        roundIndex: { type: integer }
+        difficulty: { type: ["string", "null"] }
+        teams:
+          type: array
+          items: { $ref: "#/components/schemas/TournamentTeam" }
+        players:
+          type: array
+          items: { $ref: "#/components/schemas/TournamentPlayer" }
+        case:
+          oneOf:
+            - { $ref: "#/components/schemas/TournamentCase" }
+            - { type: "null" }
+        teamState:
+          oneOf:
+            - { $ref: "#/components/schemas/TournamentTeamState" }
+            - { type: "null" }
+        reveal:
+          oneOf:
+            - { $ref: "#/components/schemas/TournamentReveal" }
+            - { type: "null" }
+        winners:
+          type: array
+          items: { type: string }
+        awards:
+          type: array
+          items: { $ref: "#/components/schemas/TournamentAward" }
     HealthStatus:
       type: object
       properties:

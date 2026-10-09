@@ -244,3 +244,10 @@
 .font-display{font-family:var(--app-font-serif)}
 .board-bg{background-image:linear-gradient(hsl(222 30% 14% / .6) 1px,transparent 1px),linear-gradient(90deg,hsl(222 30% 14% / .6) 1px,transparent 1px);background-size:32px 32px}
 .paper{background:hsl(40 30% 92%);color:hsl(222 45% 12%)}
+
+.stage-bg{background:radial-gradient(60% 50% at 50% 0%,hsl(43 80% 50%/.16),transparent 70%),hsl(222 45% 9%)}
+.gold-card{background:linear-gradient(160deg,hsl(43 75% 58%),hsl(38 80% 46%));color:hsl(222 50% 10%)}
+@keyframes screen-in{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.screen-in{animation:screen-in .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes confetti-fall{0%{transform:translate3d(0,-10vh,0) rotate(0)}100%{transform:translate3d(var(--dx),110vh,0) rotate(720deg)}}
+.confetti{position:fixed;top:0;width:10px;height:16px;pointer-events:none;z-index:50;animation:confetti-fall linear infinite}

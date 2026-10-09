@@ -23,13 +23,21 @@ import type {
   AccusationInput,
   ChatMessageInput,
   GetRoomParams,
+  GetTournamentParams,
   HealthStatus,
   InvestigationVoteInput,
   PlayerActionInput,
   RoomCreateInput,
   RoomJoinInput,
   RoomSettingsInput,
-  RoomView
+  RoomView,
+  TournamentBallotInput,
+  TournamentCreateInput,
+  TournamentJoinInput,
+  TournamentLobby,
+  TournamentPlayerInput,
+  TournamentSettingsInput,
+  TournamentView
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -1113,5 +1121,1060 @@ export const useStartNewCase = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getStartNewCaseMutationOptions(options));
+    }
+
+export const getCreateTournamentUrl = () => {
+
+
+
+
+  return `/api/tournaments`
+}
+
+/**
+ * @summary Create a tournament lobby as host
+ */
+export const createTournament = async (tournamentCreateInput: TournamentCreateInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getCreateTournamentUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentCreateInput)
+  }
+);}
+
+
+
+
+
+export const getCreateTournamentMutationKey = () => ['createTournament'] as const;
+
+export const getCreateTournamentMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTournament>>, TError,CreateTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createTournament>>, TError,CreateTournamentMutationVariables, TContext> => {
+
+const mutationKey = getCreateTournamentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTournament>>, CreateTournamentMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createTournament(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateTournamentMutationResult = NonNullable<Awaited<ReturnType<typeof createTournament>>>
+    export type CreateTournamentMutationBody = BodyType<TournamentCreateInput>
+    export type CreateTournamentMutationError = ErrorType<unknown>
+    export type CreateTournamentMutationVariables = {data: BodyType<TournamentCreateInput>}
+
+    /**
+ * @summary Create a tournament lobby as host
+ */
+export const useCreateTournament = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTournament>>, TError,CreateTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createTournament>>,
+        TError,
+        CreateTournamentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateTournamentMutationOptions(options));
+    }
+
+export const getGetTournamentLobbyUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/lobby`
+}
+
+/**
+ * @summary Get joinable team slots for a room code
+ */
+export const getTournamentLobby = async (code: string, options?: Parameters<typeof customFetch>[1]): Promise<TournamentLobby> => {
+
+  return customFetch<TournamentLobby>(getGetTournamentLobbyUrl(code),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTournamentLobbyQueryKey = (code: string,) => {
+    return [
+    `/api/tournaments/${code}/lobby`
+    ] as const;
+    }
+
+
+export const getGetTournamentLobbyQueryOptions = <TData = Awaited<ReturnType<typeof getTournamentLobby>>, TError = ErrorType<unknown>>(code: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTournamentLobby>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTournamentLobbyQueryKey(code);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTournamentLobby>>> = ({ signal }) => getTournamentLobby(code, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: code !== null && code !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTournamentLobby>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTournamentLobbyQueryResult = NonNullable<Awaited<ReturnType<typeof getTournamentLobby>>>
+export type GetTournamentLobbyQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get joinable team slots for a room code
+ */
+
+export function useGetTournamentLobby<TData = Awaited<ReturnType<typeof getTournamentLobby>>, TError = ErrorType<unknown>>(
+ code: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTournamentLobby>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTournamentLobbyQueryOptions(code,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetTournamentUrl = (code: string,
+    params: GetTournamentParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/tournaments/${code}?${stringifiedParams}` : `/api/tournaments/${code}`
+}
+
+/**
+ * @summary Get tournament state for an authenticated room member
+ */
+export const getTournament = async (code: string,
+    params: GetTournamentParams, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+  return customFetch<TournamentView>(getGetTournamentUrl(code,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTournamentQueryKey = (code: string,
+    params?: GetTournamentParams,) => {
+    return [
+    `/api/tournaments/${code}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetTournamentQueryOptions = <TData = Awaited<ReturnType<typeof getTournament>>, TError = ErrorType<unknown>>(code: string,
+    params: GetTournamentParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTournament>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTournamentQueryKey(code,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTournament>>> = ({ signal }) => getTournament(code,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: code !== null && code !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTournament>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTournamentQueryResult = NonNullable<Awaited<ReturnType<typeof getTournament>>>
+export type GetTournamentQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Get tournament state for an authenticated room member
+ */
+
+export function useGetTournament<TData = Awaited<ReturnType<typeof getTournament>>, TError = ErrorType<unknown>>(
+ code: string,
+    params: GetTournamentParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTournament>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTournamentQueryOptions(code,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getJoinTournamentUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/players`
+}
+
+/**
+ * @summary Join an available team before the tournament starts
+ */
+export const joinTournament = async (code: string,
+    tournamentJoinInput: TournamentJoinInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getJoinTournamentUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentJoinInput)
+  }
+);}
+
+
+
+
+
+export const getJoinTournamentMutationKey = () => ['joinTournament'] as const;
+
+export const getJoinTournamentMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof joinTournament>>, TError,JoinTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof joinTournament>>, TError,JoinTournamentMutationVariables, TContext> => {
+
+const mutationKey = getJoinTournamentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof joinTournament>>, JoinTournamentMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  joinTournament(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type JoinTournamentMutationResult = NonNullable<Awaited<ReturnType<typeof joinTournament>>>
+    export type JoinTournamentMutationBody = BodyType<TournamentJoinInput>
+    export type JoinTournamentMutationError = ErrorType<unknown>
+    export type JoinTournamentMutationVariables = {code: string;data: BodyType<TournamentJoinInput>}
+
+    /**
+ * @summary Join an available team before the tournament starts
+ */
+export const useJoinTournament = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof joinTournament>>, TError,JoinTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof joinTournament>>,
+        TError,
+        JoinTournamentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getJoinTournamentMutationOptions(options));
+    }
+
+export const getSetTournamentSettingsUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/settings`
+}
+
+/**
+ * @summary Host configures cases, teams and voting timer before start
+ */
+export const setTournamentSettings = async (code: string,
+    tournamentSettingsInput: TournamentSettingsInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getSetTournamentSettingsUrl(code),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentSettingsInput)
+  }
+);}
+
+
+
+
+
+export const getSetTournamentSettingsMutationKey = () => ['setTournamentSettings'] as const;
+
+export const getSetTournamentSettingsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setTournamentSettings>>, TError,SetTournamentSettingsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof setTournamentSettings>>, TError,SetTournamentSettingsMutationVariables, TContext> => {
+
+const mutationKey = getSetTournamentSettingsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof setTournamentSettings>>, SetTournamentSettingsMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  setTournamentSettings(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SetTournamentSettingsMutationResult = NonNullable<Awaited<ReturnType<typeof setTournamentSettings>>>
+    export type SetTournamentSettingsMutationBody = BodyType<TournamentSettingsInput>
+    export type SetTournamentSettingsMutationError = ErrorType<unknown>
+    export type SetTournamentSettingsMutationVariables = {code: string;data: BodyType<TournamentSettingsInput>}
+
+    /**
+ * @summary Host configures cases, teams and voting timer before start
+ */
+export const useSetTournamentSettings = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof setTournamentSettings>>, TError,SetTournamentSettingsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof setTournamentSettings>>,
+        TError,
+        SetTournamentSettingsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSetTournamentSettingsMutationOptions(options));
+    }
+
+export const getStartTournamentUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/start`
+}
+
+/**
+ * @summary Host starts the first shared case when all teams have 6-10 players
+ */
+export const startTournament = async (code: string,
+    tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getStartTournamentUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentPlayerInput)
+  }
+);}
+
+
+
+
+
+export const getStartTournamentMutationKey = () => ['startTournament'] as const;
+
+export const getStartTournamentMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startTournament>>, TError,StartTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startTournament>>, TError,StartTournamentMutationVariables, TContext> => {
+
+const mutationKey = getStartTournamentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startTournament>>, StartTournamentMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  startTournament(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StartTournamentMutationResult = NonNullable<Awaited<ReturnType<typeof startTournament>>>
+    export type StartTournamentMutationBody = BodyType<TournamentPlayerInput>
+    export type StartTournamentMutationError = ErrorType<unknown>
+    export type StartTournamentMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
+
+    /**
+ * @summary Host starts the first shared case when all teams have 6-10 players
+ */
+export const useStartTournament = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startTournament>>, TError,StartTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof startTournament>>,
+        TError,
+        StartTournamentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStartTournamentMutationOptions(options));
+    }
+
+export const getAdvanceTournamentScreenUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/advance`
+}
+
+/**
+ * @summary Advance this team through its brief, roster and three clues
+ */
+export const advanceTournamentScreen = async (code: string,
+    tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getAdvanceTournamentScreenUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentPlayerInput)
+  }
+);}
+
+
+
+
+
+export const getAdvanceTournamentScreenMutationKey = () => ['advanceTournamentScreen'] as const;
+
+export const getAdvanceTournamentScreenMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof advanceTournamentScreen>>, TError,AdvanceTournamentScreenMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof advanceTournamentScreen>>, TError,AdvanceTournamentScreenMutationVariables, TContext> => {
+
+const mutationKey = getAdvanceTournamentScreenMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof advanceTournamentScreen>>, AdvanceTournamentScreenMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  advanceTournamentScreen(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AdvanceTournamentScreenMutationResult = NonNullable<Awaited<ReturnType<typeof advanceTournamentScreen>>>
+    export type AdvanceTournamentScreenMutationBody = BodyType<TournamentPlayerInput>
+    export type AdvanceTournamentScreenMutationError = ErrorType<unknown>
+    export type AdvanceTournamentScreenMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
+
+    /**
+ * @summary Advance this team through its brief, roster and three clues
+ */
+export const useAdvanceTournamentScreen = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof advanceTournamentScreen>>, TError,AdvanceTournamentScreenMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof advanceTournamentScreen>>,
+        TError,
+        AdvanceTournamentScreenMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAdvanceTournamentScreenMutationOptions(options));
+    }
+
+export const getRequestTournamentClueUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/clues`
+}
+
+/**
+ * @summary Reveal one more team clue and reduce case value by 10
+ */
+export const requestTournamentClue = async (code: string,
+    tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getRequestTournamentClueUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentPlayerInput)
+  }
+);}
+
+
+
+
+
+export const getRequestTournamentClueMutationKey = () => ['requestTournamentClue'] as const;
+
+export const getRequestTournamentClueMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestTournamentClue>>, TError,RequestTournamentClueMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestTournamentClue>>, TError,RequestTournamentClueMutationVariables, TContext> => {
+
+const mutationKey = getRequestTournamentClueMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestTournamentClue>>, RequestTournamentClueMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  requestTournamentClue(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestTournamentClueMutationResult = NonNullable<Awaited<ReturnType<typeof requestTournamentClue>>>
+    export type RequestTournamentClueMutationBody = BodyType<TournamentPlayerInput>
+    export type RequestTournamentClueMutationError = ErrorType<unknown>
+    export type RequestTournamentClueMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
+
+    /**
+ * @summary Reveal one more team clue and reduce case value by 10
+ */
+export const useRequestTournamentClue = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestTournamentClue>>, TError,RequestTournamentClueMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof requestTournamentClue>>,
+        TError,
+        RequestTournamentClueMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRequestTournamentClueMutationOptions(options));
+    }
+
+export const getBeginTournamentVoteUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/voting`
+}
+
+/**
+ * @summary Start this team's timed accusation ballot
+ */
+export const beginTournamentVote = async (code: string,
+    tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getBeginTournamentVoteUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentPlayerInput)
+  }
+);}
+
+
+
+
+
+export const getBeginTournamentVoteMutationKey = () => ['beginTournamentVote'] as const;
+
+export const getBeginTournamentVoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof beginTournamentVote>>, TError,BeginTournamentVoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof beginTournamentVote>>, TError,BeginTournamentVoteMutationVariables, TContext> => {
+
+const mutationKey = getBeginTournamentVoteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof beginTournamentVote>>, BeginTournamentVoteMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  beginTournamentVote(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BeginTournamentVoteMutationResult = NonNullable<Awaited<ReturnType<typeof beginTournamentVote>>>
+    export type BeginTournamentVoteMutationBody = BodyType<TournamentPlayerInput>
+    export type BeginTournamentVoteMutationError = ErrorType<unknown>
+    export type BeginTournamentVoteMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
+
+    /**
+ * @summary Start this team's timed accusation ballot
+ */
+export const useBeginTournamentVote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof beginTournamentVote>>, TError,BeginTournamentVoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof beginTournamentVote>>,
+        TError,
+        BeginTournamentVoteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getBeginTournamentVoteMutationOptions(options));
+    }
+
+export const getCastTournamentBallotUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/ballots`
+}
+
+/**
+ * @summary Cast one individual suspect vote for this team's ballot
+ */
+export const castTournamentBallot = async (code: string,
+    tournamentBallotInput: TournamentBallotInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getCastTournamentBallotUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentBallotInput)
+  }
+);}
+
+
+
+
+
+export const getCastTournamentBallotMutationKey = () => ['castTournamentBallot'] as const;
+
+export const getCastTournamentBallotMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof castTournamentBallot>>, TError,CastTournamentBallotMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof castTournamentBallot>>, TError,CastTournamentBallotMutationVariables, TContext> => {
+
+const mutationKey = getCastTournamentBallotMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof castTournamentBallot>>, CastTournamentBallotMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  castTournamentBallot(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CastTournamentBallotMutationResult = NonNullable<Awaited<ReturnType<typeof castTournamentBallot>>>
+    export type CastTournamentBallotMutationBody = BodyType<TournamentBallotInput>
+    export type CastTournamentBallotMutationError = ErrorType<unknown>
+    export type CastTournamentBallotMutationVariables = {code: string;data: BodyType<TournamentBallotInput>}
+
+    /**
+ * @summary Cast one individual suspect vote for this team's ballot
+ */
+export const useCastTournamentBallot = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof castTournamentBallot>>, TError,CastTournamentBallotMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof castTournamentBallot>>,
+        TError,
+        CastTournamentBallotMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCastTournamentBallotMutationOptions(options));
+    }
+
+export const getNextTournamentRoundUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/next`
+}
+
+/**
+ * @summary Host advances the tournament to the next shared case
+ */
+export const nextTournamentRound = async (code: string,
+    tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getNextTournamentRoundUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentPlayerInput)
+  }
+);}
+
+
+
+
+
+export const getNextTournamentRoundMutationKey = () => ['nextTournamentRound'] as const;
+
+export const getNextTournamentRoundMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof nextTournamentRound>>, TError,NextTournamentRoundMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof nextTournamentRound>>, TError,NextTournamentRoundMutationVariables, TContext> => {
+
+const mutationKey = getNextTournamentRoundMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof nextTournamentRound>>, NextTournamentRoundMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  nextTournamentRound(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type NextTournamentRoundMutationResult = NonNullable<Awaited<ReturnType<typeof nextTournamentRound>>>
+    export type NextTournamentRoundMutationBody = BodyType<TournamentPlayerInput>
+    export type NextTournamentRoundMutationError = ErrorType<unknown>
+    export type NextTournamentRoundMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
+
+    /**
+ * @summary Host advances the tournament to the next shared case
+ */
+export const useNextTournamentRound = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof nextTournamentRound>>, TError,NextTournamentRoundMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof nextTournamentRound>>,
+        TError,
+        NextTournamentRoundMutationVariables,
+        TContext
+      > => {
+      return useMutation(getNextTournamentRoundMutationOptions(options));
+    }
+
+export const getResetTournamentUrl = (code: string,) => {
+
+
+
+
+  return `/api/tournaments/${code}/reset`
+}
+
+/**
+ * @summary Host clears results and returns the same teams to a fresh lobby
+ */
+export const resetTournament = async (code: string,
+    tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TournamentView>(getResetTournamentUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(tournamentPlayerInput)
+  }
+);}
+
+
+
+
+
+export const getResetTournamentMutationKey = () => ['resetTournament'] as const;
+
+export const getResetTournamentMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetTournament>>, TError,ResetTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof resetTournament>>, TError,ResetTournamentMutationVariables, TContext> => {
+
+const mutationKey = getResetTournamentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resetTournament>>, ResetTournamentMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  resetTournament(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResetTournamentMutationResult = NonNullable<Awaited<ReturnType<typeof resetTournament>>>
+    export type ResetTournamentMutationBody = BodyType<TournamentPlayerInput>
+    export type ResetTournamentMutationError = ErrorType<unknown>
+    export type ResetTournamentMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
+
+    /**
+ * @summary Host clears results and returns the same teams to a fresh lobby
+ */
+export const useResetTournament = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetTournament>>, TError,ResetTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof resetTournament>>,
+        TError,
+        ResetTournamentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getResetTournamentMutationOptions(options));
     }
 

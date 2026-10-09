@@ -1123,3 +1123,1116 @@ export const StartNewCaseResponse = zod.object({
 })
 
 
+/**
+ * @summary Create a tournament lobby as host
+ */
+export const createTournamentBodyDisplayNameMax = 24;
+
+
+
+export const CreateTournamentBody = zod.object({
+  "displayName": zod.string().min(1).max(createTournamentBodyDisplayNameMax),
+  "consentAcknowledged": zod.literal(true)
+})
+
+export const CreateTournamentResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Get joinable team slots for a room code
+ */
+export const GetTournamentLobbyParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const GetTournamentLobbyResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.string(),
+  "teamCount": zod.number().int(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Get tournament state for an authenticated room member
+ */
+export const GetTournamentParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const GetTournamentQueryParams = zod.object({
+  "playerId": zod.coerce.string()
+})
+
+export const GetTournamentResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Join an available team before the tournament starts
+ */
+export const JoinTournamentParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const joinTournamentBodyDisplayNameMax = 24;
+
+export const joinTournamentBodyTeamIdMin = 0;
+export const joinTournamentBodyTeamIdMax = 4;
+
+
+
+export const JoinTournamentBody = zod.object({
+  "displayName": zod.string().min(1).max(joinTournamentBodyDisplayNameMax),
+  "teamId": zod.number().int().min(joinTournamentBodyTeamIdMin).max(joinTournamentBodyTeamIdMax),
+  "consentAcknowledged": zod.literal(true)
+})
+
+export const JoinTournamentResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Host configures cases, teams and voting timer before start
+ */
+export const SetTournamentSettingsParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const setTournamentSettingsBodyTeamCountMin = 2;
+export const setTournamentSettingsBodyTeamCountMax = 5;
+
+export const setTournamentSettingsBodyVotingSecondsMin = 15;
+export const setTournamentSettingsBodyVotingSecondsMax = 180;
+
+
+
+export const SetTournamentSettingsBody = zod.object({
+  "playerId": zod.string(),
+  "teamCount": zod.number().int().min(setTournamentSettingsBodyTeamCountMin).max(setTournamentSettingsBodyTeamCountMax),
+  "casesPerTournament": zod.union([zod.literal(1),zod.literal(3),zod.literal(5),zod.literal(7),zod.literal(10)]),
+  "votingSeconds": zod.number().int().min(setTournamentSettingsBodyVotingSecondsMin).max(setTournamentSettingsBodyVotingSecondsMax)
+})
+
+export const SetTournamentSettingsResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Host starts the first shared case when all teams have 6-10 players
+ */
+export const StartTournamentParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const StartTournamentBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const StartTournamentResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Advance this team through its brief, roster and three clues
+ */
+export const AdvanceTournamentScreenParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const AdvanceTournamentScreenBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const AdvanceTournamentScreenResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Reveal one more team clue and reduce case value by 10
+ */
+export const RequestTournamentClueParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const RequestTournamentClueBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const RequestTournamentClueResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Start this team's timed accusation ballot
+ */
+export const BeginTournamentVoteParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const BeginTournamentVoteBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const BeginTournamentVoteResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Cast one individual suspect vote for this team's ballot
+ */
+export const CastTournamentBallotParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const CastTournamentBallotBody = zod.object({
+  "playerId": zod.string(),
+  "suspect": zod.string()
+})
+
+export const CastTournamentBallotResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Host advances the tournament to the next shared case
+ */
+export const NextTournamentRoundParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const NextTournamentRoundBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const NextTournamentRoundResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Host clears results and returns the same teams to a fresh lobby
+ */
+export const ResetTournamentParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const ResetTournamentBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const ResetTournamentResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['lobby', 'round', 'reveal', 'finished']),
+  "hostId": zod.string(),
+  "me": zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+}),
+  "settings": zod.object({
+  "teamCount": zod.number().int(),
+  "casesPerTournament": zod.number().int(),
+  "votingSeconds": zod.number().int()
+}),
+  "roundIndex": zod.number().int(),
+  "difficulty": zod.string().nullable(),
+  "teams": zod.array(zod.object({
+  "id": zod.number().int(),
+  "name": zod.string(),
+  "playerCount": zod.number().int(),
+  "score": zod.number().int(),
+  "correctCount": zod.number().int(),
+  "extraCluesUsed": zod.number().int(),
+  "princeBlames": zod.number().int(),
+  "coffeeSolves": zod.number().int()
+})),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "teamId": zod.number().int(),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "case": zod.union([zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "brief": zod.string(),
+  "characters": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "personality": zod.string(),
+  "portrait": zod.string()
+})),
+  "clueCount": zod.number().int(),
+  "difficulty": zod.enum(['Easy', 'Medium', 'Hard'])
+}),zod.null()]),
+  "teamState": zod.union([zod.object({
+  "teamId": zod.number().int(),
+  "screen": zod.enum(['brief', 'roster', 'clue1', 'clue2', 'clue3', 'choice', 'extra', 'vote', 'runoff', 'waiting']),
+  "clues": zod.array(zod.string()),
+  "value": zod.number().int(),
+  "hasVoted": zod.boolean(),
+  "deadline": zod.number().int().nullable(),
+  "runoffOptions": zod.array(zod.string()),
+  "tallies": zod.array(zod.object({
+  "suspect": zod.string(),
+  "count": zod.number().int(),
+  "percent": zod.number().int()
+})),
+  "submittedVotes": zod.number().int(),
+  "choice": zod.string().nullable()
+}),zod.null()]),
+  "reveal": zod.union([zod.object({
+  "culprit": zod.string(),
+  "what": zod.string(),
+  "why": zod.string(),
+  "results": zod.array(zod.object({
+  "teamId": zod.number().int(),
+  "teamName": zod.string(),
+  "suspect": zod.string().nullable(),
+  "correct": zod.boolean(),
+  "points": zod.number().int(),
+  "extraClues": zod.number().int()
+}))
+}),zod.null()]),
+  "winners": zod.array(zod.string()),
+  "awards": zod.array(zod.object({
+  "name": zod.string(),
+  "teamNames": zod.array(zod.string()),
+  "value": zod.number().int()
+}))
+})
+
+
