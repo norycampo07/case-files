@@ -1,0 +1,498 @@
+Create a multiplayer browser game called "BDS Case Files".
+
+OVERVIEW
+
+Case Files is a collaborative detective game for virtual teams.
+
+Players work together to solve fictional workplace mysteries.
+
+The game should be lightweight, replayable, collaborative, and suitable for virtual team engagement events.
+
+The game must require NO AI APIs, NO OpenAI integration, NO Gemini integration, NO Anthropic integration, and NO paid services.
+
+All content should be generated using predefined templates, randomization, clue pools, motivations, rumors, and workplace scenarios.
+
+The goal is a fun, replayable game that runs entirely within a Replit Core plan.
+
+====================================================
+GAME FLOW
+====================================================
+
+1. Home Screen
+
+- Start New Case
+- Join Case
+- Rules
+- Credits
+
+Display the tagline:
+
+"Welcome to Case Files.
+All mysteries are fictional.
+All clues are fabricated.
+All suspects are innocent until randomly proven guilty."
+
+2. Lobby System
+
+- Create Room
+- Join Room using code
+- 2–10 players
+- Show connected players
+- Host starts game
+
+3. Case Briefing
+
+Generate a workplace mystery.
+
+Display:
+
+- Case Title
+- Incident Summary
+- Suspect List
+- Initial Evidence
+
+4. Investigation Phase
+
+Players vote on investigation actions.
+
+Actions include:
+
+- Interview Suspect
+- Review Emails
+- Examine Scene
+- Review Security Logs
+- Check Timeline
+- Verify Alibi
+- Search Office
+- Analyze Evidence
+- Review Project Tracker
+- Audit Recent Changes
+
+Each action reveals clues.
+
+Clues can support or contradict previous information.
+
+Some clues are genuine.
+
+Some clues are misleading.
+
+5. Team Discussion
+
+Display:
+
+- All collected evidence
+- Suspects
+- Timeline
+- Investigation Notes
+
+Include a team chat panel.
+
+6. Accusation Phase
+
+The team submits:
+
+- Suspect
+- Motive
+- Method
+
+7. Resolution Phase
+
+Reveal:
+
+- Correct Suspect
+- Correct Motive
+- Correct Method
+- Investigation Summary
+- Explanation of clues
+
+====================================================
+CASE TYPES
+====================================================
+
+Generate cases from the following types:
+
+- The Missing Tracker
+- The Wrong Attachment
+- The Vanishing Dashboard
+- The Mystery of Column F
+- The Disappearing Survey
+- The Locked SharePoint Folder
+- The Missing Sign-Off
+- The Missing Project Plan
+- The Corrupted Data File
+- The Phantom Spreadsheet Edit
+- The Executive Presentation Mix-Up
+- The Case of the Deleted Report
+
+====================================================
+SUSPECT ROSTER
+====================================================
+
+Use these recurring fictional characters.
+
+Bekz Paras
+Role: Operations Lead
+
+Profile:
+Knows every tracker, process, and deadline.
+
+Common Alibi:
+Claims to have been preparing a leadership update.
+
+Suspicious Trait:
+Always seems to know about issues before anyone else.
+
+
+Artsu Moyon
+Role: Workflow Specialist
+
+Profile:
+Long-tenured employee with unusual knowledge of historical projects.
+
+Common Alibi:
+Claims to have been reviewing archived records.
+
+Suspicious Trait:
+Knows where forgotten files are hidden.
+
+
+Andy Iglesias
+Role: Client Coordinator
+
+Profile:
+Trusted communicator who works across teams.
+
+Common Alibi:
+Claims to have been attending a client call.
+
+Suspicious Trait:
+Has access to calendars and communications.
+
+
+Prince Boni
+Role: Data Analyst
+
+Profile:
+Expert at spotting inconsistencies in data.
+
+Common Alibi:
+Claims to have been validating submissions.
+
+Suspicious Trait:
+Usually notices issues before everyone else.
+
+
+Derick Onosa
+Role: Systems Specialist
+
+Profile:
+Maintains systems and permissions.
+
+Common Alibi:
+Claims to have been troubleshooting technical issues.
+
+Suspicious Trait:
+Can explain nearly every system change.
+
+
+Peri Vasquez
+Role: Project Coordinator
+
+Profile:
+Works across multiple projects and teams.
+
+Common Alibi:
+Claims to have been updating project trackers.
+
+Suspicious Trait:
+Always seems to know where files and approvals are moving.
+
+====================================================
+MOTIVES
+====================================================
+
+Use workplace-friendly fictional motives.
+
+- Protect Reputation
+- Meet Deadline
+- Hide Mistake
+- Gain Recognition
+- Secure Promotion
+- Win Budget
+- Impress Leadership
+- Maintain Control
+- Cover Up an Error
+- Personal Pride
+
+====================================================
+METHODS
+====================================================
+
+Possible methods:
+
+- Duplicate Access
+- Shared Credentials
+- Hidden Backup Copy
+- Incorrect Version Control
+- Security Blind Spot
+- Edited Permissions
+- Misleading Audit Log
+- Hidden Spreadsheet Tab
+- Deleted Notification
+- Misfiled Documentation
+
+====================================================
+LOCATIONS
+====================================================
+
+Possible locations:
+
+- Project Office
+- Training Room
+- Conference Room
+- Records Archive
+- Data Center
+- Executive Office
+- Shared Workspace
+- Library
+- Innovation Lab
+- Digital Records Vault
+
+====================================================
+OFFICE RUMOR SYSTEM
+====================================================
+
+Generate 2–4 rumors per case.
+
+Examples:
+
+"Bekz Paras was seen near the project room shortly before the incident."
+
+"Artsu Moyon recently accessed archived documentation."
+
+"Andy Iglesias attended an unexpected meeting."
+
+"Prince Boni noticed inconsistencies earlier that week."
+
+"Derick Onosa requested temporary system access."
+
+"Peri Vasquez was the last known editor of the tracker."
+
+RULES:
+
+- Most rumors should be harmless.
+- Some rumors should be irrelevant.
+- A few rumors should connect to real clues.
+- Rumors must NEVER imply serious wrongdoing.
+
+====================================================
+CLUE TYPES
+====================================================
+
+Generate clues from pools.
+
+Examples:
+
+Emails
+Audit Logs
+Meeting Notes
+Version History
+Calendar Events
+Witness Statements
+Tracker Changes
+Access Records
+System Alerts
+Document Revisions
+
+Include:
+
+- Helpful clues
+- Contradictory clues
+- Red herrings
+- Timeline inconsistencies
+
+====================================================
+DETECTIVE ROLES
+====================================================
+
+Each player receives a random role.
+
+Forensics Expert
+- Receives one extra evidence clue
+
+Interviewer
+- Receives one extra suspect question
+
+Archivist
+- Receives historical background hints
+
+Analyst
+- Receives timeline assistance
+
+Profiler
+- Receives motive-related insights
+
+====================================================
+SCORING
+====================================================
+
++50 Correct Suspect
++25 Correct Motive
++25 Correct Method
+
+Bonus:
++10 Unused Investigation Actions
+
+Show final team rank:
+
+- Rookie Detectives
+- Junior Investigators
+- Senior Investigators
+- Elite Detectives
+- Master Detectives
+
+====================================================
+CONSENT, PRIVACY, AND SAFEGUARDS
+====================================================
+
+This game is intended for entertainment and team engagement only.
+
+The characters are fictional.
+
+The names are fictional workplace characters and should not be interpreted as representations of real employees.
+
+Consent Modal
+
+Before entering the game, show:
+
+"This game is a fictional workplace mystery designed solely for entertainment and team engagement.
+All cases, clues, rumors, suspects, and outcomes are randomly generated and do not represent real events, actions, allegations, or behaviors."
+
+Require acknowledgment before continuing.
+
+No Real Allegations
+
+The game must never generate:
+
+- Harassment scenarios
+- HR complaints
+- Medical issues
+- Criminal allegations
+- Financial fraud
+- Real company incidents
+- Real disciplinary matters
+
+Safe Mystery Categories Only
+
+Use only light workplace mysteries.
+
+Examples:
+
+- Missing Tracker
+- Lost Presentation
+- Deleted Report
+- Wrong Attachment
+- Spreadsheet Error
+- Missing Sign-Off
+
+Rumor Safety
+
+Rumors must remain playful, professional, and non-defamatory.
+
+Never imply:
+
+- Dishonesty
+- Criminal behavior
+- Misconduct
+- Policy violations
+
+Footer Disclaimer
+
+Display:
+
+"All characters, clues, incidents, and rumors are fictional and randomly generated for entertainment purposes."
+
+Host Controls
+
+Host may:
+
+- Disable Rumors
+- Disable Chat
+- Reset Case
+- Start New Case
+
+Privacy
+
+Do not store:
+
+- Personal data
+- Chat history
+- Case history
+- Investigation history
+
+Store session state only.
+
+====================================================
+VISUAL DESIGN
+====================================================
+
+Theme:
+Modern Detective Agency
+
+Color Palette:
+- Dark Navy
+- Gold
+- White
+- Slate Gray
+
+Visual Elements:
+- Evidence Board
+- Investigation Files
+- Detective Notebook
+- Suspect Cards
+- Clue Cards
+- Timeline Board
+
+Responsive design.
+
+Desktop and mobile compatible.
+
+====================================================
+TECHNICAL REQUIREMENTS
+====================================================
+
+Use:
+
+- React
+- TypeScript
+- Express
+- WebSockets
+
+Room-based multiplayer.
+
+Session-based storage only.
+
+No database required for Version 1.
+
+No AI APIs.
+
+No external paid dependencies.
+
+====================================================
+VERSION 1 SUCCESS CRITERIA
+====================================================
+
+Players can:
+
+- Create room
+- Join room
+- Receive roles
+- Start mystery
+- Investigate clues
+- View evidence
+- Chat
+- Submit accusation
+- Receive solution
+- Receive score
+
+Prioritize fun, collaboration, replayability, and workplace-friendly humor over visual effects.
