@@ -1,0 +1,599 @@
+Transform the existing Case Files game into a tournament-based workplace mystery game.
+
+GOAL
+
+The game should feel like a mix of:
+
+- Kahoot
+- Jackbox
+- Among Us
+- Office Gossip
+
+The game should be fun, simple, visual, and discussion-focused.
+
+The objective is not deep detective work.
+
+The objective is team discussion, voting, surprises, and laughter.
+
+====================================================
+TOURNAMENT MODE
+====================================================
+
+Support:
+
+- 2 to 5 teams
+- 6 to 10 players per team
+- 30 to 50 total players
+
+All teams play the SAME case each round.
+
+After each round:
+- Reveal culprit
+- Award points
+- Update leaderboard
+
+At the end:
+- Display winning team
+
+====================================================
+HOST SETUP
+====================================================
+
+Host selects:
+
+Cases Per Tournament
+
+Options:
+
+1
+3 (Default)
+5
+7
+10
+
+Start Tournament
+
+====================================================
+DIFFICULTY PROGRESSION
+====================================================
+
+1 CASE
+
+Case 1 = Easy
+
+====================================================
+
+3 CASES
+
+Case 1 = Easy
+Case 2 = Medium
+Case 3 = Hard
+
+====================================================
+
+5 CASES
+
+Case 1 = Easy
+Case 2 = Easy
+Case 3 = Medium
+Case 4 = Medium
+Case 5 = Hard
+
+====================================================
+
+7 CASES
+
+Case 1 = Easy
+Case 2 = Easy
+Case 3 = Easy
+Case 4 = Medium
+Case 5 = Medium
+Case 6 = Medium
+Case 7 = Hard
+
+====================================================
+
+10 CASES
+
+Case 1 = Easy
+Case 2 = Easy
+Case 3 = Easy
+Case 4 = Easy
+Case 5 = Medium
+Case 6 = Medium
+Case 7 = Medium
+Case 8 = Medium
+Case 9 = Hard
+Case 10 = Hard
+
+====================================================
+GAME FLOW
+====================================================
+
+IMPORTANT
+
+Show only ONE screen at a time.
+
+Avoid tabs.
+
+Avoid complex layouts.
+
+Avoid showing all information at once.
+
+The player should always know exactly what to do next.
+
+====================================================
+
+STEP 1
+
+CASE BRIEF
+
+Show:
+
+CASE TITLE
+
+Example:
+
+THE MISSING TRACKER
+
+A project tracker disappeared
+30 minutes before executive review.
+
+Button:
+
+Next
+
+When completed:
+
+Collapse into a top-bar icon:
+
+💼 Brief
+
+====================================================
+
+STEP 2
+
+TEAM MEMBERS
+
+Show large character cards.
+
+Display:
+
+Portrait
+Name
+Title
+Short personality
+
+Button:
+
+Next
+
+Collapse into:
+
+🪪 Team Members
+
+====================================================
+
+STEP 3
+
+CLUE 1
+
+Show only:
+
+Clue 1
+
+Button:
+
+Next
+
+Collapse into:
+
+📌 1
+
+====================================================
+
+STEP 4
+
+CLUE 2
+
+Show only:
+
+Clue 2
+
+Button:
+
+Next
+
+Collapse into:
+
+📌 2
+
+====================================================
+
+STEP 5
+
+CLUE 3
+
+Show only:
+
+Clue 3
+
+Button:
+
+Continue
+
+Collapse into:
+
+📌 3
+
+====================================================
+TEAM MEMBER ROSTER
+====================================================
+
+Bekz Sarap
+Project Manager
+
+Knows every tracker,
+deadline, and status update.
+
+----------------------------------------------------
+
+Artsu MoYan
+Quality & Insights Specialist
+
+Usually notices issues
+before everyone else.
+
+----------------------------------------------------
+
+Andy Iglesias
+Client Coordinator
+
+Connected to many meetings,
+clients, and conversations.
+
+----------------------------------------------------
+
+Prince Boni
+AI Engineer
+
+Automates things nobody asked
+to automate.
+
+----------------------------------------------------
+
+Derick O'noso
+Systems Specialist
+
+Can explain almost any
+technical problem.
+
+----------------------------------------------------
+
+Peri Vasquez
+Project Coordinator
+
+Knows where documents,
+approvals, and trackers move.
+
+----------------------------------------------------
+
+Nori Ocampus
+Workflow Specialist
+
+Knows how processes really work.
+
+====================================================
+CASE TYPES
+====================================================
+
+The Missing Tracker
+
+The Wrong Attachment
+
+The Vanishing Dashboard
+
+The Mystery of Column F
+
+The Disappearing Survey
+
+The Locked SharePoint Folder
+
+The Missing Sign-Off
+
+The Missing Project Plan
+
+The Corrupted Data File
+
+The Phantom Spreadsheet Edit
+
+The Executive Presentation Mix-Up
+
+The Deleted Report
+
+The Missing Coffee Mug
+
+The Empty Pantry
+
+The Wrong Slide Deck
+
+====================================================
+CLUE DESIGN RULES
+====================================================
+
+Clues may reference:
+
+- Roles
+- Responsibilities
+- Expertise
+- Access Levels
+- Habits
+- Opportunities
+- Character Names
+
+Names may be mentioned directly.
+
+However:
+
+A clue should not directly reveal the culprit.
+
+Good clues create discussion.
+
+Good clues create suspicion.
+
+Good clues leave room for multiple interpretations.
+
+Players should debate.
+
+Bad clues immediately reveal the answer.
+
+====================================================
+EXAMPLE CLUES
+====================================================
+
+"Prince Boni suggested the tracker needed major improvements."
+
+"Nori Ocampus noticed something unusual earlier that morning."
+
+"The action required elevated access."
+
+"Bekz Sarap was reviewing reports generated from the tracker."
+
+"The dashboard was moved, not deleted."
+
+"The incident involved a workflow normally reviewed by Nori."
+
+====================================================
+OPTIONAL CLUES
+====================================================
+
+After Clue 3:
+
+Show:
+
+What would your team like to do?
+
+🗳 Make Accusation
+
+🔎 Request Another Clue
+
+Every case starts worth:
+
+100 Points
+
+Each extra clue reduces the case value by 10 points.
+
+100
+90
+80
+70
+60
+50
+40
+30
+
+Maximum:
+
+7 additional clues
+
+Maximum total clues:
+
+10
+
+Additional clues should not always be helpful.
+
+Some should be red herrings.
+
+Some should be useful.
+
+Some should create new theories.
+
+====================================================
+TEAM VOTING
+====================================================
+
+Every player votes.
+
+No team captain voting.
+
+Show live voting percentages.
+
+Example:
+
+Bekz Sarap 25%
+
+Prince Boni 35%
+
+Derick O’noso 15%
+
+Nori Ocampus 25%
+
+Display votes in real time.
+
+====================================================
+TIE HANDLING
+====================================================
+
+If there is a tie:
+
+Show tied suspects only.
+
+Run a quick 30-second runoff vote.
+
+====================================================
+VOTING TIMER
+====================================================
+
+Voting timer:
+
+60 seconds
+
+Host configurable.
+
+When timer expires:
+
+Use only submitted votes.
+
+Missing votes do not block progress.
+
+====================================================
+RECONNECT SUPPORT
+====================================================
+
+Players can refresh and reconnect.
+
+Restore:
+
+- Team
+- Tournament
+- Current Case
+- Revealed Clues
+- Vote Status
+
+If player already voted:
+
+Display:
+
+"You already voted."
+
+====================================================
+REVEAL SCREEN
+====================================================
+
+Display:
+
+CASE CLOSED
+
+The culprit was:
+
+[Name]
+
+Explain:
+
+What happened
+Why it happened
+
+Use workplace-humor narration.
+
+Examples:
+
+"The tracker was accidentally archived."
+
+"The wrong file version was uploaded."
+
+"The dashboard was moved into a restricted folder."
+
+====================================================
+TEAM RESULTS
+====================================================
+
+Show:
+
+Team Alpha → Prince ❌
+
+Team Bravo → Bekz ✅
+
+Team Charlie → Derick ❌
+
+Team Delta → Bekz ✅
+
+Team Echo → Nori ❌
+
+====================================================
+LEADERBOARD
+====================================================
+
+Update after every round.
+
+Example:
+
+🥇 Team Alpha 180
+
+🥈 Team Delta 170
+
+🥉 Team Bravo 150
+
+4. Team Echo 140
+
+5. Team Charlie 120
+
+====================================================
+FUN AWARDS
+====================================================
+
+At tournament end:
+
+🧠 Best Detectives
+Most correct answers
+
+🔎 Clue Hoarders
+Used the most clues
+
+⚡ Bold Detectives
+Solved with the fewest clues
+
+🤣 Prince Blamers
+Accused Prince Boni the most
+
+☕ Coffee Investigators
+Solved coffee-related cases without extra clues
+
+====================================================
+WINNER SCREEN
+====================================================
+
+🏆 CASE FILES CHAMPIONS
+
+[Winning Team]
+
+Show:
+
+Final rankings
+
+Confetti animation
+
+New Tournament button
+
+====================================================
+UI DESIGN
+====================================================
+
+Prioritize:
+
+- One screen at a time
+- Large buttons
+- Large suspect cards
+- Minimal reading
+- Mobile-friendly
+- Desktop-friendly
+- Smooth transitions
+
+Avoid:
+
+- Tabs
+- Complex evidence boards
+- Dense text
+- Multiple panels
+- Detective simulation mechanics
+
+The game should be understandable within 15 seconds.
