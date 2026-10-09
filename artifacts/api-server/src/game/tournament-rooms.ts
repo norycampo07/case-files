@@ -182,9 +182,9 @@ export function connectTournamentPlayer(code: string, playerId: string, sessionI
 export function setTournamentSettings(code: string, playerId: string, sessionId: string | undefined, settings: TournamentSettings) {
   const { room, member } = hostFor(code, playerId, sessionId);
   if (room.status !== "lobby") throw new TournamentError(409, "Settings can only change before a tournament starts.");
-  if (settings.teamCount < 2 || settings.teamCount > 5 || ![1, 3, 5, 7, 10].includes(settings.casesPerTournament) ||
+  if (!Number.isInteger(settings.teamCount) || settings.teamCount < 1 || settings.teamCount > 5 || ![1, 3, 5, 7, 10].includes(settings.casesPerTournament) ||
       settings.votingSeconds < 15 || settings.votingSeconds > 180 || !Number.isInteger(settings.votingSeconds))
-    throw new TournamentError(400, "Choose 2–5 teams, 1/3/5/7/10 cases, and a 15–180 second timer.");
+    throw new TournamentError(400, "Choose 1–5 teams, 1/3/5/7/10 cases, and a 15–180 second timer.");
   if (room.members.some(p => p.teamId >= settings.teamCount)) throw new TournamentError(409, "A team with joined players cannot be removed.");
   room.settings = { teamCount: settings.teamCount, casesPerTournament: settings.casesPerTournament, votingSeconds: settings.votingSeconds };
   broadcast(room);
@@ -206,7 +206,7 @@ function beginRound(room: TournamentRoom) {
 export function startTournament(code: string, playerId: string, sessionId: string | undefined) {
   const { room, member } = hostFor(code, playerId, sessionId);
   if (room.status !== "lobby") throw new TournamentError(409, "The tournament is already active.");
-  if (availableTeams(room).some(t => t.playerCount < 6 || t.playerCount > 10)) throw new TournamentError(409, "Each team needs 6–10 players before starting.");
+  if (availableTeams(room).some(t => t.playerCount < 1 || t.playerCount > 10)) throw new TournamentError(409, "Each team needs 1-10 players per team before starting.");
   room.roundIndex = 0; room.usedTitles.clear(); room.scores.clear();
   for (let id = 0; id < room.settings.teamCount; id++) room.scores.set(id, initialStats());
   beginRound(room); broadcast(room);

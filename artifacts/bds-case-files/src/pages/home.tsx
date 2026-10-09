@@ -67,7 +67,7 @@ export default function Home() {
           {mode === "create" && (
             <form onSubmit={handleSubmit(onCreate)} className="pt-8 space-y-5">
               <h2 className="font-display text-4xl font-bold">Host a tournament</h2>
-              <p className="text-muted-foreground">12 to 50 colleagues, 2 to 5 teams. You will set the rounds in the lobby.</p>
+              <p className="text-muted-foreground">1 to 5 teams, 1-10 players per team. You will set the teams and rounds in the lobby.</p>
               <NameConsent register={register} />
               {err && <p data-testid="text-error" className="text-destructive">{err}</p>}
               <button data-testid="button-submit" disabled={create.isPending || !w.name.trim() || !w.consent} className={bigBtn}>{create.isPending ? "Opening..." : "Open lobby"}<ArrowRight className="h-5 w-5" /></button>

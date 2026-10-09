@@ -1455,7 +1455,6 @@ export const SetTournamentSettingsParams = zod.object({
   "code": zod.coerce.string()
 })
 
-export const setTournamentSettingsBodyTeamCountMin = 2;
 export const setTournamentSettingsBodyTeamCountMax = 5;
 
 export const setTournamentSettingsBodyVotingSecondsMin = 15;
@@ -1465,7 +1464,7 @@ export const setTournamentSettingsBodyVotingSecondsMax = 180;
 
 export const SetTournamentSettingsBody = zod.object({
   "playerId": zod.string(),
-  "teamCount": zod.number().int().min(setTournamentSettingsBodyTeamCountMin).max(setTournamentSettingsBodyTeamCountMax),
+  "teamCount": zod.number().int().min(1).max(setTournamentSettingsBodyTeamCountMax),
   "casesPerTournament": zod.union([zod.literal(1),zod.literal(3),zod.literal(5),zod.literal(7),zod.literal(10)]),
   "votingSeconds": zod.number().int().min(setTournamentSettingsBodyVotingSecondsMin).max(setTournamentSettingsBodyVotingSecondsMax)
 })
@@ -1557,7 +1556,7 @@ export const SetTournamentSettingsResponse = zod.object({
 
 
 /**
- * @summary Host starts the first shared case when all teams have 6-10 players
+ * @summary Host starts the first shared case when all teams have 1-10 players per team
  */
 export const StartTournamentParams = zod.object({
   "code": zod.coerce.string()

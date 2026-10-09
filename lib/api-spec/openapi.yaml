@@ -376,7 +376,7 @@ paths:
     post:
       operationId: startTournament
       tags: [case-files]
-      summary: Host starts the first shared case when all teams have 6-10 players
+      summary: Host starts the first shared case when all teams have 1-10 players per team
       parameters:
         - { name: code, in: path, required: true, schema: { type: string } }
       requestBody:
@@ -523,7 +523,7 @@ components:
       required: [playerId, teamCount, casesPerTournament, votingSeconds]
       properties:
         playerId: { type: string }
-        teamCount: { type: integer, minimum: 2, maximum: 5 }
+        teamCount: { type: integer, minimum: 1, maximum: 5 }
         casesPerTournament: { type: integer, enum: [1, 3, 5, 7, 10] }
         votingSeconds: { type: integer, minimum: 15, maximum: 180 }
     TournamentBallotInput:

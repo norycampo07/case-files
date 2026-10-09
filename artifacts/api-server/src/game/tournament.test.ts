@@ -9,14 +9,14 @@ import {
   nextTournamentRound, resetTournament, connectTournamentPlayer,
 } from "./tournament-rooms";
 
-function setup(cases = 3, teams = 2) {
+function setup(cases = 3, teams = 2, sizes: number | number[] = 6) {
   const hostSession = randomUUID();
   const first = createTournament(`Host${randomUUID().slice(0, 6)}`, hostSession);
   const code = first.code;
   const players = [{ id: first.me.id, session: hostSession, team: 0 }];
   setTournamentSettings(code, first.me.id, hostSession, { teamCount: teams, casesPerTournament: cases, votingSeconds: 60 });
   for (let team = 0; team < teams; team++) {
-    for (let n = team === 0 ? 1 : 0; n < 6; n++) {
+    for (let n = team === 0 ? 1 : 0; n < (typeof sizes === "number" ? sizes : sizes[team]!); n++) {
       const session = randomUUID();
       const joined = joinTournament(code, `Alias${randomUUID().slice(0, 8)}`, team, session);
       players.push({ id: joined.me.id, session, team });
@@ -44,7 +44,7 @@ test("difficulty schedules match all five tournament lengths", () => {
 test("team membership, capacities, host permissions and browser ownership are enforced", () => {
   const session = randomUUID();
   const room = createTournament("FictionalHost", session);
-  assert.throws(() => startTournament(room.code, room.me.id, session), /6–10/);
+  assert.throws(() => startTournament(room.code, room.me.id, session), /1-10/);
   const otherSession = randomUUID();
   const other = joinTournament(room.code, "FriendlyAlias", 1, otherSession);
   assert.throws(() => getTournament(room.code, room.me.id, otherSession), /not a member/);
@@ -54,7 +54,26 @@ test("team membership, capacities, host permissions and browser ownership are en
   for (let i = 0; i < 9; i++) joinTournament(room.code, `Fill${i}`, 0, randomUUID());
   assert.throws(() => joinTournament(room.code, "Overflow", 0, randomUUID()), /10 players/);
   assert.equal(getTournamentLobby(room.code).teams[0]!.playerCount, 10);
-  assert.throws(() => setTournamentSettings(room.code, room.me.id, session, { teamCount: 1, casesPerTournament: 3, votingSeconds: 60 }), /2–5/);
+  assert.throws(() => setTournamentSettings(room.code, room.me.id, session, { teamCount: 1, casesPerTournament: 3, votingSeconds: 60 }), /cannot be removed/);
+  assert.throws(() => setTournamentSettings(room.code, room.me.id, session, { teamCount: 0, casesPerTournament: 3, votingSeconds: 60 }), /1–5/);
+});
+test("every size from one to ten can start, including uneven teams and a solo tournament", () => {
+  for (let size = 1; size <= 10; size++) {
+    const c = setup(1, 1, size);
+    assert.equal(startTournament(c.code, c.host.id, c.host.session).status, "round");
+    assert.equal(c.read().teams[0]!.playerCount, size);
+  }
+  const mixed = setup(1, 4, [1, 3, 7, 10]);
+  assert.equal(startTournament(mixed.code, mixed.host.id, mixed.host.session).status, "round");
+  assert.deepEqual(mixed.read().teams.map(t => t.playerCount), [1, 3, 7, 10]);
+
+  const solo = setup(1, 1, 1);
+  startTournament(solo.code, solo.host.id, solo.host.session);
+  toChoice(solo);
+  beginTournamentVote(solo.code, solo.host.id, solo.host.session);
+  const result = castTournamentBallot(solo.code, solo.host.id, solo.host.session, characters[0].name);
+  assert.equal(result.status, "finished");
+  assert.equal(result.reveal!.results.length, 1);
 });
 test("same shared case; staged clues and extra clue deductions; no early solution or score leak; full reset", () => {
   const c = setup(1);

@@ -1564,7 +1564,7 @@ export const getStartTournamentUrl = (code: string,) => {
 }
 
 /**
- * @summary Host starts the first shared case when all teams have 6-10 players
+ * @summary Host starts the first shared case when all teams have 1-10 players per team
  */
 export const startTournament = async (code: string,
     tournamentPlayerInput: TournamentPlayerInput, options?: Parameters<typeof customFetch>[1]): Promise<TournamentView> => {
@@ -1631,7 +1631,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type StartTournamentMutationVariables = {code: string;data: BodyType<TournamentPlayerInput>}
 
     /**
- * @summary Host starts the first shared case when all teams have 6-10 players
+ * @summary Host starts the first shared case when all teams have 1-10 players per team
  */
 export const useStartTournament = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startTournament>>, TError,StartTournamentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}

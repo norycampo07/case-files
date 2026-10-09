@@ -10,7 +10,7 @@ import type { TournamentSettingsInputCasesPerTournament } from './tournamentSett
 export interface TournamentSettingsInput {
   playerId: string;
   /**
-     * @minimum 2
+     * @minimum 1
      * @maximum 5
      */
   teamCount: number;

@@ -243,7 +243,7 @@ function Lobby({ v, isHost, settings, start, apply, call, playerId }: { v: Tourn
   const [copied, setCopied] = useState(false);
   const s = v.settings;
   const active = v.teams.slice(0, s.teamCount);
-  const ready = active.length >= 2 && active.every((t) => t.playerCount >= 6 && t.playerCount <= 10);
+  const ready = active.length >= 1 && active.every((t) => t.playerCount >= 1 && t.playerCount <= 10);
   const set = (p: Partial<typeof s>) => settings.mutate({ code: v.code, data: { playerId, teamCount: p.teamCount ?? s.teamCount, casesPerTournament: (p.casesPerTournament ?? s.casesPerTournament) as 1 | 3 | 5 | 7 | 10, votingSeconds: p.votingSeconds ?? s.votingSeconds } }, apply);
   const chip = (on: boolean) => "min-w-12 px-4 py-2.5 rounded-xl border-2 font-bold transition " + (on ? "bg-primary text-primary-foreground border-primary" : "border-border hover:border-primary");
   return (
@@ -256,10 +256,11 @@ function Lobby({ v, isHost, settings, start, apply, call, playerId }: { v: Tourn
       </Stage>
       <div className="space-y-4">
         {active.map((t) => {
-          const members = v.players.filter((p) => p.teamId === t.id); const ok = t.playerCount >= 6 && t.playerCount <= 10;
+          const members = v.players.filter((p) => p.teamId === t.id); const ok = t.playerCount >= 1 && t.playerCount <= 10;
           return (
             <section key={t.id} data-testid={"card-team-" + t.id} className="rounded-2xl border-2 bg-card p-4" style={{ borderColor: teamColor(t.id) + "88" }}>
-              <div className="flex justify-between items-center"><h3 className="font-display text-2xl font-bold" style={{ color: teamColor(t.id) }}>{t.name}</h3><span className={"font-mono text-sm " + (ok ? "text-primary" : "text-muted-foreground")}>{t.playerCount} / 6-10</span></div>
+              <div className="flex justify-between items-center"><h3 className="font-display text-2xl font-bold" style={{ color: teamColor(t.id) }}>{t.name}</h3><span className={"font-mono text-sm " + (ok ? "text-primary" : "text-muted-foreground")}>{t.playerCount} / 10 · {ok ? "Ready" : "Not ready"}</span></div>
+              <p className="text-sm text-muted-foreground mt-2">1-10 players per team</p>
               <div className="flex flex-wrap gap-2 mt-3">{members.length === 0 && <span className="text-sm text-muted-foreground">Nobody yet</span>}
                 {members.map((p) => <span key={p.id} data-testid={"row-player-" + p.id} className={"px-3 py-1.5 rounded-full bg-secondary text-sm flex items-center gap-1.5 " + (p.connected ? "" : "opacity-50")}>{p.isHost && <Crown className="h-3.5 w-3.5 text-primary" />}{p.displayName}{p.id === playerId && " (you)"}</span>)}</div>
             </section>
@@ -268,11 +269,11 @@ function Lobby({ v, isHost, settings, start, apply, call, playerId }: { v: Tourn
       </div>
       {isHost ? (
         <section className="rounded-2xl border border-border bg-card p-5 space-y-5" data-testid="panel-host-setup">
-          <div><p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">Teams</p><div className="flex gap-2 flex-wrap">{[2, 3, 4, 5].map((n) => <button key={n} data-testid={"button-teams-" + n} onClick={() => set({ teamCount: n })} className={chip(s.teamCount === n)}>{n}</button>)}</div></div>
+          <div><p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">Teams</p><div className="flex gap-2 flex-wrap">{[1, 2, 3, 4, 5].map((n) => <button key={n} data-testid={"button-teams-" + n} onClick={() => set({ teamCount: n })} className={chip(s.teamCount === n)}>{n}</button>)}</div></div>
           <div><p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">Cases</p><div className="flex gap-2 flex-wrap">{[1, 3, 5, 7, 10].map((n) => <button key={n} data-testid={"button-cases-" + n} onClick={() => set({ casesPerTournament: n })} className={chip(s.casesPerTournament === n)}>{n}</button>)}</div></div>
           <div><p className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-2">Voting seconds</p><div className="flex gap-2 flex-wrap">{[30, 45, 60, 90, 120].map((n) => <button key={n} data-testid={"button-seconds-" + n} onClick={() => set({ votingSeconds: n })} className={chip(s.votingSeconds === n)}>{n}</button>)}</div></div>
           <button data-testid="button-start" disabled={!ready || start.isPending} onClick={() => start.mutate(call, apply)} className={bigBtn}>{start.isPending ? "Starting..." : "Start tournament"}<ArrowRight className="h-6 w-6" /></button>
-          {!ready && <p className="text-sm text-muted-foreground">Every team needs 6 to 10 players to start.</p>}
+          {!ready && <p className="text-sm text-muted-foreground">Every team needs at least 1 player to start. 1-10 players per team.</p>}
           {settings.isError && <p className="text-sm text-destructive">Could not save settings.</p>}
         </section>
       ) : (

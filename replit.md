@@ -1,6 +1,6 @@
 # BDS Case Files
 
-A fictional workplace mystery tournament for 12–50 players in 2–5 teams of 6–10.
+A fictional workplace mystery tournament for 1–50 players in 1–5 teams, with 1-10 players per team.
 
 ## Run & Operate
 
@@ -33,7 +33,7 @@ A fictional workplace mystery tournament for 12–50 players in 2–5 teams of 6
 - Anonymous room membership uses an HTTP-only browser session cookie, not user accounts. It allows separate players in separate tabs while preventing other browsers from impersonating a player ID.
 - Teams play the same case each round, but advance through their own brief, roster and clues. Extra clues and ballots are scoped to that team. Solutions and current-round scores stay hidden until every team has finished.
 - Each player casts one suspect ballot. Timers count submitted ballots only. A tied ballot opens a 30-second runoff among tied leaders; if the runoff still ties, a draw among those leaders resolves it.
-- The host chooses 1, 3, 5, 7 or 10 cases (default 3), 2–5 teams and a 15–180-second vote timer (default 60). Starting requires 6–10 members on every team.
+- The host chooses 1, 3, 5, 7 or 10 cases (default 3), 1–5 teams and a 15–180-second vote timer (default 60). Starting requires 1–10 members on every configured team; empty teams block starting. A single team with one player can start.
 
 ## Product
 
