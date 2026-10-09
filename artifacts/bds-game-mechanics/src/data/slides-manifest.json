@@ -1,0 +1,98 @@
+[
+  {
+    "id": "44bd6ae8-84fe-41d9-ac6d-a62b23c3a49f",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01.tsx",
+    "title": "BDS Case Files",
+    "description": "Cooperative workplace mysteries • 2–10 players • 5 specialist roles • 6 team actions • Objective: identify the suspect, motive, and method",
+    "speakerNotes": ""
+  },
+  {
+    "id": "223822a2-fa9c-43fa-a2b9-8d767b1a76a8",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02.tsx",
+    "title": "Keep it fictional",
+    "description": "Acknowledge the fictional-entertainment notice before entering • Use a made-up detective alias, not personal information • All characters, clues, rumors, and outcomes are fictional • Playful workplace mix-ups—not real incidents or allegations • Active room state stays in memory; no database or case history",
+    "speakerNotes": ""
+  },
+  {
+    "id": "23262de9-dd11-4892-88e3-4b8822b1a7b2",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03.tsx",
+    "title": "Create a room. Assemble your team.",
+    "description": "Host chooses Start New Case and shares the room code • Teammates choose Join Case and enter the code • Rooms support 2–10 players • Specialist roles are assigned randomly; larger teams may repeat roles • New players join before the host starts the investigation",
+    "speakerNotes": ""
+  },
+  {
+    "id": "6f20ef37-22fe-45fb-b86b-b00aaaa45cf5",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04.tsx",
+    "title": "Read the case briefing",
+    "description": "Review the case title, summary, and location • Meet six fictional suspects and compare their profiles and alibis • Start with two evidence items and the case timeline • Read 2–4 playful rumors when enabled • Treat rumors as leads—not proof",
+    "speakerNotes": ""
+  },
+  {
+    "id": "f4024619-157d-4fc1-afe3-7f7183c41ed0",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide05.tsx",
+    "title": "Use your specialist advantage",
+    "description": "Forensics Expert: one extra private evidence clue • Interviewer: one free follow-up question during the investigation • Archivist: a private historical background clue • Analyst: a private timeline hint • Profiler: a private motive hint",
+    "speakerNotes": ""
+  },
+  {
+    "id": "6f35738f-22ca-4db1-ba3a-c4a87df610db",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06.tsx",
+    "title": "Ten actions. Six team uses.",
+    "description": "Interview Suspect • Review Emails • Examine Scene • Review Security Logs • Check Timeline • Verify Alibi • Search Office • Analyze Evidence • Review Project Tracker • Audit Recent Changes",
+    "speakerNotes": ""
+  },
+  {
+    "id": "c40d17be-b1f5-43a5-9229-087ebcb0cd83",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07.tsx",
+    "title": "Vote on the next investigation",
+    "description": "Each connected player votes for one available action • A strict majority completes the action immediately • If everyone votes without a majority, the largest vote total wins • A tie favors the host’s vote among tied leaders; otherwise fixed action order decides • Each completed action spends one team use and clears the votes • Completed actions cannot be repeated",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b7f8c0cb-93f3-4061-b9e2-ea3200d4c443",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide08.tsx",
+    "title": "Compare clues—not just guesses",
+    "description": "New clues appear on the shared evidence board • Compare helpful clues, contradictions, red herrings, and timeline details • Share your private specialist information in team chat when enabled • Use suspect profiles and alibis to check your theory • Keep personal investigation notes private; notes clear on reload or case replacement",
+    "speakerNotes": ""
+  },
+  {
+    "id": "3cabeb44-306b-4d13-b9e2-72c6371003ee",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide09.tsx",
+    "title": "Make one final accusation",
+    "description": "Discuss the evidence and agree on a theory • Only the host submits the final accusation • Choose one suspect, one motive, and one method • Review the choices before confirming: one filing, no appeals • The reveal shows the solution, clue explanations, team score, and rank",
+    "speakerNotes": ""
+  },
+  {
+    "id": "ca811d96-0e89-41c5-813b-e9af7873ad64",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10.tsx",
+    "title": "Accuracy earns points. Unused actions add a bonus.",
+    "description": "Correct suspect: +50 points • Correct motive: +25 points • Correct method: +25 points • Each unused team action: +10 points • Example: all three correct + three unused actions = 130 points",
+    "speakerNotes": ""
+  },
+  {
+    "id": "e15d366b-a53b-4d3a-9546-b90dde22aeb8",
+    "position": 11,
+    "filepath": "src/pages/slides/Slide11.tsx",
+    "title": "Earn your team rank",
+    "description": "Rookie Detectives: below 50 points • Junior Investigators: 50–74 points • Senior Investigators: 75–99 points • Elite Detectives: 100–129 points • Master Detectives: 130+ points • Balance confident deduction against the value of unused actions",
+    "speakerNotes": ""
+  },
+  {
+    "id": "76388734-3759-4dbe-973e-51637194e8f7",
+    "position": 12,
+    "filepath": "src/pages/slides/Slide12.tsx",
+    "title": "Host controls and replay",
+    "description": "Disable rumors to hide playful leads • Disable chat to stop discussion and discard existing messages • Reset Case clears the case and returns the same team to the lobby • Start New Case replaces the case while keeping the room, team, and settings • Both actions discard previous evidence, chat, notes, votes, and results • Repeat: Brief → Discuss → Vote → Investigate → Accuse → Reveal",
+    "speakerNotes": ""
+  }
+]
