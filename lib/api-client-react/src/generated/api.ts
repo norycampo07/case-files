@@ -28,6 +28,7 @@ import type {
   PlayerActionInput,
   RoomCreateInput,
   RoomJoinInput,
+  RoomSettingsInput,
   RoomView
 } from './api.schemas';
 
@@ -845,5 +846,272 @@ export const useSubmitAccusation = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getSubmitAccusationMutationOptions(options));
+    }
+
+export const getUpdateRoomSettingsUrl = (code: string,) => {
+
+
+
+
+  return `/api/rooms/${code}/settings`
+}
+
+/**
+ * @summary Host controls for rumors and chat
+ */
+export const updateRoomSettings = async (code: string,
+    roomSettingsInput: RoomSettingsInput, options?: Parameters<typeof customFetch>[1]): Promise<RoomView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RoomView>(getUpdateRoomSettingsUrl(code),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(roomSettingsInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateRoomSettingsMutationKey = () => ['updateRoomSettings'] as const;
+
+export const getUpdateRoomSettingsMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateRoomSettings>>, TError,UpdateRoomSettingsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateRoomSettings>>, TError,UpdateRoomSettingsMutationVariables, TContext> => {
+
+const mutationKey = getUpdateRoomSettingsMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateRoomSettings>>, UpdateRoomSettingsMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  updateRoomSettings(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateRoomSettingsMutationResult = NonNullable<Awaited<ReturnType<typeof updateRoomSettings>>>
+    export type UpdateRoomSettingsMutationBody = BodyType<RoomSettingsInput>
+    export type UpdateRoomSettingsMutationError = ErrorType<void>
+    export type UpdateRoomSettingsMutationVariables = {code: string;data: BodyType<RoomSettingsInput>}
+
+    /**
+ * @summary Host controls for rumors and chat
+ */
+export const useUpdateRoomSettings = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateRoomSettings>>, TError,UpdateRoomSettingsMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateRoomSettings>>,
+        TError,
+        UpdateRoomSettingsMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateRoomSettingsMutationOptions(options));
+    }
+
+export const getResetGameUrl = (code: string,) => {
+
+
+
+
+  return `/api/rooms/${code}/reset`
+}
+
+/**
+ * @summary Discard the active case and return the team to the lobby
+ */
+export const resetGame = async (code: string,
+    playerActionInput: PlayerActionInput, options?: Parameters<typeof customFetch>[1]): Promise<RoomView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RoomView>(getResetGameUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(playerActionInput)
+  }
+);}
+
+
+
+
+
+export const getResetGameMutationKey = () => ['resetGame'] as const;
+
+export const getResetGameMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetGame>>, TError,ResetGameMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof resetGame>>, TError,ResetGameMutationVariables, TContext> => {
+
+const mutationKey = getResetGameMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof resetGame>>, ResetGameMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  resetGame(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ResetGameMutationResult = NonNullable<Awaited<ReturnType<typeof resetGame>>>
+    export type ResetGameMutationBody = BodyType<PlayerActionInput>
+    export type ResetGameMutationError = ErrorType<void>
+    export type ResetGameMutationVariables = {code: string;data: BodyType<PlayerActionInput>}
+
+    /**
+ * @summary Discard the active case and return the team to the lobby
+ */
+export const useResetGame = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof resetGame>>, TError,ResetGameMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof resetGame>>,
+        TError,
+        ResetGameMutationVariables,
+        TContext
+      > => {
+      return useMutation(getResetGameMutationOptions(options));
+    }
+
+export const getStartNewCaseUrl = (code: string,) => {
+
+
+
+
+  return `/api/rooms/${code}/new-case`
+}
+
+/**
+ * @summary Discard the previous case and generate another for the same team
+ */
+export const startNewCase = async (code: string,
+    playerActionInput: PlayerActionInput, options?: Parameters<typeof customFetch>[1]): Promise<RoomView> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<RoomView>(getStartNewCaseUrl(code),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(playerActionInput)
+  }
+);}
+
+
+
+
+
+export const getStartNewCaseMutationKey = () => ['startNewCase'] as const;
+
+export const getStartNewCaseMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startNewCase>>, TError,StartNewCaseMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startNewCase>>, TError,StartNewCaseMutationVariables, TContext> => {
+
+const mutationKey = getStartNewCaseMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startNewCase>>, StartNewCaseMutationVariables> = (props) => {
+          const {code,data} = props ?? {};
+
+          return  startNewCase(code,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StartNewCaseMutationResult = NonNullable<Awaited<ReturnType<typeof startNewCase>>>
+    export type StartNewCaseMutationBody = BodyType<PlayerActionInput>
+    export type StartNewCaseMutationError = ErrorType<void>
+    export type StartNewCaseMutationVariables = {code: string;data: BodyType<PlayerActionInput>}
+
+    /**
+ * @summary Discard the previous case and generate another for the same team
+ */
+export const useStartNewCase = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startNewCase>>, TError,StartNewCaseMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof startNewCase>>,
+        TError,
+        StartNewCaseMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStartNewCaseMutationOptions(options));
     }
 

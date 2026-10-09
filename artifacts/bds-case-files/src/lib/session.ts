@@ -9,12 +9,12 @@ export function clearSession() { sessionStorage.removeItem(KEY); }
 export const ACTION_LABELS: Record<string, { label: string; hint: string }> = {
   "interview-suspect": { label: "Interview Suspect", hint: "Question a suspect face to face." },
   "review-emails": { label: "Review Emails", hint: "Read through internal correspondence." },
-  "examine-crime-scene": { label: "Examine Crime Scene", hint: "Walk the scene for physical traces." },
+  "examine-crime-scene": { label: "Examine Scene", hint: "Check the fictional workspace and file views." },
   "review-security-logs": { label: "Review Security Logs", hint: "Pull door and system access records." },
   "check-timeline": { label: "Check Timeline", hint: "Reconcile who was where, and when." },
-  "verify-alibi": { label: "Verify Alibi", hint: "Test a suspect's story against records." },
-  "search-office": { label: "Search Office", hint: "Go through desks and drawers." },
-  "analyze-evidence": { label: "Analyze Evidence", hint: "Send collected items for lab review." },
+  "verify-alibi": { label: "Verify Alibi", hint: "Cross-check routine tasks with the calendar." },
+  "search-office": { label: "Search Office", hint: "Look through fictional notes and checklists." },
+  "analyze-evidence": { label: "Analyze Evidence", hint: "Connect revision details and file behavior." },
+  "review-project-tracker": { label: "Review Project Tracker", hint: "Check the handover assignment." },
+  "audit-recent-changes": { label: "Audit Recent Changes", hint: "Compare recent edits with the recovery view." },
 };
-export const MOTIVES = ["Money","Promotion","Revenge","Jealousy","Cover-Up","Personal Gain"];
-export const METHODS = ["Duplicate Key","Stolen Access Card","Hidden Passage","Log Manipulation","Security Blind Spot","Fake Alibi"];

@@ -11,4 +11,5 @@ export interface Suspect {
   title: string;
   profile: string;
   alibi: string;
+  suspiciousTrait: string;
 }

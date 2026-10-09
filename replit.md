@@ -10,6 +10,7 @@ A cooperative multiplayer browser detective game for virtual teams of 2–10 pla
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 - The game does not use a database or external service.
+- `pnpm --filter @workspace/api-server test` — check consent, safe generated cases, multiplayer rules, privacy controls, and scoring.
 
 ## Stack
 
@@ -36,6 +37,14 @@ A cooperative multiplayer browser detective game for virtual teams of 2–10 pla
 ## Product
 
 Create and join rooms by code, investigate generated cases, share clues in chat, use role-specific information, submit a suspect/motive/method accusation, and receive a scored solution.
+
+## Workplace safety and privacy
+
+The attached workplace brief is the product's standing scope: only playful workplace file mix-ups, never criminal allegations, HR complaints, medical issues, fraud, real company incidents, or disciplinary matters. The six recurring characters are explicitly fictional and are not representations of real employees. Motive/method labels from the brief must be framed as ordinary authorized workflow quirks, not misconduct.
+
+Consent is required before room entry. Ask for fictional aliases, never personal details. No database, AI API, paid runtime service, or case history. Keep active room/chat state in memory only; reset/new case discard previous case and chat. Disabling chat also clears its messages. Notes are private in-memory UI state, cleared on reload or case replacement. The browser keeps only session membership and consent.
+
+The promo follows the same workplace-safe scope; preserve its existing 25-second 16:9 format and soundtrack during content revisions.
 
 ## User preferences
 

@@ -12,4 +12,5 @@ export interface RoomJoinInput {
      * @maxLength 24
      */
   displayName: string;
+  consentAcknowledged: true;
 }

@@ -15,6 +15,7 @@ export interface RoomCreateInput {
      * @maxLength 24
      */
   displayName: string;
+  consentAcknowledged: true;
 }
 
 export interface RoomJoinInput {
@@ -23,6 +24,18 @@ export interface RoomJoinInput {
      * @maxLength 24
      */
   displayName: string;
+  consentAcknowledged: true;
+}
+
+export interface RoomSettings {
+  rumorsEnabled: boolean;
+  chatEnabled: boolean;
+}
+
+export interface RoomSettingsInput {
+  playerId: string;
+  rumorsEnabled: boolean;
+  chatEnabled: boolean;
 }
 
 export interface PlayerActionInput {
@@ -41,6 +54,8 @@ export const InvestigationAction = {
   'verify-alibi': 'verify-alibi',
   'search-office': 'search-office',
   'analyze-evidence': 'analyze-evidence',
+  'review-project-tracker': 'review-project-tracker',
+  'audit-recent-changes': 'audit-recent-changes',
 } as const;
 
 export interface InvestigationVoteInput {
@@ -89,6 +104,7 @@ export interface Suspect {
   title: string;
   profile: string;
   alibi: string;
+  suspiciousTrait: string;
 }
 
 export interface PlayerSummary {
@@ -124,6 +140,8 @@ export interface CaseDetails {
   crime: string;
   openingBrief: string;
   suspects: Suspect[];
+  initialEvidence: string[];
+  rumors: string[];
 }
 
 export interface TimelineEntry {
@@ -145,6 +163,17 @@ export interface VoteTally {
   playerIds: string[];
 }
 
+export type CaseResolutionRank = typeof CaseResolutionRank[keyof typeof CaseResolutionRank];
+
+
+export const CaseResolutionRank = {
+  Rookie_Detectives: 'Rookie Detectives',
+  Junior_Investigators: 'Junior Investigators',
+  Senior_Investigators: 'Senior Investigators',
+  Elite_Detectives: 'Elite Detectives',
+  Master_Detectives: 'Master Detectives',
+} as const;
+
 export interface CaseResolution {
   suspect: string;
   motive: string;
@@ -152,10 +181,16 @@ export interface CaseResolution {
   summary: string;
   score: number;
   remainingActionBonus: number;
+  rank: CaseResolutionRank;
+  clueExplanations: string[];
 }
 
 export interface RoomView {
   code: string;
+  caseId: string;
+  settings: RoomSettings;
+  motives: string[];
+  methods: string[];
   status: RoomStatus;
   hostId: string;
   players: PlayerSummary[];

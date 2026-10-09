@@ -6,7 +6,8 @@ import {
   useSubmitAccusation, useJoinRoom, type RoomView, type Evidence, type InvestigationAction,
 } from "@workspace/api-client-react";
 import { useRoomSocket, type ConnState } from "@/hooks/use-room-socket";
-import { loadSession, saveSession, clearSession, ACTION_LABELS, MOTIVES, METHODS } from "@/lib/session";
+import { loadSession, saveSession, clearSession, ACTION_LABELS } from "@/lib/session";
+import { HostControls } from "@/components/host-controls";
 import { Lock, Send, Crown, Copy, Check, Wifi, WifiOff, Gavel, Clock, FileText, UserSearch } from "lucide-react";
 
 const btnGold = "bg-primary text-primary-foreground font-semibold px-4 py-2.5 rounded hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed";
@@ -34,13 +35,14 @@ function JoinGate({ code, onJoined, onHome }: { code: string; onJoined: (s: { co
   const join = useJoinRoom();
   return (
     <div className="min-h-[100dvh] board-bg grid place-items-center p-5">
-      <form onSubmit={(e) => { e.preventDefault(); setErr(""); join.mutate({ code, data: { displayName: name.trim() } }, {
+      <form onSubmit={(e) => { e.preventDefault(); setErr(""); join.mutate({ code, data: { displayName: name.trim(), consentAcknowledged: true } }, {
         onSuccess: (r) => { const s = { code: r.code, playerId: r.me.id }; saveSession(s); onJoined(s); },
         onError: () => setErr("Could not join. The case may not exist or has already started."),
       }); }} className="paper rounded p-8 w-full max-w-sm space-y-4 border-l-[14px] border-primary/80">
         <p className="font-mono text-xs uppercase tracking-widest opacity-60">Case {code}</p>
         <h1 className="font-display text-3xl">Join this case</h1>
-        <input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={24} placeholder="Detective name" className="w-full bg-white/70 border border-slate-400 px-3 py-2 rounded" />
+        <label className="block text-sm">Fictional detective alias<input data-testid="input-name" value={name} onChange={(e) => setName(e.target.value)} maxLength={24} placeholder="Inspector Pencil" className="mt-1 w-full bg-white/70 border border-slate-400 px-3 py-2 rounded" /></label>
+        <p className="text-xs opacity-70">Use a made-up alias. Do not enter personal information.</p>
         {err && <p className="text-sm text-red-700">{err}</p>}
         <button data-testid="button-join" disabled={!name.trim() || join.isPending} className="w-full bg-[hsl(222,45%,12%)] text-[hsl(43,70%,60%)] font-semibold py-3 rounded disabled:opacity-50">Join case</button>
         <button type="button" onClick={onHome} className="text-sm underline w-full">Back to agency</button>
@@ -129,15 +131,17 @@ function RoomScreen({ room, conn, playerId, onLeave }: { room: RoomView; conn: C
             </section>
           )}
 
-          {room.status !== "lobby" && room.case && <CaseBody room={room} playerId={playerId} isHost={isHost} apply={apply} onErr={onErr} vote={vote} />}
+           {room.status !== "lobby" && room.case && <CaseBody key={room.caseId} room={room} playerId={playerId} isHost={isHost} apply={apply} onErr={onErr} vote={vote} />}
           {room.status === "resolved" && room.resolution && <Resolution room={room} />}
-          {room.status === "resolved" && isHost && <button className={btnGold} disabled={start.isPending} onClick={() => start.mutate({ code: room.code, data: { playerId } }, { onSuccess: apply, onError: onErr })}>{start.isPending ? "Opening file..." : "Start a new case with this team"}</button>}
         </main>
 
         <aside className="space-y-5">
           <RolePanel room={room} playerId={playerId} apply={apply} />
-          <Chat room={room} playerId={playerId} />
-          <Notebook code={room.code} />
+           {isHost ? <HostControls room={room} playerId={playerId} apply={apply} /> :
+             <p className="border border-border rounded p-3 text-xs text-muted-foreground">Host settings: rumors {room.settings.rumorsEnabled ? "on" : "off"} · chat {room.settings.chatEnabled ? "on" : "off"}</p>}
+           {room.settings.chatEnabled ? <Chat key={`chat-${room.caseId}`} room={room} playerId={playerId} /> :
+             <section className={panel + " p-4"} data-testid="text-chat-disabled"><h2 className="font-display text-lg">Team chat is disabled</h2><p className="text-xs text-muted-foreground mt-2">The host switched off chat and discarded its messages. Discuss clues on your team call.</p></section>}
+           <Notebook key={`notes-${room.caseId}`} />
         </aside>
       </div>
     </div>
@@ -209,6 +213,12 @@ function CaseBody({ room, playerId, isHost, apply, onErr, vote }: { room: RoomVi
           <h1 className="font-display text-3xl mt-1">{c.title}</h1>
           <p className="mt-3 font-semibold">{c.crime}</p>
           <p className="mt-2 text-muted-foreground">{c.openingBrief}</p>
+           <h2 className="font-display text-xl mt-5">Initial evidence</h2>
+           <ul className="mt-2 list-disc pl-5 space-y-2 text-sm" data-testid="list-initial-evidence">{c.initialEvidence.map(text => <li key={text}>{text}</li>)}</ul>
+           <h2 className="font-display text-xl mt-5">Suspect roster</h2>
+           <p className="text-sm text-muted-foreground">All are fictional workplace characters, not real employees.</p>
+           <ul className="grid sm:grid-cols-2 gap-2 mt-3 text-sm">{c.suspects.map(s => <li key={s.name}><b>{s.name}</b> · {s.title}</li>)}</ul>
+           <OfficeRumors room={room} />
         </section>
       )}
 
@@ -239,9 +249,11 @@ function CaseBody({ room, playerId, isHost, apply, onErr, vote }: { room: RoomVi
           )}
           <section>
             <h2 className="font-display text-xl mb-2">Evidence</h2>
+             <div className="border border-border rounded p-4 mb-3 text-sm"><h3 className="font-semibold mb-2">Initial evidence</h3>{c.initialEvidence.map(text => <p className="mb-2 text-muted-foreground" key={text}>{text}</p>)}</div>
             {room.evidence.length === 0 ? <div className={panel + " p-6 text-sm text-muted-foreground"} data-testid="text-no-evidence">The board is empty. Vote on an action to pin the first exhibit.</div> :
               <div className="grid sm:grid-cols-2 gap-3">{room.evidence.map((e, i) => <EvidenceCard key={e.id} e={e} index={i} />)}</div>}
           </section>
+           <OfficeRumors room={room} />
           <section className={panel + " p-4"}>
             <div className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4 text-primary" /><h2 className="font-display text-xl">Timeline</h2></div>
             {room.timeline.length === 0 ? <p className="text-sm text-muted-foreground">No timeline entries yet.</p> :
@@ -259,6 +271,7 @@ function CaseBody({ room, playerId, isHost, apply, onErr, vote }: { room: RoomVi
                 <div><h3 className="font-display text-lg leading-tight">{s.name}</h3><p className="text-xs opacity-70">{s.title}</p></div>
               </div>
               <p className="text-sm mt-3">{s.profile}</p>
+               <p className="text-sm mt-2"><b>Quirk.</b> {s.suspiciousTrait}</p>
               <p className="text-sm mt-2 border-t border-slate-400/50 pt-2"><b>Alibi.</b> {s.alibi}</p>
             </article>
           ))}
@@ -283,8 +296,9 @@ function Accuse({ room, playerId, isHost, apply, onErr }: { room: RoomView; play
       <h2 className="font-display text-2xl">File the accusation</h2>
       <p className="text-sm text-muted-foreground">One filing, no appeals. Each unspent action is worth 10 points ({room.actionsRemaining} left).</p>
       <label className="block text-sm">Suspect<select data-testid="select-suspect" value={suspect} onChange={(e) => setSuspect(e.target.value)} className={sel}><option value="">Select</option>{room.case!.suspects.map((s) => <option key={s.name}>{s.name}</option>)}</select></label>
-      <label className="block text-sm">Motive<select data-testid="select-motive" value={motive} onChange={(e) => setMotive(e.target.value)} className={sel}><option value="">Select</option>{MOTIVES.map((m) => <option key={m}>{m}</option>)}</select></label>
-      <label className="block text-sm">Method<select data-testid="select-method" value={method} onChange={(e) => setMethod(e.target.value)} className={sel}><option value="">Select</option>{METHODS.map((m) => <option key={m}>{m}</option>)}</select></label>
+      <p className="text-xs text-muted-foreground">These are fictional game labels for a harmless workflow mix-up, not allegations against employees.</p>
+      <label className="block text-sm">Motive<select data-testid="select-motive" value={motive} onChange={(e) => setMotive(e.target.value)} className={sel}><option value="">Select</option>{room.motives.map((m) => <option key={m}>{m}</option>)}</select></label>
+      <label className="block text-sm">Method<select data-testid="select-method" value={method} onChange={(e) => setMethod(e.target.value)} className={sel}><option value="">Select</option>{room.methods.map((m) => <option key={m}>{m}</option>)}</select></label>
       {!confirm ? <button data-testid="button-accuse" disabled={!suspect || !motive || !method} className={btnGold} onClick={() => setConfirm(true)}>Review accusation</button> :
         <div className="border border-primary p-3 rounded space-y-3"><p className="text-sm">Accuse <b>{suspect}</b> of acting for <b>{motive}</b> via <b>{method}</b>?</p>
           <div className="flex gap-2"><button data-testid="button-confirm-accuse" disabled={sub.isPending} className={btnGold} onClick={() => sub.mutate({ code: room.code, data: { playerId, suspect, motive, method } }, { onSuccess: apply, onError: onErr })}>{sub.isPending ? "Filing..." : "File it"}</button>
@@ -300,11 +314,14 @@ function Resolution({ room }: { room: RoomView }) {
       <p className="font-mono text-xs uppercase tracking-widest opacity-60">Case closed</p>
       <h2 className="font-display text-3xl">The solution</h2>
       <dl className="grid sm:grid-cols-3 gap-3 mt-4 text-sm">
-        <div><dt className="opacity-60">Culprit</dt><dd className="font-semibold">{r.suspect}</dd></div>
+        <div><dt className="opacity-60">Fictional suspect</dt><dd className="font-semibold">{r.suspect}</dd></div>
         <div><dt className="opacity-60">Motive</dt><dd className="font-semibold">{r.motive}</dd></div>
         <div><dt className="opacity-60">Method</dt><dd className="font-semibold">{r.method}</dd></div>
       </dl>
       <p className="mt-4 text-sm">{r.summary}</p>
+      <p data-testid="text-team-rank" className="font-display text-2xl mt-5">{r.rank}</p>
+      <h3 className="font-display text-xl mt-4">How the clues connect</h3>
+      <ul className="text-sm list-disc pl-5 mt-2 space-y-2" data-testid="list-clue-explanations">{r.clueExplanations.map(text => <li key={text}>{text}</li>)}</ul>
       <div className="mt-5 flex items-end gap-6"><div><div className="text-xs opacity-60">Team score</div><div data-testid="text-final-score" className="font-display text-5xl">{r.score}</div></div>
         <div className="text-xs opacity-70">Includes {r.remainingActionBonus} points from unspent actions.<br />Scoring: suspect 50, motive 25, method 25.</div></div>
       <a href="/" className="inline-block mt-5 bg-[hsl(222,45%,12%)] text-[hsl(43,70%,60%)] px-4 py-2 rounded font-semibold" data-testid="link-home">Back to agency</a>
@@ -321,6 +338,7 @@ function Chat({ room, playerId }: { room: RoomView; playerId: string }) {
   return (
     <section className={panel + " flex flex-col h-80"}>
       <h2 className="font-display text-lg px-3 pt-3">Team chat</h2>
+      <p className="text-[11px] text-muted-foreground px-3">Session only. Share fictional clues, not personal information.</p>
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2" data-testid="list-messages">
         {room.messages.length === 0 && <p className="text-xs text-muted-foreground">No messages yet. Say something to your team.</p>}
         {room.messages.map((m) => <div key={m.id} className="text-sm"><span className={"font-semibold " + (m.playerId === playerId ? "text-primary" : "")}>{m.displayName}</span> <span className="text-muted-foreground">{m.text}</span></div>)}
@@ -336,14 +354,22 @@ function Chat({ room, playerId }: { room: RoomView; playerId: string }) {
   );
 }
 
-function Notebook({ code }: { code: string }) {
-  const k = "bds-notes-" + code;
-  const [t, setT] = useState(() => sessionStorage.getItem(k) ?? "");
+function Notebook() {
+  const [t, setT] = useState("");
   return (
     <section className="paper rounded p-3 border-l-[10px] border-primary/80">
       <div className="flex items-center gap-2"><FileText className="h-4 w-4" /><h2 className="font-display text-lg">My notebook</h2></div>
-      <p className="text-[11px] opacity-70 mb-1">Personal notes. Only you can see these, and they stay in this browser tab.</p>
-      <textarea data-testid="input-notes" value={t} onChange={(e) => { setT(e.target.value); sessionStorage.setItem(k, e.target.value); }} rows={6} placeholder="Theories, contradictions, questions..." className="w-full bg-white/60 border border-slate-400 rounded p-2 text-sm" />
+      <p className="text-[11px] opacity-70 mb-1">Private, in-memory notes. Cleared on reload, reset, or new case. Never saved.</p>
+      <textarea data-testid="input-notes" value={t} onChange={(e) => setT(e.target.value)} rows={6} maxLength={3000} placeholder="Theories, contradictions, questions..." className="w-full bg-white/60 border border-slate-400 rounded p-2 text-sm" />
     </section>
   );
+}
+function OfficeRumors({ room }: { room: RoomView }) {
+  return <section className={panel + " p-4 mt-4"} data-testid="panel-rumors">
+    <h2 className="font-display text-xl">Office rumor notebook</h2>
+    {!room.settings.rumorsEnabled ? <p className="text-sm text-muted-foreground mt-2">Rumors are disabled by the host.</p> : <>
+      <p className="text-xs text-muted-foreground mt-1">Playful fictional chatter: mostly harmless, sometimes irrelevant, occasionally a clue. Never an allegation.</p>
+      <ul className="list-disc pl-5 text-sm space-y-2 mt-3">{room.case?.rumors.map(text => <li key={text}>{text}</li>)}</ul>
+    </>}
+  </section>;
 }

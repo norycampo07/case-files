@@ -13,4 +13,6 @@ export interface CaseDetails {
   crime: string;
   openingBrief: string;
   suspects: Suspect[];
+  initialEvidence: string[];
+  rumors: string[];
 }

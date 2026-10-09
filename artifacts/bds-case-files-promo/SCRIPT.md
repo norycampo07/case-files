@@ -1,7 +1,8 @@
 # BDS Case Files — Solve it together
 
 ## Treatment
-**Format:** 16:9, 25 seconds. **Promise:** Your virtual team becomes a detective agency.
+**Format:** 16:9, 25 seconds. **Promise:** Your virtual team solves light fictional workplace mysteries together, without real-world allegations.
+**Revision locks:** Preserve durations, compositions, readable role spines, the loop lockup, and the existing instrumental bed. Replace museum/crime examples with workplace files, revision records, and routine motives.
 **Identity:** Product-derived navy, warm gold, ivory; Fraunces display, Plus Jakarta Sans body, Spline Sans Mono labels.
 **Hero:** A case dossier that unfolds into a collaborative evidence system.
 **Motion:** Folder unfolding, camera reframing, SVG clue tracing, kinetic word punches. A persistent gold inspection ring carries each cut.
@@ -20,7 +21,7 @@ Music: one original 25-second instrumental, detective piano ostinato, restrained
 
 ## Shot 01 — 0.00–4.00 (4 seconds): Open the file
 Purpose: Establish the detective game immediately.
-Copy: “A NEW CASE.” (0.0–1.0), “BDS” (0.5–4.0), “Case Files” (1.0–4.0), “Your team. One mystery.” (1.5–4.0), “COOPERATIVE DETECTIVE GAME” (2.0–4.0); folder labels “CASE / 001”, “MUSEUM”, “MISSING ITEM” (0.0–4.0).
+Copy: “A NEW CASE.” (0.0–1.0, then dims), “BDS” (0.5–4.0), “Case Files” (1.0–4.0), “Your team. One mystery.” (1.5–4.0), “Fictional workplace mysteries” (2.0–4.0); folder labels “CASE / 001”, “PROJECT OFFICE”, “Missing tracker.” (0.0–4.0). Cover: “BDS / INVESTIGATIONS”, “Case 001.”, “PROJECT OFFICE · TRACKER”.
 Composition: Navy field, gold horizontal rules. Dossier occupies 75% frame height at right, display type at left; no competing callouts. Cream pages have warm-edge shadow.
 Artistic idea: The title is revealed as if a file has just been declassified.
 Choreography: 0 folder snaps at -8 degrees; 0.5 BDS unmasks; 1.0 Case Files reveals; 1.5 page cover hinges; 2.0 game label appears; 2.5 internal clue lines expand; 3.3–4.0 folder pushes 1.25x while cover folds away and copy contracts. Persistent ring sits over the folder's lower-right seal region.
@@ -40,12 +41,12 @@ Sound: Pulse gains rhythmic detail.
 
 ## Shot 03 — 8.00–14.00 (6 seconds): Connect the evidence
 Purpose: Show votes select an investigation and evidence supports deduction.
-Copy: “Follow the evidence.” (8.0–14.0), “TEAM VOTE” / “Examine evidence” (8.0–10.0), “3 / 5”, then “4 / 5” (8.8 /9.5–10.0); cards “01 / FINGERPRINT”, “A match on the display case.”, “02 / SECURITY”, “Access after closing time.”, “03 / MOTIVE”, “The missing piece: revenge.” (10.0/10.7/11.4–14.0); caption “Vote. Investigate. Connect.” (12.0–14.0).
+Copy: “Follow the evidence.” (8.0–14.0), “TEAM VOTE” / “Review Project Tracker” (8.0–10.0), “3 / 5”, then “4 / 5” (8.8 /9.5–10.0); cards “01 / REVISION”, “Bekz Paras · 14:12 edit.”, “02 / TIMELINE”, “Uploaded at 14:18.”, “03 / MOTIVE”, “Meet Deadline.” (10.0/10.7/11.4–14.0); caption “Vote. Investigate. Connect.” (12.0–14.0). All are routine fictional file changes, not wrongdoing.
 Composition: Ivory board, navy top strip, three oversized evidence slips on a ruled paper plane, red connecting strokes. Short clue descriptions are invented example-case artwork.
 Artistic idea: A vote physically opens a clue; isolated slips turn into a reasoning chain.
-Choreography: First-frame vote slip scales from 1.15; 0.8 and1.5 counter updates; 2.0 vote folds into fingerprint card; 2.7 security arrives angled; 3.4 motive arrives; 3.8 and4.4 red lines trace; 4.0 caption unmask; 5.0–6.0 camera pushes toward fingerprint, other cards rotate away, gold ring picks out the clue.
-Transition: Fingerprint card becomes a forensic dossier in next shot; incoming navy field apertures around matching ring with simultaneous depth settle.
-Assets: Lucide Fingerprint/Camera/KeyRound, CSS paper, SVG connecting strokes.
+Choreography: First-frame vote slip scales from 1.15; 0.8 and1.5 counter updates; 2.0 vote folds into revision card; 2.7 timeline arrives angled; 3.4 motive arrives; 3.8 and4.4 red lines trace; 4.0 caption unmask; 5.0–6.0 camera pushes toward revision, other cards rotate away, gold ring picks out the clue.
+Transition: Revision card becomes a forensic dossier in next shot; incoming navy field settles around matching ring.
+Assets: Lucide FileClock/Clock/Target, CSS paper, SVG connecting strokes.
 Sound: Investigation rhythm develops; no claimed beat synchronization.
 
 ## Shot 04 — 14.00–19.00 (5 seconds): Every role matters
@@ -60,10 +61,10 @@ Sound: Music builds toward resolution.
 
 ## Shot 05 — 19.00–25.00 (6 seconds): Case closed, together
 Purpose: Resolve the game loop with suspect/motive/method and a memorable brand.
-Copy: “SUSPECT · MOTIVE · METHOD” (19.0–21.2), “Make the accusation.” (19.0–21.2), “CASE CLOSED” (20.2–21.2, then fades during handoff), “BDS Case Files” (21.2–25.0), “Solve it together.” (22.0–25.0), “A MULTIPLAYER BROWSER MYSTERY” (22.7–25.0).
+Copy: “SUSPECT · MOTIVE · METHOD” (19.0–21.2), “Solve the mix-up.” (19.0–21.2), “CASE CLOSED” (20.2–21.2, then fades during handoff), “BDS Case Files” (21.2–25.0), “Fictional mysteries. Real teamwork.” (22.0–25.0), “A MULTIPLAYER WORKPLACE MYSTERY” (22.7–25.0), “All characters and clues are fictional.” (23.2–25.0).
 Composition: Full ivory field; accusation paper centered first, then big navy brand at center and restrained gold ring above. Typography is larger and more symmetrical than previous shot.
 Artistic idea: A forceful case-closed stamp transforms into a calm agency signature.
-Choreography: 0 accusation present and settles; 0.6 three gold checks appear; 1.2 stamp impacts from depth with small rotation; 2.2 accusation paper contracts, brand scales into stable frame; 3.0 takeaway reveals; 3.7 game label appears; 5.0–6.0 brand slightly contracts; at 5.7 a navy folder cover rises behind while the lockup changes to ivory. Ring remains on screen and carries into opener. Keep the brand visible through the loop boundary.
+Choreography: 0 accusation present and settles; 0.6 three gold checks appear; 1.2 stamp impacts from depth with small rotation; 2.2 accusation paper contracts, brand scales into stable frame; 3.0 takeaway reveals; 3.7 game label appears; 4.2 fiction disclaimer reveals; 5.0–6.0 brand slightly contracts; at 5.7 a navy folder cover rises behind while the lockup changes to ivory. Ring remains on screen and carries into opener. Keep the brand visible through the loop boundary.
 Transition: Navy cover and inspection ring continue into opening dossier; no empty background-only frame. Scene overlap uses opacity and scale.
 Assets: CSS stamp, lucide Check, plain product name in Fraunces.
 Sound: Instrumental resolves gently at 25s. No independent audio loop.

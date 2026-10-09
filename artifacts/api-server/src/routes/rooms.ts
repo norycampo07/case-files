@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { Router, type IRouter, type Request, type Response } from "express";
-import { CreateRoomBody, JoinRoomBody, StartGameBody, CastInvestigationVoteBody, SendRoomMessageBody, SubmitAccusationBody, UseExtraInterviewBody, GetRoomQueryParams } from "@workspace/api-zod";
-import { accuse, castVote, createRoom, extraInterview, GameError, getRoom, joinRoom, sendMessage, startGame } from "../game/rooms";
+import { CreateRoomBody, JoinRoomBody, StartGameBody, CastInvestigationVoteBody, SendRoomMessageBody, SubmitAccusationBody, UseExtraInterviewBody, GetRoomQueryParams, UpdateRoomSettingsBody, ResetGameBody, StartNewCaseBody } from "@workspace/api-zod";
+import { accuse, castVote, createRoom, extraInterview, GameError, getRoom, joinRoom, sendMessage, startGame, updateSettings, resetGame, startNewCase } from "../game/rooms";
 
 const router: IRouter = Router();
 const session = (req: Request) => req.cookies?.bds_session as string | undefined;
@@ -9,7 +9,7 @@ function ensureSession(req: Request, res: Response) {
   let id = session(req);
   if (!id || !/^[0-9a-f-]{36}$/.test(id)) {
     id = randomUUID();
-    res.cookie("bds_session", id, { httpOnly: true, sameSite: "lax", secure: req.secure || req.headers["x-forwarded-proto"] === "https", maxAge: 24 * 60 * 60 * 1000, path: "/api" });
+    res.cookie("bds_session", id, { httpOnly: true, sameSite: "lax", secure: req.secure || req.headers["x-forwarded-proto"] === "https", path: "/api" });
   }
   return id;
 }
@@ -55,5 +55,17 @@ router.post("/rooms/:code/interview", handler((req, res) => {
 router.post("/rooms/:code/accusation", handler((req, res) => {
   const input = SubmitAccusationBody.parse(req.body);
   res.json(accuse(code(req), input.playerId, session(req), input));
+}));
+router.patch("/rooms/:code/settings", handler((req, res) => {
+  const input = UpdateRoomSettingsBody.parse(req.body);
+  res.json(updateSettings(code(req), input.playerId, session(req), input));
+}));
+router.post("/rooms/:code/reset", handler((req, res) => {
+  const input = ResetGameBody.parse(req.body);
+  res.json(resetGame(code(req), input.playerId, session(req)));
+}));
+router.post("/rooms/:code/new-case", handler((req, res) => {
+  const input = StartNewCaseBody.parse(req.body);
+  res.json(startNewCase(code(req), input.playerId, session(req)));
 }));
 export default router;

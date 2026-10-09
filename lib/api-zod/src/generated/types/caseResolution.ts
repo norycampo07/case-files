@@ -5,6 +5,7 @@
  * BDS Case Files room and cooperative mystery game API
  * OpenAPI spec version: 0.1.0
  */
+import type { CaseResolutionRank } from './caseResolutionRank';
 
 export interface CaseResolution {
   suspect: string;
@@ -13,4 +14,6 @@ export interface CaseResolution {
   summary: string;
   score: number;
   remainingActionBonus: number;
+  rank: CaseResolutionRank;
+  clueExplanations: string[];
 }

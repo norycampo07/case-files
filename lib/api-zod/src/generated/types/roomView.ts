@@ -11,12 +11,17 @@ import type { CurrentPlayer } from './currentPlayer';
 import type { Evidence } from './evidence';
 import type { PlayerSummary } from './playerSummary';
 import type { RoomMessage } from './roomMessage';
+import type { RoomSettings } from './roomSettings';
 import type { RoomStatus } from './roomStatus';
 import type { TimelineEntry } from './timelineEntry';
 import type { VoteTally } from './voteTally';
 
 export interface RoomView {
   code: string;
+  caseId: string;
+  settings: RoomSettings;
+  motives: string[];
+  methods: string[];
   status: RoomStatus;
   hostId: string;
   players: PlayerSummary[];

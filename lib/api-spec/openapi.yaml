@@ -227,6 +227,72 @@ paths:
                 $ref: "#/components/schemas/RoomView"
         "409":
           description: Case is not accepting an accusation
+  /rooms/{code}/settings:
+    patch:
+      operationId: updateRoomSettings
+      tags: [case-files]
+      summary: Host controls for rumors and chat
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RoomSettingsInput" }
+      responses:
+        "200":
+          description: Updated room
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RoomView" }
+        "403": { description: Host only }
+  /rooms/{code}/reset:
+    post:
+      operationId: resetGame
+      tags: [case-files]
+      summary: Discard the active case and return the team to the lobby
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PlayerActionInput" }
+      responses:
+        "200":
+          description: Empty lobby, same room and team
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RoomView" }
+        "403": { description: Host only }
+  /rooms/{code}/new-case:
+    post:
+      operationId: startNewCase
+      tags: [case-files]
+      summary: Discard the previous case and generate another for the same team
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PlayerActionInput" }
+      responses:
+        "200":
+          description: New investigation
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RoomView" }
+        "403": { description: Host only }
 components:
   schemas:
     HealthStatus:
@@ -243,7 +309,10 @@ components:
           type: string
           minLength: 1
           maxLength: 24
-      required: [displayName]
+        consentAcknowledged:
+          type: boolean
+          enum: [true]
+      required: [displayName, consentAcknowledged]
     RoomJoinInput:
       type: object
       properties:
@@ -251,7 +320,23 @@ components:
           type: string
           minLength: 1
           maxLength: 24
-      required: [displayName]
+        consentAcknowledged:
+          type: boolean
+          enum: [true]
+      required: [displayName, consentAcknowledged]
+    RoomSettings:
+      type: object
+      properties:
+        rumorsEnabled: { type: boolean }
+        chatEnabled: { type: boolean }
+      required: [rumorsEnabled, chatEnabled]
+    RoomSettingsInput:
+      type: object
+      properties:
+        playerId: { type: string }
+        rumorsEnabled: { type: boolean }
+        chatEnabled: { type: boolean }
+      required: [playerId, rumorsEnabled, chatEnabled]
     PlayerActionInput:
       type: object
       properties:
@@ -299,6 +384,8 @@ components:
         - verify-alibi
         - search-office
         - analyze-evidence
+        - review-project-tracker
+        - audit-recent-changes
     PlayerRole:
       type: string
       enum: [Forensics Expert, Interviewer, Archivist, Analyst, Profiler]
@@ -316,7 +403,9 @@ components:
           type: string
         alibi:
           type: string
-      required: [name, title, profile, alibi]
+        suspiciousTrait:
+          type: string
+      required: [name, title, profile, alibi, suspiciousTrait]
     PlayerSummary:
       type: object
       properties:
@@ -364,7 +453,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Suspect"
-      required: [title, location, crime, openingBrief, suspects]
+        initialEvidence:
+          type: array
+          items: { type: string }
+        rumors:
+          type: array
+          items: { type: string }
+      required: [title, location, crime, openingBrief, suspects, initialEvidence, rumors]
     Evidence:
       type: object
       properties:
@@ -430,12 +525,28 @@ components:
           type: integer
         remainingActionBonus:
           type: integer
-      required: [suspect, motive, method, summary, score, remainingActionBonus]
+        rank:
+          type: string
+          enum: [Rookie Detectives, Junior Investigators, Senior Investigators, Elite Detectives, Master Detectives]
+        clueExplanations:
+          type: array
+          items: { type: string }
+      required: [suspect, motive, method, summary, score, remainingActionBonus, rank, clueExplanations]
     RoomView:
       type: object
       properties:
         code:
           type: string
+        caseId:
+          type: string
+        settings:
+          $ref: "#/components/schemas/RoomSettings"
+        motives:
+          type: array
+          items: { type: string }
+        methods:
+          type: array
+          items: { type: string }
         status:
           $ref: "#/components/schemas/RoomStatus"
         hostId:
@@ -478,6 +589,10 @@ components:
             - type: "null"
       required:
         - code
+        - caseId
+        - settings
+        - motives
+        - methods
         - status
         - hostId
         - players

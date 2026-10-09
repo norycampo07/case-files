@@ -25,11 +25,19 @@ export const createRoomBodyDisplayNameMax = 24;
 
 
 export const CreateRoomBody = zod.object({
-  "displayName": zod.string().min(1).max(createRoomBodyDisplayNameMax)
+  "displayName": zod.string().min(1).max(createRoomBodyDisplayNameMax),
+  "consentAcknowledged": zod.literal(true)
 })
 
 export const CreateRoomResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -46,7 +54,7 @@ export const CreateRoomResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -63,12 +71,15 @@ export const CreateRoomResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -86,7 +97,7 @@ export const CreateRoomResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -99,7 +110,9 @@ export const CreateRoomResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 
@@ -117,6 +130,13 @@ export const GetRoomQueryParams = zod.object({
 
 export const GetRoomResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -133,7 +153,7 @@ export const GetRoomResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -150,12 +170,15 @@ export const GetRoomResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -173,7 +196,7 @@ export const GetRoomResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -186,7 +209,9 @@ export const GetRoomResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 
@@ -203,11 +228,19 @@ export const joinRoomBodyDisplayNameMax = 24;
 
 
 export const JoinRoomBody = zod.object({
-  "displayName": zod.string().min(1).max(joinRoomBodyDisplayNameMax)
+  "displayName": zod.string().min(1).max(joinRoomBodyDisplayNameMax),
+  "consentAcknowledged": zod.literal(true)
 })
 
 export const JoinRoomResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -224,7 +257,7 @@ export const JoinRoomResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -241,12 +274,15 @@ export const JoinRoomResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -264,7 +300,7 @@ export const JoinRoomResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -277,7 +313,9 @@ export const JoinRoomResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 
@@ -295,6 +333,13 @@ export const StartGameBody = zod.object({
 
 export const StartGameResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -311,7 +356,7 @@ export const StartGameResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -328,12 +373,15 @@ export const StartGameResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -351,7 +399,7 @@ export const StartGameResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -364,7 +412,9 @@ export const StartGameResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 
@@ -378,11 +428,18 @@ export const CastInvestigationVoteParams = zod.object({
 
 export const CastInvestigationVoteBody = zod.object({
   "playerId": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence'])
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes'])
 })
 
 export const CastInvestigationVoteResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -399,7 +456,7 @@ export const CastInvestigationVoteResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -416,12 +473,15 @@ export const CastInvestigationVoteResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -439,7 +499,7 @@ export const CastInvestigationVoteResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -452,7 +512,9 @@ export const CastInvestigationVoteResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 
@@ -475,6 +537,13 @@ export const SendRoomMessageBody = zod.object({
 
 export const SendRoomMessageResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -491,7 +560,7 @@ export const SendRoomMessageResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -508,12 +577,15 @@ export const SendRoomMessageResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -531,7 +603,7 @@ export const SendRoomMessageResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -544,7 +616,9 @@ export const SendRoomMessageResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 
@@ -562,6 +636,13 @@ export const UseExtraInterviewBody = zod.object({
 
 export const UseExtraInterviewResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -578,7 +659,7 @@ export const UseExtraInterviewResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -595,12 +676,15 @@ export const UseExtraInterviewResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -618,7 +702,7 @@ export const UseExtraInterviewResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -631,7 +715,9 @@ export const UseExtraInterviewResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 
@@ -652,6 +738,13 @@ export const SubmitAccusationBody = zod.object({
 
 export const SubmitAccusationResponse = zod.object({
   "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
   "status": zod.enum(['lobby', 'investigation', 'resolved']),
   "hostId": zod.string(),
   "players": zod.array(zod.object({
@@ -668,7 +761,7 @@ export const SubmitAccusationResponse = zod.object({
   "privateBrief": zod.string(),
   "extraClue": zod.union([zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -685,12 +778,15 @@ export const SubmitAccusationResponse = zod.object({
   "name": zod.string(),
   "title": zod.string(),
   "profile": zod.string(),
-  "alibi": zod.string()
-}))
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
 }),zod.null()]),
   "evidence": zod.array(zod.object({
   "id": zod.string(),
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "heading": zod.string(),
   "text": zod.string(),
   "foundAt": zod.string(),
@@ -708,7 +804,7 @@ export const SubmitAccusationResponse = zod.object({
   "createdAt": zod.string()
 })),
   "votes": zod.array(zod.object({
-  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence']),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
   "count": zod.number().int(),
   "playerIds": zod.array(zod.string())
 })),
@@ -721,7 +817,308 @@ export const SubmitAccusationResponse = zod.object({
   "method": zod.string(),
   "summary": zod.string(),
   "score": zod.number().int(),
-  "remainingActionBonus": zod.number().int()
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
+}),zod.null()])
+})
+
+
+/**
+ * @summary Host controls for rumors and chat
+ */
+export const UpdateRoomSettingsParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const UpdateRoomSettingsBody = zod.object({
+  "playerId": zod.string(),
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+})
+
+export const UpdateRoomSettingsResponse = zod.object({
+  "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
+  "status": zod.enum(['lobby', 'investigation', 'resolved']),
+  "hostId": zod.string(),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "me": zod.object({
+  "id": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "roleDescription": zod.string(),
+  "privateBrief": zod.string(),
+  "extraClue": zod.union([zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+}),zod.null()]),
+  "extraInterviewAvailable": zod.boolean()
+}),
+  "case": zod.union([zod.object({
+  "title": zod.string(),
+  "location": zod.string(),
+  "crime": zod.string(),
+  "openingBrief": zod.string(),
+  "suspects": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "profile": zod.string(),
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
+}),zod.null()]),
+  "evidence": zod.array(zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+})),
+  "timeline": zod.array(zod.object({
+  "time": zod.string(),
+  "event": zod.string()
+})),
+  "messages": zod.array(zod.object({
+  "id": zod.string(),
+  "playerId": zod.string(),
+  "displayName": zod.string(),
+  "text": zod.string(),
+  "createdAt": zod.string()
+})),
+  "votes": zod.array(zod.object({
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "count": zod.number().int(),
+  "playerIds": zod.array(zod.string())
+})),
+  "actionsRemaining": zod.number().int(),
+  "investigationLimit": zod.number().int(),
+  "teamScore": zod.number().int(),
+  "resolution": zod.union([zod.object({
+  "suspect": zod.string(),
+  "motive": zod.string(),
+  "method": zod.string(),
+  "summary": zod.string(),
+  "score": zod.number().int(),
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
+}),zod.null()])
+})
+
+
+/**
+ * @summary Discard the active case and return the team to the lobby
+ */
+export const ResetGameParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const ResetGameBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const ResetGameResponse = zod.object({
+  "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
+  "status": zod.enum(['lobby', 'investigation', 'resolved']),
+  "hostId": zod.string(),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "me": zod.object({
+  "id": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "roleDescription": zod.string(),
+  "privateBrief": zod.string(),
+  "extraClue": zod.union([zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+}),zod.null()]),
+  "extraInterviewAvailable": zod.boolean()
+}),
+  "case": zod.union([zod.object({
+  "title": zod.string(),
+  "location": zod.string(),
+  "crime": zod.string(),
+  "openingBrief": zod.string(),
+  "suspects": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "profile": zod.string(),
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
+}),zod.null()]),
+  "evidence": zod.array(zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+})),
+  "timeline": zod.array(zod.object({
+  "time": zod.string(),
+  "event": zod.string()
+})),
+  "messages": zod.array(zod.object({
+  "id": zod.string(),
+  "playerId": zod.string(),
+  "displayName": zod.string(),
+  "text": zod.string(),
+  "createdAt": zod.string()
+})),
+  "votes": zod.array(zod.object({
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "count": zod.number().int(),
+  "playerIds": zod.array(zod.string())
+})),
+  "actionsRemaining": zod.number().int(),
+  "investigationLimit": zod.number().int(),
+  "teamScore": zod.number().int(),
+  "resolution": zod.union([zod.object({
+  "suspect": zod.string(),
+  "motive": zod.string(),
+  "method": zod.string(),
+  "summary": zod.string(),
+  "score": zod.number().int(),
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
+}),zod.null()])
+})
+
+
+/**
+ * @summary Discard the previous case and generate another for the same team
+ */
+export const StartNewCaseParams = zod.object({
+  "code": zod.coerce.string()
+})
+
+export const StartNewCaseBody = zod.object({
+  "playerId": zod.string()
+})
+
+export const StartNewCaseResponse = zod.object({
+  "code": zod.string(),
+  "caseId": zod.string(),
+  "settings": zod.object({
+  "rumorsEnabled": zod.boolean(),
+  "chatEnabled": zod.boolean()
+}),
+  "motives": zod.array(zod.string()),
+  "methods": zod.array(zod.string()),
+  "status": zod.enum(['lobby', 'investigation', 'resolved']),
+  "hostId": zod.string(),
+  "players": zod.array(zod.object({
+  "id": zod.string(),
+  "displayName": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "isHost": zod.boolean(),
+  "connected": zod.boolean()
+})),
+  "me": zod.object({
+  "id": zod.string(),
+  "role": zod.enum(['Forensics Expert', 'Interviewer', 'Archivist', 'Analyst', 'Profiler']),
+  "roleDescription": zod.string(),
+  "privateBrief": zod.string(),
+  "extraClue": zod.union([zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+}),zod.null()]),
+  "extraInterviewAvailable": zod.boolean()
+}),
+  "case": zod.union([zod.object({
+  "title": zod.string(),
+  "location": zod.string(),
+  "crime": zod.string(),
+  "openingBrief": zod.string(),
+  "suspects": zod.array(zod.object({
+  "name": zod.string(),
+  "title": zod.string(),
+  "profile": zod.string(),
+  "alibi": zod.string(),
+  "suspiciousTrait": zod.string()
+})),
+  "initialEvidence": zod.array(zod.string()),
+  "rumors": zod.array(zod.string())
+}),zod.null()]),
+  "evidence": zod.array(zod.object({
+  "id": zod.string(),
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "heading": zod.string(),
+  "text": zod.string(),
+  "foundAt": zod.string(),
+  "privateTo": zod.string().nullable()
+})),
+  "timeline": zod.array(zod.object({
+  "time": zod.string(),
+  "event": zod.string()
+})),
+  "messages": zod.array(zod.object({
+  "id": zod.string(),
+  "playerId": zod.string(),
+  "displayName": zod.string(),
+  "text": zod.string(),
+  "createdAt": zod.string()
+})),
+  "votes": zod.array(zod.object({
+  "action": zod.enum(['interview-suspect', 'review-emails', 'examine-crime-scene', 'review-security-logs', 'check-timeline', 'verify-alibi', 'search-office', 'analyze-evidence', 'review-project-tracker', 'audit-recent-changes']),
+  "count": zod.number().int(),
+  "playerIds": zod.array(zod.string())
+})),
+  "actionsRemaining": zod.number().int(),
+  "investigationLimit": zod.number().int(),
+  "teamScore": zod.number().int(),
+  "resolution": zod.union([zod.object({
+  "suspect": zod.string(),
+  "motive": zod.string(),
+  "method": zod.string(),
+  "summary": zod.string(),
+  "score": zod.number().int(),
+  "remainingActionBonus": zod.number().int(),
+  "rank": zod.enum(['Rookie Detectives', 'Junior Investigators', 'Senior Investigators', 'Elite Detectives', 'Master Detectives']),
+  "clueExplanations": zod.array(zod.string())
 }),zod.null()])
 })
 

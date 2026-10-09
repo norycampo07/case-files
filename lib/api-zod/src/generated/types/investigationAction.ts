@@ -18,4 +18,6 @@ export const InvestigationAction = {
   'verify-alibi': 'verify-alibi',
   'search-office': 'search-office',
   'analyze-evidence': 'analyze-evidence',
+  'review-project-tracker': 'review-project-tracker',
+  'audit-recent-changes': 'audit-recent-changes',
 } as const;

@@ -12,4 +12,5 @@ export interface RoomCreateInput {
      * @maxLength 24
      */
   displayName: string;
+  consentAcknowledged: true;
 }

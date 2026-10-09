@@ -9,6 +9,7 @@
 export * from './accusationInput';
 export * from './caseDetails';
 export * from './caseResolution';
+export * from './caseResolutionRank';
 export * from './chatMessageInput';
 export * from './currentPlayer';
 export * from './evidence';
@@ -22,6 +23,8 @@ export * from './playerSummary';
 export * from './roomCreateInput';
 export * from './roomJoinInput';
 export * from './roomMessage';
+export * from './roomSettings';
+export * from './roomSettingsInput';
 export * from './roomStatus';
 export * from './roomView';
 export * from './suspect';
