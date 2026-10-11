@@ -1,17 +1,17 @@
 import { randomInt, randomUUID } from "node:crypto";
-import { caseFamilies } from "./case-library";
+import { caseLibrary, type Difficulty } from "./case-library";
 
 export const characters = [
-  { name: "Bekz Sarap", title: "Project Manager", personality: "Knows every tracker, deadline, and status update.", portrait: "/portraits/bekz.png" },
-  { name: "Artsu MoYan", title: "Quality & Insights Specialist", personality: "Usually notices issues before everyone else.", portrait: "/portraits/artsu.png" },
-  { name: "Andy Iglesias", title: "Client Coordinator", personality: "Connected to meetings, clients, and conversations.", portrait: "/portraits/andy.png" },
-  { name: "Prince Boni", title: "AI Engineer", personality: "Automates things nobody asked to automate.", portrait: "/portraits/prince.png" },
-  { name: "Derick O'noso", title: "Systems Specialist", personality: "Can explain almost any technical problem.", portrait: "/portraits/derick.png" },
-  { name: "Peri Vasquez", title: "Project Coordinator", personality: "Knows where documents, approvals, and trackers move.", portrait: "/portraits/peri.png" },
-  { name: "Nori Ocampus", title: "Workflow Specialist", personality: "Knows how processes really work.", portrait: "/portraits/nori.png" },
+  { name: "Bekz Sarap", title: "Project Manager", personality: "Knows every tracker, deadline, and status update. Keeps project materials organized. Often discusses unrelated gossip with Andy.", portrait: "/portraits/bekz.png" },
+  { name: "Artsu MoYan", title: "Quality & Insights Specialist", personality: "Usually notices issues before everyone else. Focuses on readability, consistency, and quality improvements. Often unavailable when needed.", portrait: "/portraits/artsu.png" },
+  { name: "Andy Iglesias", title: "Client Coordinator", personality: "Connected to meetings, clients, and conversations. Handles scheduling, attachments, and meeting materials. Often discusses gossip with Bekz.", portrait: "/portraits/andy.png" },
+  { name: "Prince Boni", title: "AI Engineer", personality: "Automates things nobody asked to automate. Frequently blamed; sometimes actually responsible.", portrait: "/portraits/prince.png" },
+  { name: "Derick O'noso", title: "Systems Specialist", personality: "Can explain almost any technical problem. Works with permissions and technical configurations. Always collecting outing contributions.", portrait: "/portraits/derick.png" },
+  { name: "Peri Vasquez", title: "Project Coordinator", personality: "Knows where documents, approvals, and trackers move. Helps organize shared spaces and filters reality through anime logic.", portrait: "/portraits/peri.png" },
+  { name: "Nori Ocampus", title: "Workflow Specialist", personality: "Knows how processes really work. Helpful and forgetful. Maintains workflow exceptions and remembers important things much too late.", portrait: "/portraits/nori.png" },
 ] as const;
 
-export type Difficulty = "Easy" | "Medium" | "Hard";
+export type { Difficulty } from "./case-library";
 export const basePoints = (difficulty: Difficulty) => ({ Easy: 100, Medium: 150, Hard: 200 })[difficulty];
 export function difficultySequence(count: number): Difficulty[] {
   switch (count) {
@@ -19,7 +19,7 @@ export function difficultySequence(count: number): Difficulty[] {
     case 3: return ["Easy", "Medium", "Hard"];
     case 5: return ["Easy", "Easy", "Medium", "Medium", "Hard"];
     case 7: return ["Easy", "Easy", "Easy", "Medium", "Medium", "Medium", "Hard"];
-    case 10: return ["Easy", "Easy", "Easy", "Easy", "Medium", "Medium", "Medium", "Medium", "Hard", "Hard"];
+    case 10: return ["Easy", "Easy", "Easy", "Medium", "Medium", "Medium", "Medium", "Hard", "Hard", "Hard"];
     default: throw new Error("Unsupported tournament length");
   }
 }
@@ -38,38 +38,21 @@ export interface TournamentCaseContent {
   isCoffee: boolean;
 }
 
-export function generateTournamentCase(difficulty: Difficulty, usedTitles: Set<string>): TournamentCaseContent {
-  const usedFamilies = caseFamilies.filter(f => f.stories.some(s => usedTitles.has(s[0])));
-  const unused = caseFamilies.filter(f => !usedFamilies.includes(f));
-  const families = unused.length ? unused : caseFamilies;
-  const available = families.flatMap(f => f.stories.filter(s => !usedTitles.has(s[0])).map(story => ({ family: f, story })));
-  if (!available.length) throw new Error("Tournament case library exhausted");
-  const { family, story: [title, brief, what, trace] } = available[randomInt(available.length)]!;
-  usedTitles.add(title);
-  const culprit = characters[randomInt(characters.length)]!;
-  const decoy = characters.filter(c => c.name !== culprit.name)[randomInt(characters.length - 1)]!;
-  const two = `${culprit.name} and ${decoy.name} helped prepare this activity. Their tasks were different.`;
-  const humor = family.humor[randomInt(family.humor.length)]!;
-  const clues = [
-    difficulty === "Hard" ? trace : `${trace} ${two}`,
-    family.clues[0]!,
-    difficulty === "Easy"
-      ? `${family.clues[6]} The preparation note belongs to the ${culprit.title}; ${decoy.name}'s task was for a different activity.`
-      : difficulty === "Medium"
-      ? `${family.clues[2]} The preparation note mentions ${culprit.personality}`
-      : `${family.clues[1]} ${two}`,
-    `${family.clues[3]}\n\n${humor}`,
-    `${family.clues[4]} ${culprit.name} recalls preparing it before the team noticed.`,
-    `${family.clues[5]} ${decoy.name}'s nearby task may look relevant, but involved a different activity.`,
-    `${trace} The responsible role was ${culprit.title}.`,
-    `${family.clues[2]} ${decoy.name} confirms their task was unrelated.`,
-    `${what} The preparation note describes the same outcome.`,
-    `${family.clues[6]} The relevant handover belongs to the ${culprit.title}, rather than ${decoy.name}'s separate task.`,
-  ];
+export function selectTournamentCase(difficulty: Difficulty, usedTitles: Set<string>): TournamentCaseContent {
+  const available = caseLibrary.filter(entry => entry.difficulty === difficulty && !usedTitles.has(entry.title));
+  if (!available.length) throw new Error(`No unused ${difficulty} cases remain in the canonical case library`);
+  const entry = available[randomInt(available.length)]!;
+  if (!characters.some(character => character.name === entry.culprit)) {
+    throw new Error(`Unknown culprit in canonical case ${entry.id}`);
+  }
+  usedTitles.add(entry.title);
+  // Fit the verbatim reveal into the existing What/Why screen without adding prose.
+  const firstBreak = entry.reveal.indexOf("\n");
   return {
-    id: randomUUID(), title, brief: randomInt(4) === 0 ? `${brief}\n\n${humor}` : brief, difficulty, family: family.name,
-    characters, clues, culprit: culprit.name, what,
-    why: `${culprit.name} prepared this activity. ${trace} That explains the mix-up; ${decoy.name} was helping with a separate task. Everyone is fictional, and no misconduct is alleged.`,
-    isCoffee: family.name === "Coffee & Pantry",
+    id: randomUUID(), title: entry.title, brief: entry.brief, difficulty: entry.difficulty, family: entry.family,
+    characters, clues: [...entry.coreClues, ...entry.optionalClues], culprit: entry.culprit,
+    what: firstBreak < 0 ? entry.reveal : entry.reveal.slice(0, firstBreak),
+    why: firstBreak < 0 ? "" : entry.reveal.slice(firstBreak + 1),
+    isCoffee: entry.family === "Coffee",
   };
 }

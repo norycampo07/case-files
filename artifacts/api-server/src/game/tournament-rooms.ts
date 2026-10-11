@@ -1,7 +1,7 @@
 import { randomInt, randomUUID } from "node:crypto";
 import type { Server as SocketServer } from "socket.io";
 import type { TournamentView, TournamentSettings } from "@workspace/api-zod";
-import { characters, difficultySequence, generateTournamentCase, basePoints, type TournamentCaseContent } from "./tournament-content";
+import { characters, difficultySequence, selectTournamentCase, basePoints, type TournamentCaseContent } from "./tournament-content";
 
 type Screen = "brief" | "roster" | "clue1" | "clue2" | "clue3" | "choice" | "extra" | "vote" | "runoff" | "waiting";
 type Status = "lobby" | "round" | "reveal" | "finished";
@@ -223,7 +223,7 @@ export function manageTournamentTeam(code: string, playerId: string, sessionId: 
   broadcast(room); return view(room, member);
 }
 function beginRound(room: TournamentRoom) {
-  room.case = generateTournamentCase(difficultySequence(room.settings.casesPerTournament)[room.roundIndex]!, room.usedTitles);
+  room.case = selectTournamentCase(difficultySequence(room.settings.casesPerTournament)[room.roundIndex]!, room.usedTitles);
   room.teamRounds.clear();
   for (let id = 0; id < room.settings.teamCount; id++) {
     const stats = room.scores.get(id)!;

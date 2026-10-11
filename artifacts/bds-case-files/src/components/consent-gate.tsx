@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
-export const DISCLAIMER = "All characters, clues, incidents, and rumors are fictional and randomly generated for entertainment purposes.";
+export const DISCLAIMER = "All characters, clues, incidents, and rumors are fictional and provided for entertainment purposes.";
 export function ConsentGate({ children }: { children: ReactNode }) {
   const [accepted, setAccepted] = useState(() => sessionStorage.getItem("bds-workplace-consent") === "yes");
   const [checked, setChecked] = useState(false);
@@ -12,7 +12,7 @@ export function ConsentGate({ children }: { children: ReactNode }) {
       <DialogContent className="[&>button:last-child]:hidden" onEscapeKeyDown={e => e.preventDefault()} onPointerDownOutside={e => e.preventDefault()}>
         <DialogTitle className="font-display text-2xl">Before you open a case</DialogTitle>
         <DialogDescription className="text-base leading-relaxed">This game is a fictional workplace mystery designed solely for entertainment and team engagement.
-          All cases, clues, rumors, suspects, and outcomes are randomly generated and do not represent real events, actions, allegations, or behaviors.</DialogDescription>
+          All cases, clues, rumors, suspects, and outcomes are fictional and do not represent real events, actions, allegations, or behaviors.</DialogDescription>
         <p className="text-sm text-muted-foreground">These characters and portraits are fictional, not representations of real employees. Use a made-up alias, not personal information. Tournament state stays in server memory: refreshing restores your progress, but a server restart clears rooms. New Tournament clears previous cases, ballots, and scores. No database or case history is kept.</p>
         <label className="flex items-start gap-3 text-sm cursor-pointer"><input data-testid="checkbox-consent" type="checkbox" checked={checked} onChange={e => setChecked(e.target.checked)} className="mt-1 h-4 w-4 accent-[hsl(43,70%,60%)]" />
           <span>I acknowledge that this is fictional entertainment and does not describe real people or events.</span></label>

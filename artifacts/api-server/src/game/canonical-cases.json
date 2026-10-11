@@ -1,0 +1,242 @@
+[
+  {
+    "id": "case-01",
+    "title": "The Missing Coffee Mug",
+    "family": "Coffee",
+    "difficulty": "Easy",
+    "brief": "A beloved coffee mug vanished shortly after lunch.\nThe owner insists it is irreplaceable.\nThe investigation has already become far more serious than the mug deserves.",
+    "coreClues": [
+      "The mug disappeared shortly after a project meeting ended.\nOnly someone involved in post-meeting activities would likely have handled it.",
+      "The mug was not thrown away.\nWhoever moved it probably believed they were putting it somewhere useful.",
+      "Several people entered the pantry after lunch.\nOnly one role regularly volunteers to organize shared spaces."
+    ],
+    "optionalClues": [
+      "Several items in the pantry were found in new locations.\nMost people did not notice.\nThe mug did.",
+      "One team member stayed behind after the meeting to help organize the room.\nSeveral objects were relocated.",
+      "Prince Boni never entered the pantry that afternoon.\nIt did not stop everyone from accusing him.",
+      "Andy Iglesias and Bekz Sarap were overheard having a hushed conversation in the pantry.\nSeveral investigators immediately became suspicious.\nThe conversation concerned a recent breakup.\nNeither had coffee. Only spilling tea.",
+      "A cabinet was reorganized that afternoon.\nThe person responsible maintains that the new system is objectively better.",
+      "Nori Ocampus remembers seeing the missing mug after the meeting ended.\nThe mug vanished later.",
+      "A distinctive sticker from the missing mug was found near a storage cabinet.\nThe mug appears to have been moved rather than stolen."
+    ],
+    "culprit": "Peri Vasquez",
+    "reveal": "The mug was not stolen.\nWhile helping clean up after the meeting, Peri Vasquez reorganized several pantry cabinets.\nThe missing mug was placed in a new location that made perfect sense to Peri.\nAfter all, Peri usually knows exactly where documents, approvals, and trackers should be moved.\nUnfortunately, that confidence extended to coffee mugs.\nThe mug spent the afternoon exactly where Peri believed it belonged.\nNobody else agreed.",
+    "designNotes": ""
+  },
+  {
+    "id": "case-02",
+    "title": "The Mystery of Column F",
+    "family": "Spreadsheet",
+    "difficulty": "Easy",
+    "brief": "An executive workbook is missing Column F.\nSeveral formulas have stopped cooperating.\nA review meeting begins in 20 minutes.\nNobody remembers deleting anything.\nSeveral people have already blamed Excel.",
+    "coreClues": [
+      "The workbook was recently reorganized.\nNo data appears to be missing.",
+      "The formulas still reference Column F.\nThe workbook was clearly not informed of the change.",
+      "Someone recently remarked that the workbook had become:\n\"a little difficult to read.\"\nInvestigators are attempting to determine whether this was feedback or a threat."
+    ],
+    "optionalClues": [
+      "A hidden-column indicator is visible.\nMagic or Excel?\nThe investigation continues.",
+      "The workbook size is unchanged.\nColumn F appears to be missing.\nThe workbook remains impressively large.",
+      "Prince Boni suggested automating spreadsheet cleanup.\nInvestigators are still determining whether this helps the case.",
+      "No formulas were edited.\nOnly visibility appears to have changed.",
+      "Nori Ocampus identified the issue within minutes.\nSeveral investigators immediately became suspicious.\nLater evidence confirmed Nori was only being helpful.",
+      "The missing column can still be referenced successfully.\nIt simply cannot be seen.",
+      "One role regularly focuses on readability, consistency, and quality improvements.\nThe spreadsheet may have experienced too much of all three."
+    ],
+    "culprit": "Artsu MoYan",
+    "reveal": "Column F was never deleted.\nWhile reorganizing the workbook and improving readability, Artsu MoYan hid the column.\nThe formulas continued referencing it exactly as before.\nFrom the workbook's perspective, everything was fine.\nFrom everyone else's perspective, Column F had vanished.\nArtsu later described the workbook as:\n\"Much cleaner now.\"\nThe formulas respectfully disagreed.",
+    "designNotes": "This case should be solvable through deduction.\nThe clues should gradually lead players toward:\n\nArtsu MoYan\n↓\nQuality & Insights Specialist\n↓\nReadability\nConsistency\nQuality Improvements\n\nThe culprit should never be directly named in the clues.\nPlayers should arrive at the conclusion by connecting clues to the suspect profiles.\nPrince Boni functions as a recurring false suspect and humor source.\nNori Ocampus briefly appears suspicious before being cleared.\n\nThe tone should remain:\n\n- Funny\n- Relatable\n- Office-focused\n- Solvable\n\nAvoid audit-report language.\nAvoid file-access investigation language.\nFocus on spreadsheet chaos, office behavior, and deductive reasoning."
+  },
+  {
+    "id": "case-03",
+    "title": "The Correct Wrong Process",
+    "family": "Workflow",
+    "difficulty": "Hard",
+    "brief": "A Data Update request was completed successfully.\n\nEvery step shows green.\n\nEvery reviewer approved.\n\nThe correct contact was notified.\n\nThe final output arrived completely blank.\n\nNobody can explain how a successful process produced absolutely nothing.\n\nSeveral people have already declared the workflow broken.\n\nThe workflow strongly disagrees.",
+    "coreClues": [
+      "The request followed the Data Update workflow from beginning to end.\nNo steps appear to have been skipped.",
+      "The review chain contains seven steps.\nNobody can explain Step 5.",
+      "The requester confirms the correct source file was submitted.\nThe file was not blank when it entered the workflow."
+    ],
+    "optionalClues": [
+      "The request appears to have followed the correct process.\nUnfortunately, there may be more than one \"correct\" process.",
+      "A workflow diagram was located.\nThe workflow diagram references another workflow diagram.",
+      "Prince Boni suggested automating the workflow.\nThe workflow was already automated.\nThis somehow made everyone more nervous.",
+      "Artsu MoYan attempted to validate the process.\nThe investigation expanded by three tabs.",
+      "The correct contact received the final output.\nThe output contained no data.",
+      "Nori Ocampus noticed something unusual.\nSeveral hours later, Nori returned with:\n- a workflow map\n- a root-cause analysis\n- two recommendations\n- and three additional concerns",
+      "The extraction engine used a special exception rule.\nFew people remembered it existed.\nOne person definitely did."
+    ],
+    "culprit": "Nori Ocampus",
+    "reveal": "The Data Update workflow did not fail.\nThe extraction completed successfully.\nMonths earlier, Nori Ocampus added an exception path for a unique one-time request.\nThe exception remained active long after the original project ended.\nNori forgot about it.\nAgain.\nThe workflow did not.\nWhen this case entered the workflow, the old exception triggered unexpectedly.\nThe extraction followed its instructions perfectly.\nThose instructions happened to remove all output data.\nThe process worked exactly as designed.\nThe design was the problem.",
+    "designNotes": "Players should deduce:\n- No approvals failed.\n- No reviewer missed a step.\n- No technical outage occurred.\n- The workflow completed successfully.\n- The problem originated from workflow logic and an old exception path.\n\nThe clues should gradually point toward:\n\nNori Ocampus\n↓\nWorkflow Specialist\n↓\nUnderstands process flow\n↓\nLikely to create and maintain workflow exceptions\n\nPrince Boni serves as a recurring false suspect.\nArtsu MoYan appears relevant but is ultimately investigating rather than causing the issue.\nThe solution should feel earned through deduction rather than direct accusation.\n\nTone:\n\n- Funny\n- Relatable\n- Workplace absurdity\n- Solvable\n\nAvoid audit-report language.\nFocus on workflow chaos, process confusion, and office reality."
+  },
+  {
+    "id": "case-04",
+    "title": "The Meeting That Attended Itself",
+    "family": "Meetings",
+    "difficulty": "Medium",
+    "brief": "An important meeting was scheduled.\nNobody attended.\nYet multiple people later claimed they attended.\nManagement would like an explanation.",
+    "coreClues": [
+      "The meeting invitation was edited the day before the event.\nThe meeting itself appeared unconcerned.",
+      "Several attendees arrived exactly on time.\nUnfortunately, they arrived at different times.",
+      "The meeting room remained completely empty.\nFor the entire duration of the meeting."
+    ],
+    "optionalClues": [
+      "A calendar reminder was sent.\nNobody agrees what it was reminding them about.",
+      "Bekz Sarap and Andy Iglesias spent several minutes discussing whether the meeting had always been scheduled at that time.\nThe discussion eventually drifted into celebrity gossip.",
+      "Prince Boni offered to automate meeting scheduling.\nThis proposal was received with caution.",
+      "Artsu MoYan was unavailable for comment.\n\nAgain.",
+      "One version of the calendar entry differs from the others.\nThe difference appears extremely important.",
+      "Nori Ocampus remembers attending the meeting.\nNori later realized it was a different meeting.",
+      "Only one role routinely updates meetings, attendees, and calendar communications for multiple people."
+    ],
+    "culprit": "Andy Iglesias",
+    "reveal": "The meeting was never cancelled.\nThe room was never changed.\nThe attendees were never removed.\nThe problem was simpler.\nWhile updating several calendar entries, Andy Iglesias changed the meeting time.\nThe updated invitation never reached the participants.\nEveryone followed the information they had.\nUnfortunately, they were following different information.\nThe meeting technically occurred.\nNobody attended the same version of it.",
+    "designNotes": "Players should deduce:\n- Scheduling error\n- Calendar problem\n- Communication issue\n\nNot:\n- Technical outage\n- Missing room\n- Human absence\n\nThe clues should gradually point toward:\n\nAndy Iglesias\n↓\nClient Coordinator\n↓\nHandles communications\n↓\nHandles scheduling\n↓\nUpdates invites\n\nPrince Boni serves as a recurring false suspect.\nArtsu MoYan continues the \"always missing\" running gag.\nBekz and Andy continue the recurring gossip subplot.\nNori accidentally attends the wrong meeting.\nThe mystery should feel relatable to anyone who has used Outlook, Teams, or a shared calendar.\n\nTone:\n- Funny\n- Workplace chaos\n- Solvable\n- Relatable\n\nAvoid audit-report language.\n\nFocus on calendar confusion, communication breakdowns, and office absurdity."
+  },
+  {
+    "id": "case-05",
+    "title": "The Missing Birthday Cake",
+    "family": "Office Life",
+    "difficulty": "Easy",
+    "brief": "A birthday celebration begins in 15 minutes.\nThe cake is missing.\nThe office has responded with the urgency normally reserved for critical business incidents.\nManagement would like everyone to calm down.\nNobody has.",
+    "coreClues": [
+      "The cake was delivered successfully.\nSeveral witnesses confirm this fact enthusiastically.",
+      "The cake never appears to have left the building.",
+      "The cake was last seen near the pantry refrigerators."
+    ],
+    "optionalClues": [
+      "Several employees became deeply invested in the investigation.\nSuspiciously invested.\nPeri described the situation as:\n\"Just like episode 17.\"\nNobody knew what that meant.",
+      "Visitors to the pantry reported seeing multiple refrigerators.\nSome investigators had previously been aware of only one.",
+      "Prince Boni suggested implementing Cake Tracking Automation.\nThis proposal was rejected immediately.",
+      "Bekz Sarap and Andy Iglesias spent several minutes debating whether chocolate cake is objectively superior.\nWitnesses described the discussion as passionate.",
+      "Derick O'noso was carrying a list of names.\nThe investigation briefly considered it evidence.\nIt was a cake contribution tracker.\nDerick spent the next ten minutes checking who still owed him money.",
+      "Nori Ocampus remembers seeing the cake after delivery.\nNori later remembered this several hours after being asked.",
+      "Someone involved in coordinating the celebration assisted with moving supplies and refreshments."
+    ],
+    "culprit": "Nori Ocampus",
+    "reveal": "The cake was never stolen.\nWhile helping organize the celebration, Nori Ocampus moved it into a secondary refrigerator to \"keep it safe.\"\nNori forgot about it.\nAgain.\nThe refrigerator performed exactly as expected.\nNori did not.\nThe cake was eventually recovered.\nProductivity immediately improved.",
+    "designNotes": "Players should deduce:\n- The cake never left the building.\n- The cake was moved, not stolen.\n- Multiple refrigerators exist.\n- The culprit helped organize the celebration.\n- The culprit forgot where the cake was placed.\n\nThe clues should gradually point toward:\n\nNori Ocampus\n↓\nWorkflow Specialist\n↓\nHelpful\n↓\nForgetful\n↓\nAccidentally creates chaos\n\nPrince Boni serves as a recurring false suspect.\nBekz Sarap and Andy Iglesias continue the recurring gossip/debate subplot.\nPeri Vasquez continues the recurring anime subplot.\nDerick O'noso continues the recurring outing contribution subplot.\n\nTone:\n\n- Funny\n- Workplace absurdity\n- Relatable\n- Solvable\n\nAvoid audit-report language.\nFocus on office chaos, human behavior, and deduction."
+  },
+  {
+    "id": "case-06",
+    "title": "The Wrong Slide Deck",
+    "family": "Presentations",
+    "difficulty": "Medium",
+    "brief": "A leadership presentation began exactly on schedule.\nThe presenter was prepared.\nThe audience was ready.\nThe slide deck was not.\nThe wrong presentation was shown to senior leadership.\nNobody is having a good morning.",
+    "coreClues": [
+      "Multiple versions of the presentation exist.\nNobody agrees how many.",
+      "The presenter opened a file labeled:\n\nFINAL\n\nThis information proved less useful than expected.",
+      "The correct deck still exists.\nSomewhere."
+    ],
+    "optionalClues": [
+      "A reviewer discovered:\n\nFINAL\nFINAL_v2\nFINAL_FINAL\nFINAL_FINAL_2\nFINAL_THIS_ONE\n\nConfidence immediately decreased.",
+      "The deck shown during the meeting contained slides that had already been removed from the project.\nThe wrong version was attached to the meeting materials long before the presentation started.",
+      "Prince Boni suggested implementing proper presentation version control.\nThe room became suspicious.",
+      "Bekz Sarap and Andy Iglesias spent several minutes discussing a celebrity scandal.\nWitnesses described the discussion as passionate.",
+      "Artsu MoYan reviewed multiple deck versions.\nArtsu later reported that:\n\"The wrong one looked familiar.\"\nThis was not helpful.",
+      "The file selected before the meeting had not been modified in over a week.\nThe correct deck was updated yesterday.",
+      "One role routinely manages communication, coordination, meeting preparation, and distributing materials.\nThe incident appears closely connected to those responsibilities."
+    ],
+    "culprit": "Andy Iglesias",
+    "reveal": "The wrong presentation was never downloaded accidentally.\nThe wrong presentation was selected intentionally.\nBy mistake.\nWhile preparing materials for multiple meetings, Andy Iglesias grabbed an earlier version of the deck and included it with the meeting materials.\nWhen the presentation began, everyone confidently opened the wrong \"FINAL.\"\nThe correct deck was still available.\nThe naming convention was not.",
+    "designNotes": "Players should deduce:\n- Multiple versions exist.\n- The wrong version was selected.\n- The correct version remained available.\n- The mistake happened before the meeting started.\n- The issue involves communication, coordination, and distribution of materials.\n\nThe clues should gradually point toward:\n\nAndy Iglesias\n↓\nClient Coordinator\n↓\nMeetings\n↓\nPresentation materials\n↓\nCommunication\n\nThe culprit should never be directly named in the clues.\nPlayers should arrive at the conclusion through deduction and profile matching.\nPrince Boni serves as a recurring false suspect.\nBekz Sarap and Andy Iglesias continue the recurring gossip subplot.\nArtsu MoYan contributes an unhelpful but entertaining observation.\n\nTone:\n\n- Funny\n- Relatable\n- Office chaos\n- Solvable\n\nAvoid audit-report language.\nFocus on presentation disasters, office confusion, and workplace absurdity."
+  },
+  {
+    "id": "case-07",
+    "title": "The Wrong Attachment",
+    "family": "Email & Communication",
+    "difficulty": "Medium",
+    "brief": "A client received the wrong attachment.\nThe email was sent successfully.\nThe recipient was correct.\nThe message was professional.\nThe attachment absolutely was not.\nSeveral people have already searched their Sent Items folder.\nNobody feels better.",
+    "coreClues": [
+      "The correct email was sent to the correct client.\nOnly the attachment was wrong.",
+      "The intended document still exists. Somewhere. And was ready for delivery.",
+      "The attachment selected was not the most recent version.\nSomeone chose the wrong file before pressing Send."
+    ],
+    "optionalClues": [
+      "A reviewer discovered:\n\nClient_Final\nClient_Final_v2\nClient_Final_Review\nClient_Final_Really_Final\nClient_Use_This_One\n\nConfidence immediately decreased.",
+      "The attachment was selected from a folder containing materials for multiple clients.\nOnly one document in that folder was intended for the recipient.",
+      "A document attached to the email contained a list of names.\nThe investigation briefly considered it evidence.\nIt turned out to be a lunch contribution tracker maintained by Derick O'noso.",
+      "Peri Vasquez recognized the problem instantly.\nAfter a long pause, Peri declared:\n\"This is exactly what happens when the protagonist opens the wrong scroll.\"\nThe investigation gained no useful information.",
+      "Artsu MoYan reviewed the attachment history and reported:\n\"The wrong file makes perfect sense.\"\nThis was not reassuring.",
+      "The incorrect attachment had not been modified recently.\nThe correct attachment was updated yesterday.",
+      "One role frequently manages communication, attachments, recipients, and client-facing materials.\nThe incident appears closely tied to those responsibilities."
+    ],
+    "culprit": "Andy Iglesias",
+    "reveal": "The wrong attachment was never created accidentally.\nThe wrong attachment was selected accidentally.\nWhile preparing multiple client communications, Andy Iglesias selected an older file from the correct folder and included it with the outgoing email.\nThe email itself was flawless.\nThe recipient was correct.\nThe attachment was not.\nThe client received a document that was no longer intended for distribution.\nEverything worked exactly as designed.\nThe design assumed humans would name files responsibly.",
+    "designNotes": "Players should deduce:\n- The recipient was correct.\n- The email itself was correct.\n- The wrong file was selected.\n- Multiple near-identical versions existed.\n- The mistake happened before the email was sent.\n- The issue is tied to preparing and distributing client materials.\n\nThe clues should gradually point toward:\n\nAndy Iglesias\n↓\nClient Coordinator\n↓\nCommunications\n↓\nAttachments\n↓\nClient-facing materials\nThe culprit should never be directly named in the clues.\nPlayers should arrive at the conclusion through deduction and profile matching.\n\nRunning Gags Used:\n\nDerick O'noso carrying contribution lists\nPeri Vasquez viewing reality through anime logic\nArtsu MoYan providing technically correct but unhelpful observations\n\nTone:\n\n- Funny\n- Relatable\n- Office chaos\n- Solvable\n\nAvoid audit-report language.\nFocus on communication mistakes, file-version confusion, and workplace absurdity."
+  },
+  {
+    "id": "case-08",
+    "title": "The Locked SharePoint Folder",
+    "family": "Technology",
+    "difficulty": "Hard",
+    "brief": "A project folder suddenly became inaccessible.\nNobody can open it.\nNobody can edit it.\nNobody can explain why.\nThe folder worked yesterday.\nToday it behaves as though the team never existed.\nSeveral people have already blamed technology.\nTechnology has not yet defended itself.",
+    "coreClues": [
+      "The folder still exists.\nOnly the permissions appear to have changed.",
+      "No files were deleted.\nNo files were moved.\nNo files were renamed.",
+      "Access disappeared for multiple people at exactly the same time.\nThe timing was not random."
+    ],
+    "optionalClues": [
+      "An emergency Teams chat titled:\n\"CAN ANYONE OPEN THE FOLDER?\"\nwas created.\nIt did not help.",
+      "One team member possessed sufficient permissions to change access settings.\nThe change appears intentional.\nThe outcome does not.",
+      "Derick O'noso explained the issue.\nThe folder was eventually restored.\nThe explanation remains under review.",
+      "Bekz Sarap and Andy Iglesias spent part of the investigation discussing whether forgotten passwords should count as technical problems.\nNo agreement was reached.",
+      "Artsu MoYan reviewed the permissions history.\nArtsu later reported:\n\"Everything appears completely wrong.\"\nThis was considered useful.",
+      "Nori Ocampus remembered seeing something relevant.\nThe memory arrived remarkably late,\nbut was appreciated nonetheless.",
+      "One role routinely works with systems, permissions, access control, and technical configurations.\nThe incident appears closely connected to that expertise."
+    ],
+    "culprit": "Derick O'noso",
+    "reveal": "The folder was never hacked.\nThe folder was never deleted.\nThe folder never failed.\nWhile testing a permissions configuration, Derick O'noso accidentally applied an internal access template to the project folder.\nThe template worked perfectly.\nUnfortunately, it worked on the wrong folder.\nThe moment the template was applied, nearly everyone lost access.\nDerick restored the folder shortly afterward.\nThe investigation took significantly longer than the fix.",
+    "designNotes": "Players should deduce:\n- Files still exist.\n- Folder still exists.\n- Permissions changed.\n- No data loss occurred.\n- Access disappeared simultaneously.\n- Administrative-level access was required.\n\nThe clues should gradually point toward:\n\nDerick O'noso\n↓\nSystems Specialist\n↓\nPermissions\n↓\nAccess Control\n↓\nTechnical Configuration\n\nThe culprit should never be directly named in the clues.\nPlayers should arrive at the conclusion through deduction and profile matching.\nRunning Gags Used:\n\nNori remembers something important much too late\nBekz and Andy debate something completely unrelated\nArtsu provides technically correct but unsettling observations\nDerick fixes the issue after accidentally creating it\n\nTone:\n\n- Funny\n- Relatable\n- Workplace chaos\n- Solvable\n- Technology frustration\n\nAvoid audit-report language.\nFocus on permission mistakes, configuration mishaps, and office absurdity."
+  },
+  {
+    "id": "case-09",
+    "title": "The Automation Incident",
+    "family": "Technology / Automation",
+    "difficulty": "Medium",
+    "brief": "One morning, dozens of automated notifications were sent across multiple projects.\nSeveral trackers changed.\nMultiple reminders were triggered.\nAt least three teams thought something was on fire.\nNothing was actually wrong.\nUnfortunately, that was part of the problem.",
+    "coreClues": [
+      "The notifications originated from an automated process.\nNo manual changes were recorded.",
+      "Every affected system appears to have acted exactly as instructed.",
+      "The incident occurred shortly after a workflow improvement was introduced."
+    ],
+    "optionalClues": [
+      "Several investigators immediately blamed Prince Boni.",
+      "The automation was intended to save time.\nThe amount of time saved remains disputed.",
+      "Derick O'noso reviewed the system logs.\nThe logs appeared perfectly healthy.\nThis was not encouraging.",
+      "Bekz Sarap and Andy Iglesias spent several minutes discussing a newly debuted K-pop idol.\nBoth appeared unusually thrilled and giddy.\nThe investigation achieved absolutely nothing during this period.",
+      "The workflow completed successfully.\nThis information raised more questions than it answered.",
+      "Only one profile regularly introduces automation intended to improve existing processes.",
+      "Nori Ocampus remembered a similar incident from a previous project.\nThis memory appeared after the incident was already resolved."
+    ],
+    "culprit": "Prince Boni",
+    "reveal": "The systems did not fail.\nThe workflows did not fail.\nThe notifications did not fail.\nSeveral weeks earlier, Prince Boni created a small automation intended to make recurring updates easier.\nThe automation worked perfectly.\nUnfortunately, it was connected to the wrong trigger.\nWhen a routine update occurred, every downstream process activated exactly as designed.\nThe resulting confusion spread faster than the original problem.\nPrince later described the automation as:\n\"Technically successful.\"\nThe rest of the organization disagreed.",
+    "designNotes": "Players should deduce:\n- Automation is involved.\n- No technical failure occurred.\n- No system outage occurred.\n- No permissions issue exists.\n- Everything executed correctly.\n- The trigger itself was incorrect.\n\nThe clues should gradually point toward:\n\nPrince Boni\n↓\nAI Engineer\n↓\nAutomation\n↓\nProcess improvements\n↓\nUnexpected consequences\n\nThe culprit should never be directly named in the clues.\nPlayers should arrive at the conclusion through deduction and profile matching.\n\nRunning Gags Used:\nPrince Boni is immediately blamed\nThis time Prince Boni is actually guilty\nBekz Sarap and Andy Iglesias debate something completely irrelevant\nDerick O'noso reviews logs that do not help\nNori Ocampus remembers something useful after the incident is already over\n\nTone:\n\n- Funny\n- Relatable\n- Technology chaos\n- Solvable\n- Office absurdity\n\nAvoid audit-report language.\nFocus on automation mishaps, unintended consequences, and workplace confusion."
+  },
+  {
+    "id": "case-10",
+    "title": "The Missing Tracker",
+    "family": "Project Management",
+    "difficulty": "Hard",
+    "brief": "A critical project tracker disappeared less than one hour before leadership review.\nThe deadlines still exist.\nThe milestones still exist.\nThe tracker does not.\nSeveral people have already opened thirty browser tabs.\nNobody feels closer to finding it.",
+    "coreClues": [
+      "The tracker was visible yesterday.\nThis morning it had vanished.",
+      "The tracker was not deleted.\nSeveral linked reports continue functioning normally.",
+      "The tracker appears to have been moved rather than removed."
+    ],
+    "optionalClues": [
+      "Several innocent trackers were questioned.",
+      "The tracker disappeared shortly after a project cleanup effort.\nMultiple outdated trackers were archived.",
+      "Someone recently expressed a desire to make project tracking \"more organized.\"\nSeveral trackers disappeared shortly afterward.\nNot all of them intentionally.",
+      "Andy Iglesias was seen searching through multiple tracker folders.\nThe search was unsuccessful.",
+      "The tracker's old location is empty.\nIts new location appears to make perfect sense to someone.",
+      "Derick O'noso confirmed that all systems were functioning normally.\nUnfortunately, the tracker remained missing.",
+      "One role routinely works with:\n- trackers\n- milestones\n- status updates\n- project organization\n\nThe incident appears connected to those responsibilities."
+    ],
+    "culprit": "Bekz Sarap",
+    "reveal": "The tracker was never deleted.\nThe tracker never left the system.\nWhile cleaning project materials before leadership review, Bekz Sarap reorganized several tracking structures.\nThe new structure was logical.\nThe folders were tidy.\nThe naming convention made sense.\nUnfortunately, nobody else knew where the tracker went afterward.\nBekz later described the reorganization as:\n\"Much easier to navigate.\"\nThe investigation respectfully disagreed.",
+    "designNotes": "Players should deduce:\n- The tracker still exists.\n- The tracker was moved.\n- Reporting systems still function.\n- No technical outage occurred.\n- No permissions issue occurred.\n- The culprit is highly involved in tracker organization.\n\nThe clues should gradually point toward:\n\nBekz Sarap\n↓\nProject Manager\n↓\nTrackers\n↓\nStatus Updates\n↓\nProject Organization\n\nThe culprit should never be directly named in the clues.\nPlayers should arrive at the conclusion through deduction and profile matching.\n\nRunning Gags Used:\nArtsu MoYan creates more questions than answers\nAndy Iglesias searches everywhere but finds nothing\nDerick O'noso confirms everything is technically fine\n\nTone:\n\n- Funny\n- Relatable\n- Project chaos\n- Solvable\n- Workplace absurdity\n\nAvoid audit-report language.\n\nFocus on trackers, organization, reporting structures, and good intentions creating bad outcomes.\n\nThis one completes the roster nicely because Bekz finally gets a culprit case that matches the profile naturally: not permissions, not systems, not workflows... **trackers and organization**."
+  }
+]

@@ -29,7 +29,7 @@ A fictional workplace mystery tournament for 1–50 players in 1–5 teams, with
 
 ## Architecture decisions
 
-- No AI APIs, OpenAI integration, or paid services. Content uses templates, randomization, and predefined data, as requested.
+- No AI APIs, OpenAI integration, or paid services. The game randomly selects handcrafted canonical cases; it never generates or rewrites clues, culprits, or humor.
 - Anonymous room membership uses an HTTP-only browser session cookie, not user accounts. It allows separate players in separate tabs while preventing other browsers from impersonating a player ID.
 - The host advances the whole room through shared stages and opens all initial ballots together. Teams may buy private extra clues during the decision stage. Every member votes individually; solutions and current-round scores stay hidden until all ballots finish and the host reveals the culprit. The host then reveals results and starts the next case or champions screen.
 - Each player casts one suspect ballot. Timers count submitted ballots only. A tied ballot opens a 30-second runoff among tied leaders; if the runoff still ties, a draw among those leaders resolves it.
@@ -37,7 +37,9 @@ A fictional workplace mystery tournament for 1–50 players in 1–5 teams, with
 
 ## Product
 
-Create and join by room code with a fictional alias and chosen team. Hosts may add, remove empty teams, and rename teams in the lobby. Read a short brief, meet seven recurring fictional characters with permanent portraits, then reveal three clues one at a time. Teams can request up to seven private extras before the host opens voting. Correct suspect earns 100/150/200 for Easy/Medium/Hard less 10 per extra; incorrect or absent accusations earn zero. Host-controlled reveal, results, leaderboard and champions keep the room synchronized. Eight case families use distinct thematic clue pools; humor is restricted to the user's approved lines. Reuse the same room, names and members on Play Again; discard all prior cases, ballots and results. No database, AI service or case history.
+Create and join by room code with a fictional alias and chosen team. Hosts may add, remove empty teams, and rename teams in the lobby. Read a short brief, meet seven recurring fictional characters with permanent portraits, then reveal three clues one at a time. Teams can request up to seven private extras before the host opens voting. Correct suspect earns 100/150/200 for Easy/Medium/Hard less 10 per extra; incorrect or absent accusations earn zero. Host-controlled reveal, results, leaderboard and champions keep the room synchronized. The ten canonical cases are production content stored verbatim in `artifacts/api-server/src/game/canonical-cases.json`, with fixed culprits, three core clues, seven optional clues, full reveals, and internal design notes. Add future cases in the same structured format; do not rewrite authored clues or insert generated humor. Case 01 has no supplied design notes, so its notes field is empty. Cases are randomly selected without repeats within a tournament. The user approved ten-case tournaments using all ten unique cases: 3 Easy, 4 Medium, 3 Hard; other tournament schedules are unchanged. The existing What/Why screen displays the first reveal line and its remaining text without adding prose. Reuse the same room, names and members on Play Again; discard all prior cases, ballots and results. No database, AI service or case history.
+
+**Why the ten-case schedule changed:** The supplied canonical library contains only three Easy cases. The user chose all ten unique cases with their original difficulties rather than repeating an Easy case or adding unapproved content.
 
 ## Workplace safety and privacy
 
@@ -49,7 +51,7 @@ The promo follows the same workplace-safe scope; preserve its existing 25-second
 
 ## User preferences
 
-“No database required for Version 1.” “Prioritize gameplay and replayability over visual effects.” The requested theme is Modern Detective Agency with dark navy, gold, and white.
+“No database required for Version 1.” “Prioritize gameplay and replayability over visual effects.” For case-library work, preserve the existing UI and gameplay: no redesign, new game, or rebuild. Content migration is not permission to restyle screens.
 
 ## Gotchas
 

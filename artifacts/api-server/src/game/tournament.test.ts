@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
-import { characters, difficultySequence, generateTournamentCase, basePoints } from "./tournament-content";
-import { caseFamilies } from "./case-library";
+import { createHash, randomUUID } from "node:crypto";
+import { characters, difficultySequence, selectTournamentCase, basePoints } from "./tournament-content";
+import { caseLibrary } from "./case-library";
 import {
   createTournament, joinTournament, getTournament, getTournamentLobby,
   setTournamentSettings, startTournament, advanceTournamentScreen,
@@ -43,7 +43,7 @@ test("difficulty schedules match all five tournament lengths", () => {
   assert.deepEqual(difficultySequence(3), ["Easy", "Medium", "Hard"]);
   assert.deepEqual(difficultySequence(5), ["Easy", "Easy", "Medium", "Medium", "Hard"]);
   assert.deepEqual(difficultySequence(7), ["Easy", "Easy", "Easy", "Medium", "Medium", "Medium", "Hard"]);
-  assert.deepEqual(difficultySequence(10), ["Easy", "Easy", "Easy", "Easy", "Medium", "Medium", "Medium", "Medium", "Hard", "Hard"]);
+  assert.deepEqual(difficultySequence(10), ["Easy", "Easy", "Easy", "Medium", "Medium", "Medium", "Medium", "Hard", "Hard", "Hard"]);
 });
 test("team membership, capacities, host permissions and browser ownership are enforced", () => {
   const session = randomUUID();
@@ -103,8 +103,7 @@ test("same shared case; staged clues and extra clue deductions; no early solutio
   assert.equal(teamView.teamState!.value, 30);
   assert.equal(c.read(c.leaders[1]!).teamState!.clues.length, 3);
   assert.throws(() => requestTournamentClue(c.code, host.id, host.session), /No more/);
-  const last = teamView.teamState!.clues[9]!;
-  const correct = characters.find(ch => last.includes(`belongs to the ${ch.title},`))!.name;
+  const correct = caseLibrary.find(entry => entry.title === teamView.case!.title)!.culprit;
   beginTournamentVote(c.code, host.id, host.session);
   castTeam(c, 0, correct);
   assert.equal(c.read().status, "round");
@@ -242,8 +241,7 @@ test("difficulty score values and extra deductions are correct across a three-ro
       advanceTournamentScreen(c.code, c.host.id, c.host.session);
     }
     assert.equal(c.read().teamState!.value, basePoints(difficulty) - 70);
-    const last = c.read().teamState!.clues[9]!;
-    const culprit = characters.find(ch => last.includes(`belongs to the ${ch.title},`))!.name;
+    const culprit = caseLibrary.find(entry => entry.title === c.read().case!.title)!.culprit;
     beginTournamentVote(c.code, c.host.id, c.host.session);
     castTeam(c, 0, culprit);
     revealResults(c);
@@ -253,18 +251,114 @@ test("difficulty score values and extra deductions are correct across a three-ro
   }
   assert.equal(total, 240);
 });
-test("case families rotate without repetition and use distinct thematic pools and fixed portraits", () => {
-  const used = new Set<string>(), families = new Set<string>();
-  for (let n = 0; n < 8; n++) {
-    const story = generateTournamentCase("Easy", used);
+test("ten-case tournaments select every canonical case once with fixed content and portraits", () => {
+  const used = new Set<string>();
+  for (const difficulty of difficultySequence(10)) {
+    const story = selectTournamentCase(difficulty, used);
+    const entry = caseLibrary.find(entry => entry.title === story.title)!;
     assert.equal(story.clues.length, 10);
-    assert.equal(families.has(story.family), false);
-    families.add(story.family);
-    if (story.isCoffee) assert.doesNotMatch(story.clues.join(" "), /audit log|permissions|file access/i);
-    if (story.family === "Meetings & Calendars") assert.doesNotMatch(story.clues.join(" "), /permissions|audit log/i);
+    assert.equal(story.brief, entry.brief);
+    assert.equal(story.family, entry.family);
+    assert.equal(story.difficulty, entry.difficulty);
+    assert.equal(story.culprit, entry.culprit);
+    assert.deepEqual(story.clues, [...entry.coreClues, ...entry.optionalClues]);
+    assert.equal(`${story.what}\n${story.why}`, entry.reveal);
+    assert.equal(story.isCoffee, entry.family === "Coffee");
     assert.deepEqual(story.characters.map(c => c.portrait), characters.map(c => c.portrait));
   }
-  assert.equal(families.size, caseFamilies.length);
-  const allTitles = caseFamilies.flatMap(f => f.stories.map(s => s[0]));
-  assert.equal(new Set(allTitles).size, allTitles.length);
+  assert.equal(used.size, 10);
+  assert.throws(() => selectTournamentCase("Easy", used), /No unused Easy/);
+});
+
+test("canonical authored text remains identical to the imported source", () => {
+  // Golden fingerprints cover every authored field, not formatting of the JSON file.
+  // Add new cases freely; do not rewrite the ten user-approved production cases.
+  const fingerprints = [
+    "758f02821cde4ae3f26f1d8eda0b7a5b2db77d5208b482d833c2be41775d5164",
+    "3591bf8e650ba3c8ae89016da4f003471e5b8f74196501e757e83a3c79e9463b",
+    "131db8bdf1d4538bc12aa1197430a7c31729270de3d448ecd6e6f171080f7c6c",
+    "39160703cab6239ff7e88000212334dd39b37873589413bad8c477e3deaeedb0",
+    "0f4ed630916d89d55f8e128e43bde27c200bc0aa844af9c746eb12d03264c2e4",
+    "ca1d997cec3ab843af687e0aafdd21113cb27e996581c37e14f073a786a3b579",
+    "35a5c26c8bb8fee33ab4f405f75d9ce6576a12b91ae4a1d139bb185364e8f62f",
+    "0731a1d3fb33f4e03d77544b442a973c01841ab55633ba638d9f23ffcd418db0",
+    "626d994e44a1d74ee007a364b9a277d7ee15fbb2683f41d9a1914593fa18d255",
+    "16a98aba31571e12218b6bdf71ce2637bc2d290df8523543c11c73b52c9a7872",
+  ];
+  fingerprints.forEach((expected, index) => {
+    const entry = caseLibrary.find(entry => entry.id === `case-${String(index + 1).padStart(2, "0")}`)!;
+    assert.ok(entry);
+    const actual = createHash("sha256").update(JSON.stringify([
+      entry.title, entry.family, entry.difficulty, entry.brief, entry.coreClues,
+      entry.optionalClues, entry.culprit, entry.reveal, entry.designNotes,
+    ])).digest("hex");
+    assert.equal(actual, expected, `${entry.id} canonical text changed`);
+    assert.ok(characters.some(character => character.name === entry.culprit));
+    assert.equal(entry.coreClues.length, 3);
+    assert.equal(entry.optionalClues.length, 7);
+  });
+});
+
+test("all tournament lengths retain clue progression, scoring, reveals, awards and replay", () => {
+  for (const length of [1, 3, 5, 7, 10]) {
+    const c = setup(length, 1, 1);
+    startTournament(c.code, c.host.id, c.host.session);
+    const seen = new Set<string>();
+    let expectedScore = 0;
+    for (const [index, difficulty] of difficultySequence(length).entries()) {
+      const current = c.read();
+      const entry = caseLibrary.find(entry => entry.title === current.case!.title)!;
+      assert.equal(seen.has(entry.id), false);
+      seen.add(entry.id);
+      assert.equal(current.case!.brief, entry.brief);
+      assert.equal(current.case!.difficulty, difficulty);
+      assert.equal(current.teamState!.clues.length, 0);
+      assert.equal(current.reveal, null);
+      for (let stage = 0; stage < 5; stage++) {
+        advanceTournamentScreen(c.code, c.host.id, c.host.session);
+        assert.deepEqual(c.read().teamState!.clues, entry.coreClues.slice(0, Math.min(Math.max(stage, 0), 3)));
+      }
+      for (let extra = 0; extra < 7; extra++) {
+        requestTournamentClue(c.code, c.host.id, c.host.session);
+        assert.deepEqual(c.read().teamState!.clues, [...entry.coreClues, ...entry.optionalClues.slice(0, extra + 1)]);
+        assert.equal(c.read().teamState!.value, basePoints(difficulty) - 10 * (extra + 1));
+        assert.equal(c.read().reveal, null);
+        assert.equal(JSON.stringify(c.read()).includes('"designNotes"'), false);
+        advanceTournamentScreen(c.code, c.host.id, c.host.session);
+      }
+      assert.throws(() => requestTournamentClue(c.code, c.host.id, c.host.session), /No more/);
+      beginTournamentVote(c.code, c.host.id, c.host.session);
+      castTeam(c, 0, entry.culprit);
+      assert.equal(c.read().reveal, null);
+      revealResults(c);
+      expectedScore += basePoints(difficulty) - 70;
+      const revealed = c.read().reveal!;
+      assert.equal(revealed.culprit, entry.culprit);
+      assert.equal(`${revealed.what}\n${revealed.why}`, entry.reveal);
+      assert.equal(c.read().teams[0]!.score, expectedScore);
+      if (index < length - 1) nextTournamentRound(c.code, c.host.id, c.host.session);
+    }
+    advanceTournamentScreen(c.code, c.host.id, c.host.session);
+    assert.equal(c.read().status, "finished");
+    assert.equal(c.read().awards.length, 5);
+    assert.deepEqual(c.read().winners, ["Team Alpha"]);
+    const reset = resetTournament(c.code, c.host.id, c.host.session);
+    assert.equal(reset.status, "lobby");
+    assert.equal(reset.case, null);
+    assert.equal(reset.teams[0]!.score, 0);
+    startTournament(c.code, c.host.id, c.host.session);
+    assert.equal(c.read().case!.difficulty, "Easy");
+  }
+});
+
+test("selected case copies cannot rewrite the library or change its fixed solution", () => {
+  const selected = selectTournamentCase("Easy", new Set());
+  const entry = caseLibrary.find(entry => entry.title === selected.title)!;
+  selected.clues[0] = "Local mutation";
+  const repeat = selectTournamentCase("Easy", new Set(caseLibrary.filter(other => other.title !== entry.title).map(other => other.title)));
+  assert.equal(repeat.clues[0], entry.coreClues[0]);
+  assert.equal(repeat.culprit, entry.culprit);
+  assert.equal(repeat.brief, entry.brief);
+  assert.equal(`${repeat.what}\n${repeat.why}`, entry.reveal);
+  assert.notEqual(repeat.id, selected.id);
 });
