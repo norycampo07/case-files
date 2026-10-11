@@ -1,0 +1,1556 @@
+CASE LIBRARY
+
+CASE 01 — THE MISSING COFFEE MUG
+
+Family:
+Coffee
+
+Difficulty:
+Easy
+
+====================================================
+
+BRIEF
+
+A beloved coffee mug vanished shortly after lunch.
+The owner insists it is irreplaceable.
+The investigation has already become far more serious than the mug deserves.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The mug disappeared shortly after a project meeting ended.
+Only someone involved in post-meeting activities would likely have handled it.
+
+----------------------------------------------------
+
+Clue 2
+
+The mug was not thrown away.
+Whoever moved it probably believed they were putting it somewhere useful.
+
+----------------------------------------------------
+
+Clue 3
+
+Several people entered the pantry after lunch.
+Only one role regularly volunteers to organize shared spaces.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+Several items in the pantry were found in new locations.
+Most people did not notice.
+The mug did.
+
+----------------------------------------------------
+
+Clue 5
+
+One team member stayed behind after the meeting to help organize the room.
+Several objects were relocated.
+
+----------------------------------------------------
+
+Clue 6
+
+Prince Boni never entered the pantry that afternoon.
+It did not stop everyone from accusing him.
+
+----------------------------------------------------
+
+Clue 7
+
+Andy Iglesias and Bekz Sarap were overheard having a hushed conversation in the pantry.
+Several investigators immediately became suspicious.
+The conversation concerned a recent breakup.
+Neither had coffee. Only spilling tea.
+
+----------------------------------------------------
+
+Clue 8
+
+A cabinet was reorganized that afternoon.
+The person responsible maintains that the new system is objectively better.
+
+----------------------------------------------------
+
+Clue 9
+
+Nori Ocampus remembers seeing the missing mug after the meeting ended.
+The mug vanished later.
+
+----------------------------------------------------
+
+Clue 10
+
+A distinctive sticker from the missing mug was found near a storage cabinet.
+The mug appears to have been moved rather than stolen.
+
+====================================================
+
+CULPRIT
+
+Peri Vasquez
+
+====================================================
+
+REVEAL
+
+The mug was not stolen.
+While helping clean up after the meeting, Peri Vasquez reorganized several pantry cabinets.
+The missing mug was placed in a new location that made perfect sense to Peri.
+After all, Peri usually knows exactly where documents, approvals, and trackers should be moved.
+Unfortunately, that confidence extended to coffee mugs.
+The mug spent the afternoon exactly where Peri believed it belonged.
+Nobody else agreed.
+
+
+CASE 02 — THE MYSTERY OF COLUMN F
+
+Family:
+Spreadsheet
+
+Difficulty:
+Easy
+
+====================================================
+
+BRIEF
+
+An executive workbook is missing Column F.
+Several formulas have stopped cooperating.
+A review meeting begins in 20 minutes.
+Nobody remembers deleting anything.
+Several people have already blamed Excel.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The workbook was recently reorganized.
+No data appears to be missing.
+
+----------------------------------------------------
+
+Clue 2
+
+The formulas still reference Column F.
+The workbook was clearly not informed of the change.
+
+----------------------------------------------------
+
+Clue 3
+
+Someone recently remarked that the workbook had become:
+"a little difficult to read."
+Investigators are attempting to determine whether this was feedback or a threat.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+A hidden-column indicator is visible.
+Magic or Excel?
+The investigation continues.
+
+----------------------------------------------------
+
+Clue 5
+
+The workbook size is unchanged.
+Column F appears to be missing.
+The workbook remains impressively large.
+
+----------------------------------------------------
+
+Clue 6
+
+Prince Boni suggested automating spreadsheet cleanup.
+Investigators are still determining whether this helps the case.
+
+----------------------------------------------------
+
+Clue 7
+
+No formulas were edited.
+Only visibility appears to have changed.
+
+----------------------------------------------------
+
+Clue 8
+
+Nori Ocampus identified the issue within minutes.
+Several investigators immediately became suspicious.
+Later evidence confirmed Nori was only being helpful.
+
+----------------------------------------------------
+
+Clue 9
+
+The missing column can still be referenced successfully.
+It simply cannot be seen.
+
+----------------------------------------------------
+
+Clue 10
+
+One role regularly focuses on readability, consistency, and quality improvements.
+The spreadsheet may have experienced too much of all three.
+
+====================================================
+
+CULPRIT
+
+Artsu MoYan
+
+====================================================
+
+REVEAL
+
+Column F was never deleted.
+While reorganizing the workbook and improving readability, Artsu MoYan hid the column.
+The formulas continued referencing it exactly as before.
+From the workbook's perspective, everything was fine.
+From everyone else's perspective, Column F had vanished.
+Artsu later described the workbook as:
+"Much cleaner now."
+The formulas respectfully disagreed.
+
+====================================================
+
+DESIGN NOTES
+
+This case should be solvable through deduction.
+The clues should gradually lead players toward:
+
+Artsu MoYan
+↓
+Quality & Insights Specialist
+↓
+Readability
+Consistency
+Quality Improvements
+
+The culprit should never be directly named in the clues.
+Players should arrive at the conclusion by connecting clues to the suspect profiles.
+Prince Boni functions as a recurring false suspect and humor source.
+Nori Ocampus briefly appears suspicious before being cleared.
+
+The tone should remain:
+
+- Funny
+- Relatable
+- Office-focused
+- Solvable
+
+Avoid audit-report language.
+Avoid file-access investigation language.
+Focus on spreadsheet chaos, office behavior, and deductive reasoning.
+
+
+CASE 03 — THE CORRECT WRONG PROCESS
+
+Family:
+Workflow
+
+Difficulty:
+Hard
+
+====================================================
+
+BRIEF
+
+A Data Update request was completed successfully.
+
+Every step shows green.
+
+Every reviewer approved.
+
+The correct contact was notified.
+
+The final output arrived completely blank.
+
+Nobody can explain how a successful process produced absolutely nothing.
+
+Several people have already declared the workflow broken.
+
+The workflow strongly disagrees.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The request followed the Data Update workflow from beginning to end.
+No steps appear to have been skipped.
+
+----------------------------------------------------
+
+Clue 2
+
+The review chain contains seven steps.
+Nobody can explain Step 5.
+
+----------------------------------------------------
+
+Clue 3
+
+The requester confirms the correct source file was submitted.
+The file was not blank when it entered the workflow.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+The request appears to have followed the correct process.
+Unfortunately, there may be more than one "correct" process.
+
+----------------------------------------------------
+
+Clue 5
+
+A workflow diagram was located.
+The workflow diagram references another workflow diagram.
+
+----------------------------------------------------
+
+Clue 6
+
+Prince Boni suggested automating the workflow.
+The workflow was already automated.
+This somehow made everyone more nervous.
+
+----------------------------------------------------
+
+Clue 7
+
+Artsu MoYan attempted to validate the process.
+The investigation expanded by three tabs.
+
+----------------------------------------------------
+
+Clue 8
+
+The correct contact received the final output.
+The output contained no data.
+
+----------------------------------------------------
+
+Clue 9
+
+Nori Ocampus noticed something unusual.
+Several hours later, Nori returned with:
+- a workflow map
+- a root-cause analysis
+- two recommendations
+- and three additional concerns
+
+----------------------------------------------------
+
+Clue 10
+
+The extraction engine used a special exception rule.
+Few people remembered it existed.
+One person definitely did.
+
+====================================================
+
+CULPRIT
+
+Nori Ocampus
+
+====================================================
+
+REVEAL
+
+The Data Update workflow did not fail.
+The extraction completed successfully.
+Months earlier, Nori Ocampus added an exception path for a unique one-time request.
+The exception remained active long after the original project ended.
+Nori forgot about it.
+Again.
+The workflow did not.
+When this case entered the workflow, the old exception triggered unexpectedly.
+The extraction followed its instructions perfectly.
+Those instructions happened to remove all output data.
+The process worked exactly as designed.
+The design was the problem.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- No approvals failed.
+- No reviewer missed a step.
+- No technical outage occurred.
+- The workflow completed successfully.
+- The problem originated from workflow logic and an old exception path.
+
+The clues should gradually point toward:
+
+Nori Ocampus
+↓
+Workflow Specialist
+↓
+Understands process flow
+↓
+Likely to create and maintain workflow exceptions
+
+Prince Boni serves as a recurring false suspect.
+Artsu MoYan appears relevant but is ultimately investigating rather than causing the issue.
+The solution should feel earned through deduction rather than direct accusation.
+
+Tone:
+
+- Funny
+- Relatable
+- Workplace absurdity
+- Solvable
+
+Avoid audit-report language.
+Focus on workflow chaos, process confusion, and office reality.
+
+
+CASE 04 — THE MEETING THAT ATTENDED ITSELF
+
+Family:
+Meetings
+
+Difficulty:
+Medium
+
+====================================================
+
+BRIEF
+
+An important meeting was scheduled.
+Nobody attended.
+Yet multiple people later claimed they attended.
+Management would like an explanation.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The meeting invitation was edited the day before the event.
+The meeting itself appeared unconcerned.
+
+----------------------------------------------------
+
+Clue 2
+
+Several attendees arrived exactly on time.
+Unfortunately, they arrived at different times.
+
+----------------------------------------------------
+
+Clue 3
+
+The meeting room remained completely empty.
+For the entire duration of the meeting.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+A calendar reminder was sent.
+Nobody agrees what it was reminding them about.
+
+----------------------------------------------------
+
+Clue 5
+
+Bekz Sarap and Andy Iglesias spent several minutes discussing whether the meeting had always been scheduled at that time.
+The discussion eventually drifted into celebrity gossip.
+
+----------------------------------------------------
+
+Clue 6
+
+Prince Boni offered to automate meeting scheduling.
+This proposal was received with caution.
+
+----------------------------------------------------
+
+Clue 7
+
+Artsu MoYan was unavailable for comment.
+
+Again.
+
+----------------------------------------------------
+
+Clue 8
+
+One version of the calendar entry differs from the others.
+The difference appears extremely important.
+
+----------------------------------------------------
+
+Clue 9
+
+Nori Ocampus remembers attending the meeting.
+Nori later realized it was a different meeting.
+
+----------------------------------------------------
+
+Clue 10
+
+Only one role routinely updates meetings, attendees, and calendar communications for multiple people.
+
+====================================================
+
+CULPRIT
+
+Andy Iglesias
+
+====================================================
+
+REVEAL
+
+The meeting was never cancelled.
+The room was never changed.
+The attendees were never removed.
+The problem was simpler.
+While updating several calendar entries, Andy Iglesias changed the meeting time.
+The updated invitation never reached the participants.
+Everyone followed the information they had.
+Unfortunately, they were following different information.
+The meeting technically occurred.
+Nobody attended the same version of it.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- Scheduling error
+- Calendar problem
+- Communication issue
+
+Not:
+- Technical outage
+- Missing room
+- Human absence
+
+The clues should gradually point toward:
+
+Andy Iglesias
+↓
+Client Coordinator
+↓
+Handles communications
+↓
+Handles scheduling
+↓
+Updates invites
+
+Prince Boni serves as a recurring false suspect.
+Artsu MoYan continues the "always missing" running gag.
+Bekz and Andy continue the recurring gossip subplot.
+Nori accidentally attends the wrong meeting.
+The mystery should feel relatable to anyone who has used Outlook, Teams, or a shared calendar.
+
+Tone:
+- Funny
+- Workplace chaos
+- Solvable
+- Relatable
+
+Avoid audit-report language.
+
+Focus on calendar confusion, communication breakdowns, and office absurdity.
+
+
+CASE 05 — THE MISSING BIRTHDAY CAKE
+
+Family:
+Office Life
+
+Difficulty:
+Easy
+
+====================================================
+
+BRIEF
+
+A birthday celebration begins in 15 minutes.
+The cake is missing.
+The office has responded with the urgency normally reserved for critical business incidents.
+Management would like everyone to calm down.
+Nobody has.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The cake was delivered successfully.
+Several witnesses confirm this fact enthusiastically.
+
+----------------------------------------------------
+
+Clue 2
+
+The cake never appears to have left the building.
+
+----------------------------------------------------
+
+Clue 3
+
+The cake was last seen near the pantry refrigerators.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+Several employees became deeply invested in the investigation.
+Suspiciously invested.
+Peri described the situation as:
+"Just like episode 17."
+Nobody knew what that meant.
+
+----------------------------------------------------
+
+Clue 5
+
+Visitors to the pantry reported seeing multiple refrigerators.
+Some investigators had previously been aware of only one.
+
+----------------------------------------------------
+
+Clue 6
+
+Prince Boni suggested implementing Cake Tracking Automation.
+This proposal was rejected immediately.
+
+----------------------------------------------------
+
+Clue 7
+
+Bekz Sarap and Andy Iglesias spent several minutes debating whether chocolate cake is objectively superior.
+Witnesses described the discussion as passionate.
+
+----------------------------------------------------
+
+Clue 8
+
+Derick O'noso was carrying a list of names.
+The investigation briefly considered it evidence.
+It was a cake contribution tracker.
+Derick spent the next ten minutes checking who still owed him money.
+
+
+----------------------------------------------------
+
+Clue 9
+
+Nori Ocampus remembers seeing the cake after delivery.
+Nori later remembered this several hours after being asked.
+
+----------------------------------------------------
+
+Clue 10
+
+Someone involved in coordinating the celebration assisted with moving supplies and refreshments.
+
+====================================================
+
+CULPRIT
+
+Nori Ocampus
+
+====================================================
+
+REVEAL
+
+The cake was never stolen.
+While helping organize the celebration, Nori Ocampus moved it into a secondary refrigerator to "keep it safe."
+Nori forgot about it.
+Again.
+The refrigerator performed exactly as expected.
+Nori did not.
+The cake was eventually recovered.
+Productivity immediately improved.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- The cake never left the building.
+- The cake was moved, not stolen.
+- Multiple refrigerators exist.
+- The culprit helped organize the celebration.
+- The culprit forgot where the cake was placed.
+
+The clues should gradually point toward:
+
+Nori Ocampus
+↓
+Workflow Specialist
+↓
+Helpful
+↓
+Forgetful
+↓
+Accidentally creates chaos
+
+Prince Boni serves as a recurring false suspect.
+Bekz Sarap and Andy Iglesias continue the recurring gossip/debate subplot.
+Peri Vasquez continues the recurring anime subplot.
+Derick O'noso continues the recurring outing contribution subplot.
+
+Tone:
+
+- Funny
+- Workplace absurdity
+- Relatable
+- Solvable
+
+Avoid audit-report language.
+Focus on office chaos, human behavior, and deduction.
+
+
+CASE 06 — THE WRONG SLIDE DECK
+
+Family:
+Presentations
+
+Difficulty:
+Medium
+
+====================================================
+
+BRIEF
+
+A leadership presentation began exactly on schedule.
+The presenter was prepared.
+The audience was ready.
+The slide deck was not.
+The wrong presentation was shown to senior leadership.
+Nobody is having a good morning.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+Multiple versions of the presentation exist.
+Nobody agrees how many.
+
+----------------------------------------------------
+
+Clue 2
+
+The presenter opened a file labeled:
+
+FINAL
+
+This information proved less useful than expected.
+
+----------------------------------------------------
+
+Clue 3
+
+The correct deck still exists.
+Somewhere.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+A reviewer discovered:
+
+FINAL
+FINAL_v2
+FINAL_FINAL
+FINAL_FINAL_2
+FINAL_THIS_ONE
+
+Confidence immediately decreased.
+
+----------------------------------------------------
+
+Clue 5
+
+The deck shown during the meeting contained slides that had already been removed from the project.
+The wrong version was attached to the meeting materials long before the presentation started.
+
+----------------------------------------------------
+
+Clue 6
+
+Prince Boni suggested implementing proper presentation version control.
+The room became suspicious.
+
+----------------------------------------------------
+
+Clue 7
+
+Bekz Sarap and Andy Iglesias spent several minutes discussing a celebrity scandal.
+Witnesses described the discussion as passionate.
+
+----------------------------------------------------
+
+Clue 8
+
+Artsu MoYan reviewed multiple deck versions.
+Artsu later reported that:
+"The wrong one looked familiar."
+This was not helpful.
+
+----------------------------------------------------
+
+Clue 9
+
+The file selected before the meeting had not been modified in over a week.
+The correct deck was updated yesterday.
+
+----------------------------------------------------
+
+Clue 10
+
+One role routinely manages communication, coordination, meeting preparation, and distributing materials.
+The incident appears closely connected to those responsibilities.
+
+====================================================
+
+CULPRIT
+
+Andy Iglesias
+
+====================================================
+
+REVEAL
+
+The wrong presentation was never downloaded accidentally.
+The wrong presentation was selected intentionally.
+By mistake.
+While preparing materials for multiple meetings, Andy Iglesias grabbed an earlier version of the deck and included it with the meeting materials.
+When the presentation began, everyone confidently opened the wrong "FINAL."
+The correct deck was still available.
+The naming convention was not.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- Multiple versions exist.
+- The wrong version was selected.
+- The correct version remained available.
+- The mistake happened before the meeting started.
+- The issue involves communication, coordination, and distribution of materials.
+
+The clues should gradually point toward:
+
+Andy Iglesias
+↓
+Client Coordinator
+↓
+Meetings
+↓
+Presentation materials
+↓
+Communication
+
+The culprit should never be directly named in the clues.
+Players should arrive at the conclusion through deduction and profile matching.
+Prince Boni serves as a recurring false suspect.
+Bekz Sarap and Andy Iglesias continue the recurring gossip subplot.
+Artsu MoYan contributes an unhelpful but entertaining observation.
+
+Tone:
+
+- Funny
+- Relatable
+- Office chaos
+- Solvable
+
+Avoid audit-report language.
+Focus on presentation disasters, office confusion, and workplace absurdity.
+
+
+CASE 07 — THE WRONG ATTACHMENT
+
+Family:
+Email & Communication
+
+Difficulty:
+Medium
+
+====================================================
+
+BRIEF
+
+A client received the wrong attachment.
+The email was sent successfully.
+The recipient was correct.
+The message was professional.
+The attachment absolutely was not.
+Several people have already searched their Sent Items folder.
+Nobody feels better.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The correct email was sent to the correct client.
+Only the attachment was wrong.
+
+----------------------------------------------------
+
+Clue 2
+
+The intended document still exists. Somewhere. And was ready for delivery.
+
+----------------------------------------------------
+
+Clue 3
+
+The attachment selected was not the most recent version.
+Someone chose the wrong file before pressing Send.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+A reviewer discovered:
+
+Client_Final
+Client_Final_v2
+Client_Final_Review
+Client_Final_Really_Final
+Client_Use_This_One
+
+Confidence immediately decreased.
+
+----------------------------------------------------
+
+Clue 5
+
+The attachment was selected from a folder containing materials for multiple clients.
+Only one document in that folder was intended for the recipient.
+
+----------------------------------------------------
+
+Clue 6
+
+A document attached to the email contained a list of names.
+The investigation briefly considered it evidence.
+It turned out to be a lunch contribution tracker maintained by Derick O'noso.
+
+----------------------------------------------------
+
+Clue 7
+
+Peri Vasquez recognized the problem instantly.
+After a long pause, Peri declared:
+"This is exactly what happens when the protagonist opens the wrong scroll."
+The investigation gained no useful information.
+
+----------------------------------------------------
+
+Clue 8
+
+Artsu MoYan reviewed the attachment history and reported:
+"The wrong file makes perfect sense."
+This was not reassuring.
+
+----------------------------------------------------
+
+Clue 9
+
+The incorrect attachment had not been modified recently.
+The correct attachment was updated yesterday.
+
+----------------------------------------------------
+
+Clue 10
+
+One role frequently manages communication, attachments, recipients, and client-facing materials.
+The incident appears closely tied to those responsibilities.
+
+====================================================
+
+CULPRIT
+
+Andy Iglesias
+
+====================================================
+
+REVEAL
+
+The wrong attachment was never created accidentally.
+The wrong attachment was selected accidentally.
+While preparing multiple client communications, Andy Iglesias selected an older file from the correct folder and included it with the outgoing email.
+The email itself was flawless.
+The recipient was correct.
+The attachment was not.
+The client received a document that was no longer intended for distribution.
+Everything worked exactly as designed.
+The design assumed humans would name files responsibly.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- The recipient was correct.
+- The email itself was correct.
+- The wrong file was selected.
+- Multiple near-identical versions existed.
+- The mistake happened before the email was sent.
+- The issue is tied to preparing and distributing client materials.
+
+The clues should gradually point toward:
+
+Andy Iglesias
+↓
+Client Coordinator
+↓
+Communications
+↓
+Attachments
+↓
+Client-facing materials
+The culprit should never be directly named in the clues.
+Players should arrive at the conclusion through deduction and profile matching.
+
+Running Gags Used:
+
+Derick O'noso carrying contribution lists
+Peri Vasquez viewing reality through anime logic
+Artsu MoYan providing technically correct but unhelpful observations
+
+Tone:
+
+- Funny
+- Relatable
+- Office chaos
+- Solvable
+
+Avoid audit-report language.
+Focus on communication mistakes, file-version confusion, and workplace absurdity.
+
+
+CASE 08 — THE LOCKED SHAREPOINT FOLDER
+
+Family:
+Technology
+
+Difficulty:
+Hard
+
+====================================================
+
+BRIEF
+
+A project folder suddenly became inaccessible.
+Nobody can open it.
+Nobody can edit it.
+Nobody can explain why.
+The folder worked yesterday.
+Today it behaves as though the team never existed.
+Several people have already blamed technology.
+Technology has not yet defended itself.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The folder still exists.
+Only the permissions appear to have changed.
+
+----------------------------------------------------
+
+Clue 2
+
+No files were deleted.
+No files were moved.
+No files were renamed.
+
+----------------------------------------------------
+
+Clue 3
+
+Access disappeared for multiple people at exactly the same time.
+The timing was not random.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+An emergency Teams chat titled:
+"CAN ANYONE OPEN THE FOLDER?"
+was created.
+It did not help.
+
+----------------------------------------------------
+
+Clue 5
+
+One team member possessed sufficient permissions to change access settings.
+The change appears intentional.
+The outcome does not.
+
+----------------------------------------------------
+
+Clue 6
+
+Derick O'noso explained the issue.
+The folder was eventually restored.
+The explanation remains under review.
+
+----------------------------------------------------
+
+Clue 7
+
+Bekz Sarap and Andy Iglesias spent part of the investigation discussing whether forgotten passwords should count as technical problems.
+No agreement was reached.
+
+----------------------------------------------------
+
+Clue 8
+
+Artsu MoYan reviewed the permissions history.
+Artsu later reported:
+"Everything appears completely wrong."
+This was considered useful.
+
+----------------------------------------------------
+
+Clue 9
+
+Nori Ocampus remembered seeing something relevant.
+The memory arrived remarkably late,
+but was appreciated nonetheless.
+
+----------------------------------------------------
+
+Clue 10
+
+One role routinely works with systems, permissions, access control, and technical configurations.
+The incident appears closely connected to that expertise.
+
+====================================================
+
+CULPRIT
+
+Derick O'noso
+
+====================================================
+
+REVEAL
+
+The folder was never hacked.
+The folder was never deleted.
+The folder never failed.
+While testing a permissions configuration, Derick O'noso accidentally applied an internal access template to the project folder.
+The template worked perfectly.
+Unfortunately, it worked on the wrong folder.
+The moment the template was applied, nearly everyone lost access.
+Derick restored the folder shortly afterward.
+The investigation took significantly longer than the fix.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- Files still exist.
+- Folder still exists.
+- Permissions changed.
+- No data loss occurred.
+- Access disappeared simultaneously.
+- Administrative-level access was required.
+
+The clues should gradually point toward:
+
+Derick O'noso
+↓
+Systems Specialist
+↓
+Permissions
+↓
+Access Control
+↓
+Technical Configuration
+
+The culprit should never be directly named in the clues.
+Players should arrive at the conclusion through deduction and profile matching.
+Running Gags Used:
+
+Nori remembers something important much too late
+Bekz and Andy debate something completely unrelated
+Artsu provides technically correct but unsettling observations
+Derick fixes the issue after accidentally creating it
+
+Tone:
+
+- Funny
+- Relatable
+- Workplace chaos
+- Solvable
+- Technology frustration
+
+Avoid audit-report language.
+Focus on permission mistakes, configuration mishaps, and office absurdity.
+
+
+CASE 09 — THE AUTOMATION INCIDENT
+
+Family:
+Technology / Automation
+
+Difficulty:
+Medium
+
+====================================================
+
+BRIEF
+
+One morning, dozens of automated notifications were sent across multiple projects.
+Several trackers changed.
+Multiple reminders were triggered.
+At least three teams thought something was on fire.
+Nothing was actually wrong.
+Unfortunately, that was part of the problem.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The notifications originated from an automated process.
+No manual changes were recorded.
+
+----------------------------------------------------
+
+Clue 2
+
+Every affected system appears to have acted exactly as instructed.
+
+----------------------------------------------------
+
+Clue 3
+
+The incident occurred shortly after a workflow improvement was introduced.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+Several investigators immediately blamed Prince Boni.
+
+----------------------------------------------------
+
+Clue 5
+
+The automation was intended to save time.
+The amount of time saved remains disputed.
+
+----------------------------------------------------
+
+Clue 6
+
+Derick O'noso reviewed the system logs.
+The logs appeared perfectly healthy.
+This was not encouraging.
+
+----------------------------------------------------
+
+Clue 7
+
+Bekz Sarap and Andy Iglesias spent several minutes discussing a newly debuted K-pop idol.
+Both appeared unusually thrilled and giddy.
+The investigation achieved absolutely nothing during this period.
+
+----------------------------------------------------
+
+Clue 8
+
+The workflow completed successfully.
+This information raised more questions than it answered.
+
+----------------------------------------------------
+
+Clue 9
+
+Only one profile regularly introduces automation intended to improve existing processes.
+
+----------------------------------------------------
+
+Clue 10
+
+Nori Ocampus remembered a similar incident from a previous project.
+This memory appeared after the incident was already resolved.
+
+====================================================
+
+CULPRIT
+
+Prince Boni
+
+====================================================
+
+REVEAL
+
+The systems did not fail.
+The workflows did not fail.
+The notifications did not fail.
+Several weeks earlier, Prince Boni created a small automation intended to make recurring updates easier.
+The automation worked perfectly.
+Unfortunately, it was connected to the wrong trigger.
+When a routine update occurred, every downstream process activated exactly as designed.
+The resulting confusion spread faster than the original problem.
+Prince later described the automation as:
+"Technically successful."
+The rest of the organization disagreed.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- Automation is involved.
+- No technical failure occurred.
+- No system outage occurred.
+- No permissions issue exists.
+- Everything executed correctly.
+- The trigger itself was incorrect.
+
+The clues should gradually point toward:
+
+Prince Boni
+↓
+AI Engineer
+↓
+Automation
+↓
+Process improvements
+↓
+Unexpected consequences
+
+The culprit should never be directly named in the clues.
+Players should arrive at the conclusion through deduction and profile matching.
+
+Running Gags Used:
+Prince Boni is immediately blamed
+This time Prince Boni is actually guilty
+Bekz Sarap and Andy Iglesias debate something completely irrelevant
+Derick O'noso reviews logs that do not help
+Nori Ocampus remembers something useful after the incident is already over
+
+Tone:
+
+- Funny
+- Relatable
+- Technology chaos
+- Solvable
+- Office absurdity
+
+Avoid audit-report language.
+Focus on automation mishaps, unintended consequences, and workplace confusion.
+
+
+CASE 10 — THE MISSING TRACKER
+
+Family:
+Project Management
+
+Difficulty:
+Hard
+
+====================================================
+
+BRIEF
+
+A critical project tracker disappeared less than one hour before leadership review.
+The deadlines still exist.
+The milestones still exist.
+The tracker does not.
+Several people have already opened thirty browser tabs.
+Nobody feels closer to finding it.
+
+====================================================
+
+CORE CLUES
+
+Clue 1
+
+The tracker was visible yesterday.
+This morning it had vanished.
+
+----------------------------------------------------
+
+Clue 2
+
+The tracker was not deleted.
+Several linked reports continue functioning normally.
+
+----------------------------------------------------
+
+Clue 3
+
+The tracker appears to have been moved rather than removed.
+
+====================================================
+
+OPTIONAL CLUES
+
+Clue 4
+
+Several innocent trackers were questioned.
+
+----------------------------------------------------
+
+Clue 5
+
+The tracker disappeared shortly after a project cleanup effort.
+Multiple outdated trackers were archived.
+
+----------------------------------------------------
+
+Clue 6
+
+Someone recently expressed a desire to make project tracking "more organized."
+Several trackers disappeared shortly afterward.
+Not all of them intentionally.
+
+----------------------------------------------------
+
+Clue 7
+
+Andy Iglesias was seen searching through multiple tracker folders.
+The search was unsuccessful.
+
+----------------------------------------------------
+
+Clue 8
+
+The tracker's old location is empty.
+Its new location appears to make perfect sense to someone.
+
+----------------------------------------------------
+
+Clue 9
+
+Derick O'noso confirmed that all systems were functioning normally.
+Unfortunately, the tracker remained missing.
+
+----------------------------------------------------
+
+Clue 10
+
+One role routinely works with:
+- trackers
+- milestones
+- status updates
+- project organization
+
+The incident appears connected to those responsibilities.
+
+====================================================
+
+CULPRIT
+
+Bekz Sarap
+
+====================================================
+
+REVEAL
+
+The tracker was never deleted.
+The tracker never left the system.
+While cleaning project materials before leadership review, Bekz Sarap reorganized several tracking structures.
+The new structure was logical.
+The folders were tidy.
+The naming convention made sense.
+Unfortunately, nobody else knew where the tracker went afterward.
+Bekz later described the reorganization as:
+"Much easier to navigate."
+The investigation respectfully disagreed.
+
+====================================================
+
+DESIGN NOTES
+
+Players should deduce:
+- The tracker still exists.
+- The tracker was moved.
+- Reporting systems still function.
+- No technical outage occurred.
+- No permissions issue occurred.
+- The culprit is highly involved in tracker organization.
+
+The clues should gradually point toward:
+
+Bekz Sarap
+↓
+Project Manager
+↓
+Trackers
+↓
+Status Updates
+↓
+Project Organization
+
+The culprit should never be directly named in the clues.
+Players should arrive at the conclusion through deduction and profile matching.
+
+Running Gags Used:
+Artsu MoYan creates more questions than answers
+Andy Iglesias searches everywhere but finds nothing
+Derick O'noso confirms everything is technically fine
+
+Tone:
+
+- Funny
+- Relatable
+- Project chaos
+- Solvable
+- Workplace absurdity
+
+Avoid audit-report language.
+
+Focus on trackers, organization, reporting structures, and good intentions creating bad outcomes.
+
+This one completes the roster nicely because Bekz finally gets a culprit case that matches the profile naturally: not permissions, not systems, not workflows... **trackers and organization**.

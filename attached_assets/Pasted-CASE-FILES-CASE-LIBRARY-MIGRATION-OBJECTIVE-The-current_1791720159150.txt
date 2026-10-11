@@ -1,0 +1,249 @@
+CASE FILES
+CASE LIBRARY MIGRATION
+
+OBJECTIVE
+
+The current gameplay systems are working well.
+
+KEEP:
+
+- Lobby
+- Team setup
+- Team editing
+- Team names
+- Host controls
+- Scoring
+- Clue requests
+- Voting
+- Reveal screens
+- Awards
+- Leaderboards
+- Tournament flow
+- Existing UI
+
+Do NOT redesign the game.
+
+Do NOT create a new game.
+
+Do NOT rebuild the game.
+
+The goal is to replace the content-generation layer only.
+
+====================================================
+
+CURRENT PROBLEM
+
+Most cases still feel like file investigations.
+
+Regardless of the case title, clues frequently follow the same pattern:
+
+- Records
+- Reports
+- Documentation
+- Access logs
+- Audit trails
+- Tracking information
+
+Even when humor appears, it feels inserted rather than natural.
+
+The game still feels like:
+
+"Internal Audit Simulator"
+
+instead of:
+
+"Office Comedy Detective Game"
+
+====================================================
+
+NEW DIRECTION
+
+Case Files should feel like:
+
+"The Office investigates workplace absurdity."
+
+Humor should feel natural.
+
+Humor should be part of the case itself.
+
+Each case family should have its own personality.
+
+The player should immediately recognize what kind of disaster they are investigating.
+
+====================================================
+
+ARCHITECTURE CHANGE
+
+Replace procedural case generation.
+
+Replace procedural clue generation.
+
+Create a Case Library system.
+
+Cases should be stored as structured data.
+
+Randomly select cases from the library.
+
+Do not dynamically generate clues.
+
+Do not dynamically rewrite clues.
+
+====================================================
+
+CASE LIBRARY SYSTEM
+
+Create a static Case Library.
+
+Each case should contain:
+
+- Title
+- Family
+- Difficulty
+- Brief
+- Core Clues
+- Optional Clues
+- Culprit
+- Reveal
+- Design Notes
+
+Store cases as structured data.
+
+Randomly select cases from the library.
+
+====================================================
+
+INITIAL LIBRARY
+
+Import the canonical cases exactly as written:
+
+Case 01
+The Missing Coffee Mug
+
+Case 02
+The Mystery of Column F
+
+Case 03
+The Correct Wrong Process
+
+Case 04
+The Meeting That Attended Itself
+
+Case 05
+The Missing Birthday Cake
+
+Case 06
+The Wrong Slide Deck
+
+Case 07
+The Wrong Attachment
+
+Case 08
+The Locked SharePoint Folder
+
+Case 09
+The Automation Incident
+
+Case 10
+The Missing Tracker
+
+The case content will be provided separately and should be stored exactly as written.
+
+====================================================
+
+CLUE SYSTEM
+
+Retain the existing clue progression system.
+
+Every case should contain:
+
+- 3 Core Clues
+- 7 Optional Clues
+
+All cases should have access to all 7 optional clues regardless of difficulty.
+
+Players may request additional clues one at a time.
+
+Each additional clue reduces the available score by 10 points.
+
+Do not generate replacement clues dynamically.
+
+Use the handcrafted clues stored in the Case Library.
+
+====================================================
+
+PROFILE-BASED DEDUCTION
+
+The player should solve cases by connecting clues to profiles.
+
+Clues should point toward:
+
+- Responsibility
+- Expertise
+- Authority
+- Habits
+- Known traits
+
+rather than directly identifying suspects.
+
+====================================================
+
+RUNNING GAGS
+
+Retain recurring character gags.
+
+These should create personality without identifying the culprit.
+
+Examples:
+
+Prince Boni
+- Frequently blamed.
+- Sometimes actually guilty.
+
+Artsu MoYan
+- Frequently unavailable.
+- Appears long after needed.
+
+Bekz Sarap and Andy Iglesias
+- Often discussing unrelated gossip.
+
+Derick O'noso
+- Always collecting outing contributions.
+
+Peri Vasquez
+- Filters reality through anime logic.
+
+Nori Ocampus
+- Remembers important things much too late.
+
+====================================================
+
+IMPORTANT
+
+Do not treat the Case Library as examples.
+
+Treat them as production content.
+
+The game should pull cases from the Case Library directly.
+
+Future cases should be added to the library in the same format.
+
+====================================================
+
+DESIGN GOAL
+
+The game should feel like:
+
+"The Office: Detective Edition"
+
+not
+
+"Internal Audit Simulator."
+
+Every case should feel:
+
+- Funny
+- Relatable
+- Solvable
+- Workplace-focused
+
+The humor should emerge naturally from the situation rather than feeling randomly inserted.
